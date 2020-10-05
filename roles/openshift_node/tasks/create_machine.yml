@@ -9,7 +9,7 @@
 
 - name: Check machine is provisioned
   shell: >
-    oc get machines --kubeconfig={{ kubeconfig }} -n openshift-machine-api |grep p3.2xlarge |awk '{ print $2 }'
+    oc get machines --kubeconfig={{ kubeconfig }} -n openshift-machine-api |grep {{ gpu_instance_type }} |awk '{ print $2 }'
   register: gpu_machine_state
   until:
   - gpu_machine_state.stdout == 'Running'
