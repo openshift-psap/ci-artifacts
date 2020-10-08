@@ -3,7 +3,7 @@
 
 - name: Create OpenShift object
   command: >
-    bash -c "oc create -f {{ gpu_machineset_deff }} --kubeconfig '{{ kubeconfig }}'"
+    bash -c "oc create -f '{{ gpu_machineset_deff }}' --kubeconfig '{{ kubeconfig }}'"
   register: oc_create_gpu
 
 - name: Check machine is provisioned
