@@ -21,8 +21,8 @@
   delay: 5
 
 - name: Get worker machineset template
-  shell: >
-    oc get machineset {{ oc_get_machinesets.stdout_lines[0] }} --kubeconfig {{ kubeconfig }} -n openshift-machine-api -o json |jq -c 
+  command: >
+     bash -c "oc get machineset {{ oc_get_machinesets.stdout_lines[0] }} --kubeconfig {{ kubeconfig }} -n openshift-machine-api -o json"
   register: worker_machine_set
   until:
   - worker_machine_set != ''
