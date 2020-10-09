@@ -5,7 +5,9 @@
 #
 # SOURCE and HOME DIRECTORY: /opt/ci-artifacts/src
 
+set -o pipefail
 set -o errexit
+set -o nounset
 
 if [[ -z "${KUBECONFIG}" ]]
 then
