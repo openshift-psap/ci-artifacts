@@ -14,14 +14,14 @@ COPY build/root /
 RUN yum install -y \
       glibc-langpack-en \
       git make jq vim wget \
-      python3 python3-devel python3-pip python3-setuptools \
-      && pip3 install --no-cache-dir --upgrade setuptools pip \
-      && pip3 install --no-cache-dir \
+      python3 python3-devel python3-pip python3-setuptools && \
+      pip3 install --no-cache-dir --upgrade setuptools pip && \
+      pip3 install --no-cache-dir \
       openshift \
-      ansible==2.9.* \
-      && yum clean all \
-      && rm -rf $HOME/.cache \
-      && rm -rf /var/cache/yum
+      ansible==2.9.* && \
+      yum clean all && \
+      rm -rf $HOME/.cache && \
+      rm -rf /var/cache/yum
 
 # Set up Ansible
 RUN mkdir -p /etc/ansible \
