@@ -12,16 +12,16 @@ COPY build/root /
 
 # Install openshift-ansible RPMs and some debugging tools
 RUN yum install -y \
-        glibc-langpack-en \
-        git make jq vim wget \
-        python3 python3-devel python3-pip python3-setuptools && \
-    pip3 install --no-cache-dir --upgrade setuptools pip && \
-    pip3 install --no-cache-dir \
-        openshift \
-        ansible==2.9.* && \
-    yum clean all && \
-    rm -rf $HOME/.cache && \
-    rm -rf /var/cache/yum
+		glibc-langpack-en \
+		git make jq vim wget \
+		python3 python3-devel python3-pip python3-setuptools && \
+	pip3 install --no-cache-dir --upgrade setuptools pip && \
+	pip3 install --no-cache-dir \
+		openshift \
+		ansible==2.9.* && \
+	yum clean all && \
+	rm -rf $HOME/.cache && \
+	rm -rf /var/cache/yum
 
 # Set up Ansible
 RUN mkdir -p /etc/ansible \
@@ -44,9 +44,9 @@ COPY roles ${HOME}/roles
 RUN useradd -u ${USER_UID} -g 0 -d ${HOME} ${USER_NAME} 
 
 # Ensure directory permissions are properly set
-RUN mkdir -p ${HOME}/.ansible/tmp \
- && chown -R ${USER_UID}:0 ${HOME} \
- && chmod -R ug+rwx ${HOME}
+RUN mkdir -p ${HOME}/.ansible/tmp && \
+	chown -R ${USER_UID}:0 ${HOME} && \
+	chmod -R ug+rwx ${HOME}
 
 RUN /usr/local/bin/user_setup
 
