@@ -1,4 +1,6 @@
 ---
+# Operator version 1.4.0
+# Jan 18 2021
 apiVersion: nvidia.com/v1
 kind: ClusterPolicy
 metadata:
