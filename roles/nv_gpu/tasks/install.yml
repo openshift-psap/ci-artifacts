@@ -24,9 +24,12 @@
           
 - name: Create the NodeFeatureDiscovery CR for the NFD Operator
   block:
-    - name: apply clusterpolicy manifest 
+    - name: apply NodeFeatureDiscovery manifest 
       command: oc apply -f "{{ nfd_operator_crd }}"
       register: nfd_cr
+      until: nfd_cr.rc != 1
+      retries: 5
+      delay: 5
   rescue:
     - name: Failed when creating the test clusterpolicy CR for the GPU Operator
       fail:
@@ -57,8 +60,10 @@
     - name: apply clusterpolicy manifest 
       command: oc apply -f "{{ gpu_operator_crd }}"
       register: test_clusterpolicy_cr
+      until: test_clusterpolicy_cr.rc != 1
+      retries: 5
+      delay: 5
   rescue:
     - name: Failed when creating the clusterpolicy CR for the GPU Operator
       fail:
         msg: "{{ test_clusterpolicy_cr }}"
-          
