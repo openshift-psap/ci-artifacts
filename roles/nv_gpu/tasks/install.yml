@@ -42,16 +42,6 @@
       fail:
         msg: "{{ test_namespace }}"
           
-- name: Create the operatorGroup object
-  block:
-    - name: apply operatorGroup manifest 
-      command: oc apply -f "{{ gpu_operator_operatorgroup }}"
-      register: test_operatorgroup
-  rescue:
-    - name: Failed when creating the operatorGroup object for the GPU Operator
-      fail:
-        msg: "{{ test_operatorgroup }}"
-          
 - name: Create the OperatorHub subscription for the GPU Operator
   block:
     - name: apply operatorhub subscription manifest 
