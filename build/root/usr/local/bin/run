@@ -39,22 +39,20 @@ fi
 ANSIBLE_OPTS=${ANSIBLE_OPTS:--v}
 
 INVENTORY_ARG="-i inventory/hosts"
-while true; do
-    case ${1:-} in
-        "gpu-ci")
-	    exec ansible-playbook ${INVENTORY_ARG} ${ANSIBLE_OPTS} playbooks/nvidia-gpu-operator-ci.yml
-	    ;;
-	"psap-ci")
-	    exec ansible-playbook ${INVENTORY_ARG} ${ANSIBLE_OPTS} playbooks/openshift-psap-ci.yml
-	    ;;
-        -*)
-            echo "Unknown option: ${1:-}"
-            exit 1
-            ;;
-	*)
-	    break
-	    ;;
-    esac
-done
+
+case ${1:-} in
+    "gpu-ci")
+	exec ansible-playbook ${INVENTORY_ARG} ${ANSIBLE_OPTS} playbooks/nvidia-gpu-operator-ci.yml
+	;;
+    "psap-ci")
+	exec ansible-playbook ${INVENTORY_ARG} ${ANSIBLE_OPTS} playbooks/openshift-psap-ci.yml
+	;;
+    -*)
+        echo "Unknown option: ${1:-}"
+        exit 1
+        ;;
+    *)
+	;;
+esac
 
 exit 0
