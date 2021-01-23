@@ -38,7 +38,7 @@ fi
 if [[ "${INSIDE_CI_IMAGE:-}" == "y" ]]; then
     echo "===> $0 $@ <=="
 
-    git show -s || echo "Could not access git history ..."
+    git show --quiet || echo "Could not access git history ..."
     echo
     oc version
     echo
