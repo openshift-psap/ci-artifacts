@@ -28,8 +28,8 @@
       command: oc apply -f "{{ nfd_operator_crd }}"
       register: nfd_cr
       until: nfd_cr.rc != 1
-      retries: 10
-      delay: 10
+      retries: 20
+      delay: 15
   rescue:
     - name: Failed when creating the test clusterpolicy CR for the GPU Operator
       fail:
@@ -61,8 +61,8 @@
       command: oc apply -f "{{ gpu_operator_crd }}"
       register: test_clusterpolicy_cr
       until: test_clusterpolicy_cr.rc != 1
-      retries: 10
-      delay: 10
+      retries: 20
+      delay: 15
   rescue:
     - name: Failed when creating the clusterpolicy CR for the GPU Operator
       fail:
