@@ -104,11 +104,6 @@ deploy_operator() {
     set -x
 
     device_plugin_version=${HELM_values[devicePlugin_version]/-ubuntu*/}-ubi8
-    if [[ "$device_plugin_version" == "v0.7.1-ubi8" ]]; then
-        echo "WARNING: cannot use devicePlugin.version=$device_plugin_version"
-        device_plugin_version="v0.7.3-ubi8"
-        echo "WARNING: using devicePlugin.version=$device_plugin_version instead."
-    fi
 
     helm uninstall --namespace $OPERATOR_NAMESPACE $OPERATOR_NAME || true
     oc delete crd/clusterpolicies.nvidia.com || true
