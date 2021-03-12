@@ -141,8 +141,8 @@ prepare_cluster_for_gpu_operator() {
 set -x
 case ${1:-} in
      "gpu-commit-ci")
-        CI_IMAGE_GPU_COMMIT_CI_REPO="https://github.com/NVIDIA/gpu-operator/"
-        CI_IMAGE_GPU_COMMIT_CI_REF="master"
+        CI_IMAGE_GPU_COMMIT_CI_REPO="https://gitlab.com/kpouget_psap/gpu-operator"
+        CI_IMAGE_GPU_COMMIT_CI_REF="work/labels"
         CI_IMAGE_GPU_COMMIT_CI_IMAGE_UID="ci-image"
 
         echo "Using Git repository ${CI_IMAGE_GPU_COMMIT_CI_REPO} with ref ${CI_IMAGE_GPU_COMMIT_CI_REF}"
@@ -157,7 +157,9 @@ case ${1:-} in
 	exit 0
         ;;
 
-    "gpu-ci")
+     "gpu-ci")
+        echo "Don't want to test OperatorHub here, only gpu-commit-ci."
+        exit 0
         if [ ! -z "${2:-}" ]; then
             OPERATOR_VERSION="$2"
         else
