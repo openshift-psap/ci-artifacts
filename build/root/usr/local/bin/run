@@ -154,8 +154,8 @@ validate_gpu_operator_deployment() {
 set -x
 case ${1:-} in
     "gpu-operator_test-master-branch")
-        CI_IMAGE_GPU_COMMIT_CI_REPO="${2:-https://github.com/NVIDIA/gpu-operator.git}"
-        CI_IMAGE_GPU_COMMIT_CI_REF="${3:-master}"
+        CI_IMAGE_GPU_COMMIT_CI_REPO="https://gitlab.com/kpouget_psap/gpu-operator.git"
+        CI_IMAGE_GPU_COMMIT_CI_REF="mig/validation"
 
         CI_IMAGE_GPU_COMMIT_CI_IMAGE_UID="ci-image"
 
@@ -169,6 +169,9 @@ case ${1:-} in
 	exit 0
         ;;
     "gpu-operator_test-operatorhub")
+        echo "Testing only my commit"
+        exit 0
+
         OPERATOR_VERSION="${2:-}"
         prepare_cluster_for_gpu_operator
         toolbox/gpu-operator/deploy_from_operatorhub.sh ${OPERATOR_VERSION}
