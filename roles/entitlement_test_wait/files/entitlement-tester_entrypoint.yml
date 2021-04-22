@@ -20,7 +20,7 @@ data:
     echo
 
     echo "# md5sum of entitlement file (debug)"
-    if md5sum /etc/rhsm-host/rhsm.conf /etc/pki/entitlement-host/entitlement{,-key}.pem; then
+    if md5sum /etc/rhsm/rhsm.conf /etc/pki/entitlement/entitlement{,-key}.pem; then
       echo "# INFO: entitlement files found"
     else
       echo "#"
