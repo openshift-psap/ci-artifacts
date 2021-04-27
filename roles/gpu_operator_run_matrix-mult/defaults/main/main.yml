@@ -1,0 +1,2 @@
+# time argument for matrix mult, in seconds
+matrix_mult_time: 300

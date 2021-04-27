@@ -1,0 +1,7 @@
+---
+- name: Run MLPerf Matrix Multiply on the GPU
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  roles:
+    - role: gpu_operator_run_matrix-mult

@@ -1,8 +1,0 @@
----
-# Run GPU Matrix Multiply to validate the GPU deployment
-- name: Run GPU Matrix Mult
-  hosts: localhost
-  connection: local
-  gather_facts: true
-  roles:
-    - role: matrix_mult 

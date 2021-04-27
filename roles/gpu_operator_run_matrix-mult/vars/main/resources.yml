@@ -1,0 +1,2 @@
+matrix_mult_cm_entrypoint: roles/gpu_operator_run_matrix-mult/files/matrix_mult_cm_entrypoint.yml
+matrix_mult_pod: roles/gpu_operator_run_matrix-mult/files/matrix_mult_pod.yml

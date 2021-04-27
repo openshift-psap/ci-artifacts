@@ -1,5 +1,0 @@
-matrix_mult_cm_entrypoint: roles/matrix_mult/files/matrix_mult_cm_entrypoint.yml
-matrix_mult_pod: roles/matrix_mult/files/matrix_mult_pod.yml
-
-# time argument for matrix mult, in seconds
-matrix_mult_time: 300
