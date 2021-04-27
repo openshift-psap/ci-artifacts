@@ -32,6 +32,7 @@ validate_gpu_operator_deployment() {
 
     toolbox/gpu-operator/wait_deployment.sh
     toolbox/gpu-operator/run_gpu_burn.sh
+    toolbox/gpu-operator/run_matrix_mult.sh
 }
 
 test_master_branch() {
