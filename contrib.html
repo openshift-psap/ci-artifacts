@@ -1,0 +1,436 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Contributing &mdash; Red Hat PSAP CI-Artifacts toolbox git-documentation/60c679a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ChangeLog" href="changelog.html" />
+    <link rel="prev" title="Read Me First" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Red Hat PSAP CI-Artifacts toolbox
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                07, May 2021
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Read Me First</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#review-guidelines">Review Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#style-guidelines">Style Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#yaml-style">YAML style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ansible-style">Ansible style</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#coding-guidelines">Coding guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">ChangeLog</a></li>
+</ul>
+<p class="caption"><span class="caption-text">PSAP Toolbox</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/cluster.html">Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/entitlement.html">Entitlement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/gpu_operator.html">GPU Operator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/nfd.html">Node Feature Discover Operator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/sro.html">Special Resource Operator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/local-ci.html">Local CI Execution</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Red Hat PSAP CI-Artifacts toolbox</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Contributing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/contrib.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
+<p>First off, thanks for taking the time to contribute!</p>
+<p>The following is a set of guidelines for contributing to Red Hat
+OpenShift PSAP <code class="docutils literal notranslate"><span class="pre">ci-artifacts</span></code>. These are mostly guidelines, not
+rules. Use your best judgment, and feel free to propose changes to
+this document in a pull request.</p>
+<p>—</p>
+<p>The primary goal of the repository is to host the tools required for
+the nightly testing of the OpenShift operators under Red Hat PSAP team
+responsibility, and in particular, NVIDIA GPU Operator and the Special
+Resource Operator (SRO).</p>
+<p>The OpenShift version we are supporting is 4.N, 4.N-1 and 4.N-2, where 4.N is
+the current latest version released. So as of May 2021, we need to
+support 4.7, 4.6 and 4.5.</p>
+<p>The secondary goal of the repository is to offer a toolbox for
+interacting with our operators, and configuring the cluster as required.</p>
+<div class="section" id="pull-request-guidelines">
+<h2>Pull Request Guidelines<a class="headerlink" href="#pull-request-guidelines" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Pull Requests (PRs) need to be <code class="docutils literal notranslate"><span class="pre">/approve</span></code> and reviewed <code class="docutils literal notranslate"><span class="pre">/lgtm</span></code> by
+PSAP team members before being merged.</p></li>
+<li><p>PRs should have a proper description explaining the problem is being
+solved, or the new feature being introduced.</p></li>
+<li><p>PRs introducing or modifying <code class="docutils literal notranslate"><span class="pre">toolbox</span></code> commands should include a
+documentation commit, so that <code class="docutils literal notranslate"><span class="pre">docs</span></code> is kept up-to-date.</p></li>
+</ul>
+</div>
+<div class="section" id="review-guidelines">
+<h2>Review Guidelines<a class="headerlink" href="#review-guidelines" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Reviews can be performed by anyone interested in the good health of
+the repository; but approval and/or <code class="docutils literal notranslate"><span class="pre">/lgtm</span></code> is reserved to PSAP
+team members at the moment.</p></li>
+<li><p>Reviewers should ensure that the relevant testing (only <code class="docutils literal notranslate"><span class="pre">\test</span>
+<span class="pre">gpu-operator-e2e</span></code> at the moment) has been successfully executing
+before the PR can be merged.</p>
+<ul>
+<li><p>In order to save unnecessary AWS cloud time, the testing is not
+automatically executed by Prow; it must be manually triggered.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OpenShift</span> <span class="pre">GitHub</span> <span class="pre">Bot</span></code> will not merge a PR when the
+<code class="docutils literal notranslate"><span class="pre">gpu-operator-e2e</span></code> test failed, but it will merged it if it was
+<em>never</em> executed (or if it completed successfully, of course)</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="style-guidelines">
+<h2>Style Guidelines<a class="headerlink" href="#style-guidelines" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="yaml-style">
+<h3>YAML style<a class="headerlink" href="#yaml-style" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Align nested lists with their parent’s label</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">block</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">...</span>
+    <span class="nt">block</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>YAML files use the <cite>.yml</cite> extension</p></li>
+</ul>
+</div>
+<div class="section" id="ansible-style">
+<h3>Ansible style<a class="headerlink" href="#ansible-style" title="Permalink to this headline">¶</a></h3>
+<p>We strive to follow Ansible best practices in the different playbooks.</p>
+<p>This command is executed as a GitHub-Action hook on all the new PRs,
+to help keeping a consistent code style:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ansible-lint -v --force-color -c config/ansible-lint.yml playbooks roles
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Try to avoid using <code class="docutils literal notranslate"><span class="pre">shell</span></code> tasks as much as possible</p>
+<ul>
+<li><p>Make sure that <code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">-o</span> <span class="pre">pipefail;</span></code> is part of the shell command
+whenever a <code class="docutils literal notranslate"><span class="pre">|</span></code> is involved (<code class="docutils literal notranslate"><span class="pre">ansible-lint</span></code> forgets some of
+them)</p></li>
+<li><p>Redirection into a <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">artifact_extra_logs_dir</span> <span class="pre">}}</span></code> file is a
+common exception</p></li>
+</ul>
+</li>
+<li><p>Use inline stanza for <code class="docutils literal notranslate"><span class="pre">debug</span></code> and <code class="docutils literal notranslate"><span class="pre">fail</span></code> tasks, eg:</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">The GFD did not label the nodes</span>
+  <span class="nt">fail</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">msg=&quot;The GFD did not label the nodes&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="coding-guidelines">
+<h2>Coding guidelines<a class="headerlink" href="#coding-guidelines" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Keep the main log file clean when everything goes right, and store
+all the relevant information in the <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">artifact_extra_logs_dir</span>
+<span class="pre">}}</span></code> directory, eg:</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Inspect the Subscriptions status (debug)</span>
+  <span class="nt">shell</span><span class="p">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">oc describe subscriptions/gpu-operator-certified -n openshift-operators</span>
+       <span class="l l-Scalar l-Scalar-Plain">&gt; {{ artifact_extra_logs_dir }}/gpu_operator_Subscription.log</span>
+  <span class="nt">failed_when</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Include troubleshooting inspection commands whenever
+possible/relevant (see above for an example)</p>
+<ul>
+<li><p>mark them as <code class="docutils literal notranslate"><span class="pre">failed_when:</span> <span class="pre">false</span></code> to ensure that their execution
+doesn’t affect the testing</p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">(debug)</span></code> in the task name to make it clear that the command
+is not part of the proper testing.</p></li>
+</ul>
+</li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">ignore_errors:</span> <span class="pre">true</span></code> <strong>only</strong> for tracking <strong>known
+failures</strong>.</p>
+<ul>
+<li><p>use <code class="docutils literal notranslate"><span class="pre">failed_when:</span> <span class="pre">false</span></code> to ignore the task return code</p></li>
+<li><p>but whenever possible, write tasks that do not fail, eg:</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">oc delete --ignore-not-found=true $MY_RESOURCE</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Try to group related modifications in a dedicated commit, and stack
+commits in logical order (eg, 1/ add role, 2/ add toolbox script 3/
+integrate the toolbox scrip in the nightly CI)</p>
+<ul>
+<li><p>Commits are not squashed, so please avoid commits “fixing” another
+commit of the PR.</p></li>
+<li><p>Hints: <a class="reference external" href="https://github.com/mystor/git-revise">git revise</a></p>
+<ul>
+<li><p>use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">revise</span> <span class="pre">&lt;commit&gt;</span></code> to modify an older commit (not
+older that <code class="docutils literal notranslate"><span class="pre">master</span></code> ;-)</p></li>
+<li><p>use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">revise</span> <span class="pre">--cut</span> <span class="pre">&lt;commit&gt;</span></code> to split a commit in two
+logical commits</p></li>
+<li><p>or simply use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span> <span class="pre">--amend</span></code> to modify the most recent commit</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Duplicate the <code class="docutils literal notranslate"><span class="pre">template</span></code> role to prepare the skeleton the new role</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">gpu_operator_run_gpu-burn</span></code> role can be studied an example of
+a standalone role &amp; toolbox script. New features should follow a
+similar model:</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>roles/gpu_operator_run_gpu-burn
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li><p>Define the tasks of the new role:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>├── tasks
+│   └── main.yml
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Define the role dependencies (at least <code class="docutils literal notranslate"><span class="pre">check_deps</span></code>):</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>├── meta
+│   └── main.yml
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Define the role configuration variables and their default values:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>├── defaults
+│   └── main
+│       └── config.yml
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Define the script <em>constant</em> variables</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>├── files
+│   ├── gpu_burn_cm_entrypoint.yml
+│   └── gpu_burn_pod.yml
+└── vars
+    └── main
+        └── resources.yml
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Add a toolbox script entrypoint setting the role configuration variables</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/gpu-operator/
+└── run_gpu_burn.sh
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p>If relevant, call the toolbox script from the right nightly CI
+entrypoint:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># in build/root/usr/local/bin/ci_entrypoint_gpu-operator.sh</span>
+
+validate_gpu_operator_deployment<span class="o">()</span> <span class="o">{</span>
+    ...
+    toolbox/gpu-operator/run_gpu_burn.sh
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="changelog.html" class="btn btn-neutral float-right" title="ChangeLog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="intro.html" class="btn btn-neutral float-left" title="Read Me First" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Red Hat PSAP team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

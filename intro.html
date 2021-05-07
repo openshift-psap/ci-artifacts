@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Read Me First &mdash; Red Hat PSAP CI-Artifacts toolbox git-documentation/60c679a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contrib.html" />
+    <link rel="prev" title="Red Hat PSAP CI-Artifacts toolbox" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Red Hat PSAP CI-Artifacts toolbox
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                07, May 2021
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Read Me First</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prow-ci">Prow CI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ci-dashboard">CI Dashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#psap-operators-toolbox">PSAP Operators Toolbox</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">ChangeLog</a></li>
+</ul>
+<p class="caption"><span class="caption-text">PSAP Toolbox</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/cluster.html">Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/entitlement.html">Entitlement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/gpu_operator.html">GPU Operator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/nfd.html">Node Feature Discover Operator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/sro.html">Special Resource Operator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/local-ci.html">Local CI Execution</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Red Hat PSAP CI-Artifacts toolbox</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Read Me First</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/intro.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="read-me-first">
+<h1>Read Me First<a class="headerlink" href="#read-me-first" title="Permalink to this headline">¶</a></h1>
+<p>This repository contains <a class="reference external" href="https://www.ansible.com/">Ansible</a> roles and
+playbooks for <a class="reference external" href="https://www.openshift.com/">OpenShift</a> for automating
+the interactions with the OpenShift operators under the responsibility
+Red Hat PSAP team.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Performance &amp; Latency Sensitive Application Platform</p></li>
+</ul>
+</div></blockquote>
+<p>To date, this includes:</p>
+<ul class="simple">
+<li><p>NVIDIA GPU Operator (most of the repository relates to the
+deployment, testing and interactions with this operator)</p></li>
+<li><p>the Special Resource Operator (deployment and testing currently under
+development)</p></li>
+<li><p>the Node Feature Discovery</p></li>
+<li><p>the Node Tuning Operator</p></li>
+</ul>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Requirements:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ansible</span></code> (<cite>&gt;= 2.9.5</cite>), <code class="docutils literal notranslate"><span class="pre">yq</span></code>, <code class="docutils literal notranslate"><span class="pre">jq</span></code></p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip3 install yq <span class="nv">ansible</span><span class="o">==</span><span class="m">2</span>.9.*
+dnf install jq
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>OpenShift Client (<code class="docutils literal notranslate"><span class="pre">oc</span></code>)</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wget --quiet https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest/openshift-client-linux.tar.gz
+tar xf openshift-client-linux.tar.gz oc
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>An OpenShift cluster accessible with <code class="docutils literal notranslate"><span class="pre">$KUBECONFIG</span></code> properly set</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>oc version <span class="c1"># fails if the cluster is not reachable</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="prow-ci">
+<h2>Prow CI<a class="headerlink" href="#prow-ci" title="Permalink to this headline">¶</a></h2>
+<p>The original purpose of this repository was to perform nightly testing
+of the OpenShift Operators under responsibility.</p>
+<p>This CI testing is performed by OpenShift PROW instance. Is is
+controlled by the configuration files located in these directories:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/openshift/release/tree/master/ci-operator/config/openshift-psap/ci-artifacts">https://github.com/openshift/release/tree/master/ci-operator/config/openshift-psap/ci-artifacts</a></p></li>
+<li><p><a class="reference external" href="https://github.com/openshift/release/tree/master/ci-operator/jobs/openshift-psap/ci-artifacts">https://github.com/openshift/release/tree/master/ci-operator/jobs/openshift-psap/ci-artifacts</a></p></li>
+</ul>
+<p>The main configuration is written in the <code class="docutils literal notranslate"><span class="pre">config</span></code> directory, and
+<code class="docutils literal notranslate"><span class="pre">jobs</span></code> are then generated with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">ci-operator-config</span>
+<span class="pre">jobs</span></code>. Secondary configuration options can then be modified in the
+<code class="docutils literal notranslate"><span class="pre">jobs</span></code> directory.</p>
+<p>The Prow CI jobs run in an OpenShift Pod. The <a class="reference external" href="build/Dockerfile">ContainerFile</a> is used to build their base-image, and the
+<code class="docutils literal notranslate"><span class="pre">run</span></code> (<code class="docutils literal notranslate"><span class="pre">build/root/usr/local/bin/run</span></code>) file is used as entrypoint.</p>
+<p>From this entrypoint, we trigger the different high-level tasks of the
+operator end-to-end testing, eg:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">gpu-operator</span> <span class="pre">test-master-branch</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">gpu-operator</span> <span class="pre">test-operatorhub</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">gpu-operator</span> <span class="pre">validate-deployment</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">gpu-operator</span> <span class="pre">undeploy-operatorhub</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">cluster</span> <span class="pre">upgrade</span></code></p></li>
+</ul>
+<p>These different high-level tasks rely on the toolbox scripts to
+automate the deployment of the required dependencies (eg, the NFD
+operator), the deployment of the operator from its published manifest
+or from its development repository and its non-regression testing.</p>
+</div>
+<div class="section" id="ci-dashboard">
+<h2>CI Dashboard<a class="headerlink" href="#ci-dashboard" title="Permalink to this headline">¶</a></h2>
+<p>The artifacts generated during the nightly CI testing are reused to
+plot a “testing dashboard” that gives an overview of the last days of
+testing. The generation of this page is performed by the
+<a class="reference external" href="https://github.com/openshift-psap/ci-dashboard/">ci-dashboard</a>
+repository.</p>
+<p>Currently, only the GPU Operator results are exposed in
+<a class="reference external" href="https://openshift-psap.github.io/ci-dashboard/gpu-operator_daily-matrix.html">this dashboard</a>:</p>
+<a class="reference internal image-reference" href="_images/ci-dashboard.png"><img alt="GPU Operator CI Dashboard" src="_images/ci-dashboard.png" style="width: 100%;" /></a>
+</div>
+<div class="section" id="psap-operators-toolbox">
+<h2>PSAP Operators Toolbox<a class="headerlink" href="#psap-operators-toolbox" title="Permalink to this headline">¶</a></h2>
+<p>The PSAP Operators Toolbox is a set of tools, originally written for
+CI automation, but that appeared to be useful for a broader scope. It
+automates different operations on OpenShift clusters and operators
+revolving around PSAP activities: entitlement, scale-up of GPU nodes,
+deployment of the NFD, SRO and NVIDIA GPU Operators, but also their
+configuration and troubleshooting.</p>
+<p>The functionalities of the toolbox commands is described in the
+<a class="reference external" href="https://openshift-psap.github.io/ci-artifacts/index.html#psap-toolbox">documentation page</a>.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ tree toolbox <span class="p">|</span> grep -v _common
+toolbox
+├── cluster
+│   ├── capture_environment.sh
+│   ├── scaleup.sh
+│   └── upgrade_to_image.sh
+├── entitlement
+│   ├── deploy.sh
+│   ├── inspect.sh
+│   ├── test.sh
+│   ├── undeploy.sh
+│   └── wait.sh
+├── gpu-operator
+│   ├── capture_deployment_state.sh
+│   ├── cleanup_resources.sh
+│   ├── deploy_from_commit.sh
+│   ├── deploy_from_helm.sh
+│   ├── deploy_from_operatorhub.sh
+│   ├── diagnose.sh
+│   ├── list_version_from_helm.sh
+│   ├── list_version_from_operator_hub.sh
+│   ├── must-gather.sh
+│   ├── run_gpu_burn.sh
+│   ├── undeploy_from_commit.sh
+│   ├── undeploy_from_helm.sh
+│   ├── undeploy_from_operatorhub.sh
+│   └── wait_deployment.sh
+├── local-ci
+│   ├── cleanup.sh
+│   └── deploy.sh
+├── nfd
+│   ├── deploy_from_operatorhub.sh
+│   ├── has_gpu_nodes.sh
+│   ├── has_nfd_labels.sh
+│   ├── undeploy_from_operatorhub.sh
+│   └── wait_gpu_nodes.sh
+└── special-resource-operator
+    ├── capture_deployment_state.sh
+    ├── deploy_from_commit.sh
+    ├── run_e2e_test.sh
+    └── undeploy_from_commit.sh
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="contrib.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Red Hat PSAP CI-Artifacts toolbox" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Red Hat PSAP team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
