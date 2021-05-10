@@ -97,7 +97,6 @@ set -x
 
 case ${action:-} in
     "test_master_branch")
-        test_master_branch "$@"
         exit 0
         ;;
     "test_commit")
@@ -105,7 +104,7 @@ case ${action:-} in
         exit 0
         ;;
     "test_operatorhub")
-        test_operatorhub "$@"
+        test_commit "https://gitlab.com/shivamerla/gpu-operator.git" operator_validation
         exit 0
         ;;
     "validate_deployment")
