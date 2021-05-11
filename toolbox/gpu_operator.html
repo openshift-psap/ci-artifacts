@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>GPU Operator &mdash; Red Hat PSAP CI-Artifacts toolbox git-documentation/60c679a documentation</title>
+  <title>GPU Operator &mdash; Red Hat PSAP CI-Artifacts toolbox git-documentation/0062eed documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                07, May 2021
+                11, May 2021
               </div>
             
           
@@ -96,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="entitlement.html">Entitlement</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">GPU Operator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#deployment">Deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing-and-waiting">Testing and Waiting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cleaning-up">Cleaning Up</a></li>
@@ -213,6 +214,22 @@ toolbox/gpu-operator/undeploy_from_helm.sh
 </div>
 <p><strong>Example:</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/gpu-operator/deploy_from_commit.sh https://github.com/NVIDIA/gpu-operator.git master
+</pre></div>
+</div>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Set a custom repository list to use in the GPU Operator
+<code class="docutils literal notranslate"><span class="pre">ClusterPolicy</span></code></p></li>
+</ul>
+<p><em>Using a repo-list file</em></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/gpu-operator/set_repo-config.sh /path/to/repo.list
+</pre></div>
+</div>
+<p><em>Using RHEL 8.4-beta repo-list</em></p>
+<p>Note that this currently requires the deployment of a Red Hat internal CA PEM <a class="reference external" href="https://github.com/openshift/shared-secrets/blob/master/mirror/ops-mirror.pem">file</a>.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/gpu-operator/set_repo-config.sh --rhel-beta
 </pre></div>
 </div>
 </div>

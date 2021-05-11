@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ChangeLog &mdash; Red Hat PSAP CI-Artifacts toolbox git-documentation/60c679a documentation</title>
+  <title>ChangeLog &mdash; Red Hat PSAP CI-Artifacts toolbox git-documentation/0062eed documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                07, May 2021
+                11, May 2021
               </div>
             
           
@@ -95,7 +95,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#other-changes">Other changes</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#ci-testing">CI Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ci-image-and-testing">CI Image and Testing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#bug-fixes">Bug fixes</a></li>
 </ul>
 </li>
@@ -185,10 +185,18 @@
 <div class="section" id="retro-compatibility-breaks">
 <h4>Retro-compatibility breaks<a class="headerlink" href="#retro-compatibility-breaks" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/139">#139</a> Change scaleup to set_scale - supported scale other than just 1 node</p>
+<li><p>Change scaleup to set_scale - supported scale other than just 1 node <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/139">#139</a></p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/cluster/scaleup.sh</span></code> has been removed,</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/cluster/set_scale.sh</span></code> has been <a class="reference external" href="https://openshift-psap.github.io/ci-artifacts/toolbox/cluster.html#cluster-scale">introduced</a> as a replacement.</p></li>
+</ul>
+</li>
+<li><p>Add easy ways to test the entilement <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/120">#120</a></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">toolbox/entitlement/deploy.sh</span> <span class="pre">--machine-configs</span> <span class="pre">/path/to/machineconfigs</span></code> has been removed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">toolbox/entitlement/deploy.sh</span> <span class="pre">--pem</span> <span class="pre">/path/to/key.pem</span></code> should be
+used instead. See <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/blob/7aad891ee7c41fea3d31a0152b882fe07d325479/build/root/usr/local/bin/entitle.sh#L13">there</a>
+for a function to extract the PEM key from a <code class="docutils literal notranslate"><span class="pre">machine-configs</span></code> resource file.</p></li>
 </ul>
 </li>
 </ul>
@@ -196,20 +204,48 @@
 <div class="section" id="other-changes">
 <h4>Other changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/139">#139</a> Change scaleup to set_scale - supported scale other than just 1 node</p>
+<li><p>Change scaleup to set_scale - supported scale other than just 1 node <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/139">#139</a></p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/cluster/set_scale.sh</span></code> has been <a class="reference external" href="https://openshift-psap.github.io/ci-artifacts/toolbox/cluster.html#cluster-scale">introduced</a>
 to control the scale (node count, of a given AWS instance-type) of
 a cluster</p></li>
 </ul>
 </li>
+<li><p>Add easy ways to test the entilement <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/120">#120</a></p>
+<ul>
+<li><p>new commands to test a PEM key before deploying it:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">toolbox/entitlement/test_in_podman.sh</span> <span class="pre">/path/to/key.pem</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">toolbox/entitlement/test_in_cluster.sh</span> <span class="pre">/path/to/key.pem</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>gpu_operator_set_repo-config: new role to set spec.driver.repoConfig <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/124/files">#124</a></p>
+<ul>
+<li><p>new option to deploy a custom PEM CA file, to access private repo mirrors</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">toolbox/entitlement/deploy.sh</span> <span class="pre">--pem</span> <span class="pre">&lt;/path/to/key.pem&gt;</span> <span class="pre">[--ca</span> <span class="pre">&lt;/path/to/key.ca.pem&gt;]</span></code></p></li>
+</ul>
+</li>
+<li><p>new command to configure the GPU Operator with a given repo-list file (or RHEL 8.4-beta repolist)</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">toolbox/gpu-operator/set_repo-config.sh</span> <span class="pre">&lt;path/to/repo.list&gt;|--rhel-beta</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
-<div class="section" id="ci-testing">
-<h3>CI Testing<a class="headerlink" href="#ci-testing" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="ci-image-and-testing">
+<h3>CI Image and Testing<a class="headerlink" href="#ci-image-and-testing" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li></li>
+<li><p>gpu_operator_set_repo-config: new role to set spec.driver.repoConfig <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/124/files">#124</a></p>
+<ul>
+<li><p>Added a hook to enable RHEL 8.4-beta repo-list in OpenShift 4.8</p></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="bug-fixes">

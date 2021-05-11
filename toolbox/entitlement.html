@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Entitlement &mdash; Red Hat PSAP CI-Artifacts toolbox git-documentation/60c679a documentation</title>
+  <title>Entitlement &mdash; Red Hat PSAP CI-Artifacts toolbox git-documentation/0062eed documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                07, May 2021
+                11, May 2021
               </div>
             
           
@@ -174,12 +174,17 @@
 <ul class="simple">
 <li><p>Deploy the entitlement cluster-wide</p></li>
 </ul>
-<p>Deploy a PEM key and RHSM configuration</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/entitlement/deploy.sh --pem /path/to/pem
+<p>Deploy a PEM key and RHSM configuration, and optionally, a custom CA
+PEM file.</p>
+<p>The custom CA file will be stored in
+<code class="docutils literal notranslate"><span class="pre">/etc/rhsm-host/ca/custom-repo-ca.pem</span></code> in the host and in
+<code class="docutils literal notranslate"><span class="pre">/etc/rhsm/ca/custom-repo-ca.pem</span></code> in the Pods.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/entitlement/deploy.sh --pem /path/to/key.pem
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Undeploy the cluster-wide entitlement</p></li>
+<li><p>Undeploy the cluster-wide entitlement (PEM keys, RHSM configuration
+and custom CA, if they exist)</p></li>
 </ul>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/entitlement/undeploy.sh
 </pre></div>
@@ -187,6 +192,19 @@
 </div>
 <div class="section" id="testing-and-waiting">
 <h2>Testing and Waiting<a class="headerlink" href="#testing-and-waiting" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Test a PEM key in a local <code class="docutils literal notranslate"><span class="pre">podman</span></code> container (requires access to
+<code class="docutils literal notranslate"><span class="pre">registry.access.redhat.com/ubi8/ubi</span></code>)</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/entitlement/test_in_podman.sh /path/to/key.pem
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Test a PEM key inside a cluster Pod (without deploying it)</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/entitlement/test_in_cluster.sh /path/to/key.pem
+</pre></div>
+</div>
 <ul class="simple">
 <li><p>Test cluster-wide entitlement</p></li>
 </ul>
