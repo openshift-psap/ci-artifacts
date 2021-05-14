@@ -78,29 +78,28 @@ data:
     enabled = 1
     EOF
     else
+      echo
+      echo "# test EUS and OCP repositories (debug)"
+
       echo "# INFO: no need to enable RHEL beta repositories on ${RHEL_VERSION}"
-    fi
-
-    echo
-    echo "# test EUS and OCP repositories (debug)"
-
-    echo "${RHEL_VERSION}" > /etc/yum/vars/releasever
-    for repo in rhocp-${OPENSHIFT_VERSION}-for-rhel-8-x86_64-rpms rhel-8-for-x86_64-baseos-eus-rpms; do
-      if dnf config-manager --set-enabled $repo; then
-        if dnf makecache; then
-          echo "# INFO: repo '$repo' can be enabled"
+      echo "${RHEL_VERSION}" > /etc/yum/vars/releasever
+      for repo in rhocp-${OPENSHIFT_VERSION}-for-rhel-8-x86_64-rpms rhel-8-for-x86_64-baseos-eus-rpms; do
+        if dnf config-manager --set-enabled $repo; then
+          if dnf makecache; then
+            echo "# INFO: repo '$repo' can be enabled"
+          else
+            echo "#"
+            echo "# WARNING: failed to cache repo '$repo'"
+            echo "#"
+          fi
+          dnf config-manager --set-disabled $repo
         else
           echo "#"
-          echo "# WARNING: failed to cache repo '$repo'"
+          echo "# WARNING: failed to enable repo '$repo'"
           echo "#"
         fi
-        dnf config-manager --set-disabled $repo
-      else
-        echo "#"
-        echo "# WARNING: failed to enable repo '$repo'"
-        echo "#"
-      fi
-    done
+      done
+    fi
 
     echo
     echo "# ensure that RH repositories can be accessed"
