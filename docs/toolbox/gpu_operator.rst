@@ -119,7 +119,7 @@ in gpu-operator-resources, ...)
 
 .. code-block:: shell
 
-    toolbox/entitlement/test.sh
+    toolbox/entitlement/test_cluster.sh
     toolbox/nfd/has_nfd_labels.sh
     toolbox/nfd/has_gpu_nodes.sh
     toolbox/gpu-operator/wait_deployment.sh
