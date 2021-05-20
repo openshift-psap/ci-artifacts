@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                19, May 2021
+                20, May 2021
               </div>
             
           
@@ -87,6 +87,7 @@
               <p class="caption"><span class="caption-text">General</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Read Me First</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#prow-ci">Prow CI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ci-dashboard">CI Dashboard</a></li>
@@ -188,6 +189,10 @@ development)</p></li>
 <li><p>the Node Feature Discovery</p></li>
 <li><p>the Node Tuning Operator</p></li>
 </ul>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>See the <a class="reference external" href="https://openshift-psap.github.io/ci-artifacts/index.html">documentation pages</a>.</p>
+</div>
 <div class="section" id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <p>Requirements:</p>
@@ -251,7 +256,7 @@ testing. The generation of this page is performed by the
 repository.</p>
 <p>Currently, only the GPU Operator results are exposed in
 <a class="reference external" href="https://openshift-psap.github.io/ci-dashboard/gpu-operator_daily-matrix.html">this dashboard</a>:</p>
-<a class="reference internal image-reference" href="_images/ci-dashboard.png"><img alt="GPU Operator CI Dashboard" src="_images/ci-dashboard.png" style="width: 100%;" /></a>
+<a class="reference internal image-reference" href="https://openshift-psap.github.io/ci-artifacts/_images/ci-dashboard.png"><img alt="GPU Operator CI Dashboard" src="https://openshift-psap.github.io/ci-artifacts/_images/ci-dashboard.png" style="width: 100%;" /></a>
 </div>
 <div class="section" id="psap-operators-toolbox">
 <h2>PSAP Operators Toolbox<a class="headerlink" href="#psap-operators-toolbox" title="Permalink to this headline">¶</a></h2>
@@ -261,17 +266,19 @@ automates different operations on OpenShift clusters and operators
 revolving around PSAP activities: entitlement, scale-up of GPU nodes,
 deployment of the NFD, SRO and NVIDIA GPU Operators, but also their
 configuration and troubleshooting.</p>
-<p>The functionalities of the toolbox commands is described in the
+<p>The functionalities of the toolbox commands are described in the
 <a class="reference external" href="https://openshift-psap.github.io/ci-artifacts/index.html#psap-toolbox">documentation page</a>.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ tree toolbox <span class="p">|</span> grep -v _common
 toolbox
 ├── cluster
 │   ├── capture_environment.sh
-│   ├── scaleup.sh
+│   ├── set_scale.sh
 │   └── upgrade_to_image.sh
 ├── entitlement
 │   ├── deploy.sh
 │   ├── inspect.sh
+│   ├── test_in_cluster.sh
+│   ├── test_in_podman.sh
 │   ├── test.sh
 │   ├── undeploy.sh
 │   └── wait.sh
@@ -286,6 +293,7 @@ toolbox
 │   ├── list_version_from_operator_hub.sh
 │   ├── must-gather.sh
 │   ├── run_gpu_burn.sh
+│   ├── set_repo-config.sh
 │   ├── undeploy_from_commit.sh
 │   ├── undeploy_from_helm.sh
 │   ├── undeploy_from_operatorhub.sh
