@@ -228,9 +228,9 @@ a cluster</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/entitlement/deploy.sh</span> <span class="pre">--pem</span> <span class="pre">&lt;/path/to/key.pem&gt;</span> <span class="pre">[--ca</span> <span class="pre">&lt;/path/to/key.ca.pem&gt;]</span></code></p></li>
 </ul>
 </li>
-<li><p>new command to configure the GPU Operator with a given repo-list file (or RHEL 8.4-beta repolist)</p>
+<li><p>new command to configure the GPU Operator with a given repo-list file</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">toolbox/gpu-operator/set_repo-config.sh</span> <span class="pre">&lt;path/to/repo.list&gt;|--rhel-beta</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">toolbox/gpu-operator/set_repo-config.sh</span> <span class="pre">&lt;path/to/repo.list&gt;</span> <span class="pre">[&lt;dest-dir&gt;]</span></code></p></li>
 </ul>
 </li>
 </ul>
@@ -241,11 +241,7 @@ a cluster</p></li>
 <div class="section" id="ci-image-and-testing">
 <h3>CI Image and Testing<a class="headerlink" href="#ci-image-and-testing" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>gpu_operator_set_repo-config: new role to set spec.driver.repoConfig <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/124/files">#124</a></p>
-<ul>
-<li><p>Added a hook to enable RHEL 8.4-beta repo-list in OpenShift 4.8</p></li>
-</ul>
-</li>
+<li><p>gpu_operator_set_repo-config: new role to set spec.driver.repoConfig <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/124/files">#124</a></p></li>
 </ul>
 </div>
 <div class="section" id="bug-fixes">
