@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: ci-artifacts
+  name: "{{ build_operand_imagestream_name }}"
+  namespace: "{{ build_operand_namespace }}"
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "{{ build_operand_imagestream_name }}:{{ build_operand_tag }}"
+      namespace: "{{ build_operand_namespace }}"
+  resources: {}
+  source:
+    type: Git
+    git:
+      uri: "{{ build_operand_git_repo }}"
+      ref: "{{ build_operand_git_ref }}"
+    contextDir: "{{ build_operand_docker_context }}"
+  triggers:
+  - type: "ConfigChange"
+  strategy:
+    type: Docker
+    dockerStrategy:
+      buildArgs: {{ build_operand_docker_build_args }}
+      dockerfilePath: "{{ build_operand_dockerfile }}"
+      {{ build_operand_extra_docker_strategy }}

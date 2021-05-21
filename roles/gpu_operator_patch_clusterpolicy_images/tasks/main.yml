@@ -1,0 +1,93 @@
+- name: Define hook input/output files
+  block:
+  - name: Define input file
+    set_fact:
+      input_clusterpolicy: "{{ artifact_extra_logs_dir }}/gpu_operator_clusterpolicy.json"
+
+  - name: Define output file
+    set_fact:
+      output_clusterpolicy: "{{ artifact_extra_logs_dir }}/gpu_operator_clusterpolicy_patched.json"
+
+
+# TODO: Is there a more elegant way to go about this?
+- name: Get all tags from the sample ClusterPolicy, and override the ones specified by the user
+  block:
+  - name: Get DCGM Exporter tag
+    command: jq -r '.spec.dcgmExporter.version' {{ input_clusterpolicy }}
+    register: operand_tag
+
+  - name: Set DCGM Exporter tag
+    when: not dcgm_exporter["version"]
+    set_fact:
+      dcgm_exporter:
+        version: "{{ operand_tag.stdout }}"
+
+  - name: Get Device Plugin tag
+    command: jq -r '.spec.devicePlugin.version' {{ input_clusterpolicy }}
+    register: operand_tag
+
+  - name: Set Device Plugin tag
+    when: not device_plugin["version"]
+    set_fact:
+      device_plugin:
+        version: "{{ operand_tag.stdout }}"
+
+  - name: Get Driver tag
+    command: jq -r '.spec.driver.version' {{ input_clusterpolicy }}
+    register: operand_tag
+
+  - name: Set Driver tag
+    when: not driver["version"]
+    set_fact:
+      driver:
+        version: "{{ operand_tag.stdout }}"
+
+  - name: Get GFD tag
+    command: jq -r '.spec.gfd.version' {{ input_clusterpolicy }}
+    register: operand_tag
+
+  - name: Set GFD tag
+    when: not gpu_feature_discovery["version"]
+    set_fact:
+      gpu_feature_discovery:
+        version: "{{ operand_tag.stdout }}"
+
+  - name: Get Operator tag
+    command: jq -r '.spec.operator.validator.version' {{ input_clusterpolicy }}
+    register: operand_tag
+
+  - name: Set Operator tag
+    when: not validator["version"]
+    set_fact:
+      validator:
+        version: "{{ operand_tag.stdout }}"
+
+  - name: Get Toolkit tag
+    command: jq -r '.spec.toolkit.version' {{ input_clusterpolicy }}
+    register: operand_tag
+
+  - name: Set Toolkit tag
+    when: not container_toolkit["version"]
+    set_fact:
+      container_toolkit:
+        version: "{{ operand_tag.stdout }}"
+
+- name: Patch operand images
+  shell: >
+    jq \
+      --argjson "DCGM_EXPORTER" '{{ dcgm_exporter | to_json }}' \
+      --argjson "DEVICE_PLUGIN" '{{ device_plugin | to_json }}' \
+      --argjson "DRIVER" '{{ driver | to_json }}' \
+      --argjson "GFD" '{{ gpu_feature_discovery | to_json }}' \
+      --argjson "VALIDATOR" '{{ validator | to_json }}' \
+      --argjson "TOOLKIT" '{{ container_toolkit | to_json }}' \
+        '. * {
+               "spec": {
+                 "dcgmExporter": $DCGM_EXPORTER,
+                 "devicePlugin": $DEVICE_PLUGIN,
+                 "driver": $DRIVER,
+                 "gfd": $GFD,
+                 "toolkit": $TOOLKIT,
+                 "validator": $VALIDATOR
+               }
+             }' {{ input_clusterpolicy }} > {{ output_clusterpolicy }}

@@ -1,0 +1,49 @@
+---
+- name: Make sure imagestream name is set
+  when: not build_operand_imagestream_name
+  fail: msg="Failed because build_operand_imagestream_name has to be set"
+
+- name: Make sure build_operand_tag is set
+  when: not build_operand_tag
+  fail: msg="Failed because build_operand_tag has to be set"
+
+- name: Create the namespace manifest
+  template:
+    src: "{{ build_operand_namespace_deployment }}"
+    dest: "{{ artifact_extra_logs_dir }}/{{ build_operand_imagestream_name }}_namespace.yml"
+
+- name: Apply the namespace manifest
+  command:
+    oc apply -f "{{ artifact_extra_logs_dir }}/{{ build_operand_imagestream_name }}_namespace.yml"
+
+- name: Create the imagestream manifest
+  template:
+    src: "{{ build_operand_imagestream }}"
+    dest: "{{ artifact_extra_logs_dir }}/{{ build_operand_imagestream_name }}_imagestream.yml"
+
+- name: Apply the namespace manifest
+  command:
+    oc apply -f "{{ artifact_extra_logs_dir }}/{{ build_operand_imagestream_name }}_imagestream.yml"
+
+- name: Search if the CI image exists
+  command: oc get imagestreamtag \
+              -n "{{ build_operand_namespace }}" \
+              "{{ build_operand_imagestream_name }}:{{ build_operand_tag }}" \
+              -oname --ignore-not-found
+  register: has_ci_image
+
+- name: Build the CI image
+  when: has_ci_image.stdout == ""
+  block:
+  - name: Delete any old image builder manifest
+    command: oc delete -n "{{ build_operand_namespace }}" buildconfig/{{ build_operand_imagestream_name }} --ignore-not-found
+
+  - name: Apply the image builder manifest
+    command:
+      oc apply -f "{{ operand_buildconfig }}"
+
+  - name: Wait for the image to be built
+    shell: oc logs -f "buildconfig/{{ build_operand_imagestream_name }}" -n "{{ build_operand_namespace }}" > /dev/null
+
+- name: Ensure that the image exists
+  command: oc get imagestreamtag -n "{{ build_operand_namespace }}" "{{ build_operand_imagestream_name }}:{{ build_operand_tag }}" -oname

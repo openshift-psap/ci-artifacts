@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: ci-artifacts
+  name: k8s-driver-manager
+  namespace: gpu-operator-resources
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: k8s-driver-driver:latest
+      namespace: gpu-operator-resources
+  resources: {}
+  source:
+    type: Git
+    git:
+      uri: https://gitlab.com/nvidia/cloud-native/k8s-driver-manager.git
+      ref: master
+    contextDir: .
+  triggers:
+    - type: ConfigChange
+  strategy:
+    type: Docker
+    dockerStrategy:
+      buildArgs:
+        - name: CUDA_VERSION
+          value: 11.3.0
+        - name: BASE_DIST
+          value: ubi8
+      dockerfilePath: docker/Dockerfile.ubi8

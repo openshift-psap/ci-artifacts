@@ -45,8 +45,19 @@
     | jq -r '.metadata.annotations."alm-examples"'
     | jq .[0] > "{{ artifact_extra_logs_dir }}/gpu_operator_clusterpolicy.json"
 
+- name: Optionally call the patch_clusterpolicy_role hook to modify the clusterpolicy
+  include_role:
+    name: "{{ patch_clusterpolicy_role }}"
+  when: patch_clusterpolicy_role | default('', true) | trim != ''
+
+- name: No patch_clusterpolicy_role hook, simply copy the original clusterpolicy
+  command: cp
+    "{{ artifact_extra_logs_dir }}"/gpu_operator_clusterpolicy.json
+    "{{ artifact_extra_logs_dir }}"/gpu_operator_clusterpolicy_patched.json
+  when: not patch_clusterpolicy_role
+
 - name: Create the clusterPolicy CR for the GPU Operator
-  command: oc apply -f "{{ artifact_extra_logs_dir }}/gpu_operator_clusterpolicy.json"
+  command: oc apply -f "{{ artifact_extra_logs_dir }}/gpu_operator_clusterpolicy_patched.json"
 
 - name: Get the GPU Operation version
   include_role:

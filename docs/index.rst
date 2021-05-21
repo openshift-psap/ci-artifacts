@@ -28,6 +28,7 @@ Red Hat PSAP CI-Artifacts toolbox
    toolbox/cluster
    toolbox/entitlement
    toolbox/gpu_operator
+   toolbox/operand_build
    toolbox/nfd
    toolbox/nto
    toolbox/sro

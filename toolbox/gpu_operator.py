@@ -1,8 +1,13 @@
 import sys
 import secrets
+import yaml
 
-from toolbox._common import PlaybookRun
+from toolbox._common import PlaybookRun, PlaybookRuns
+from pathlib import Path
 
+SCRIPT_DIR = Path(__file__).absolute().parent
+
+operand_jsons_dir = (SCRIPT_DIR / "gpu-operator" / "operand-build")
 
 class GPUOperator:
     """
@@ -230,3 +235,40 @@ class GPUOperator:
         }
 
         return PlaybookRun("gpu_operator_prepare_test_alerts", opts)
+
+    @staticmethod
+    def build_operand(buildconfig_path):
+        """
+        Build a GPU-operator operand image, given its BuildConfig yaml
+
+        Args:
+            buildconfig_path: Path to a yaml file containing the BuildConfig resource
+        """
+        buildconfig_path = Path(buildconfig_path)
+        try:
+            with open(buildconfig_path) as f:
+                buildconfig = yaml.safe_load(f)
+        except FileNotFoundError:
+            print(f"Couldn't find {buildconfig_path}")
+            sys.exit(1)
+
+        metadata = buildconfig["metadata"]
+
+        _, image_tag = buildconfig["spec"]["output"]["to"]["name"].split(":")
+
+        return PlaybookRun(
+                "build-operand",
+                opts={
+                    "operand_buildconfig": buildconfig_path.absolute(),
+                    "build_operand_tag": image_tag,
+                    "build_operand_namespace": metadata["namespace"],
+                    "build_operand_imagestream_name": metadata["name"],
+                },
+            )
+
+    @classmethod
+    def build_all_operands(cls):
+        return PlaybookRuns(
+            cls.build_operand(operand_yml_path)
+            for operand_yml_path in operand_jsons_dir.glob("*.yml")
+        )

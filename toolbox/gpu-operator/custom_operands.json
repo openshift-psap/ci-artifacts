@@ -1,0 +1,27 @@
+{
+  "patch_clusterpolicy_role": "roles/gpu_operator_patch_clusterpolicy_images",
+  "dcgm_exporter": {
+    "version": "latest",
+    "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+  },
+  "device_plugin": {
+    "version": "latest",
+    "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+  },
+  "driver": {
+    "version": "latest",
+    "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+  },
+  "gpu_feature_discovery": {
+    "version": "latest",
+    "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+  },
+  "validator": {
+    "version": "latest",
+    "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+  },
+  "container_toolkit": {
+    "version": "latest",
+    "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+  }
+}

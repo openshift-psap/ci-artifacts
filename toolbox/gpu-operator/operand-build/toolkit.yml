@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: ci-artifacts
+  name: container-toolkit
+  namespace: gpu-operator-resources
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: container-toolkit:latest
+      namespace: gpu-operator-resources
+  resources: {}
+  source:
+    type: Git
+    git:
+      uri: https://gitlab.com/nvidia/container-toolkit/container-config.git
+      ref: master
+    contextDir: .
+  triggers:
+    - type: ConfigChange
+  strategy:
+    type: Docker
+    dockerStrategy:
+      buildArgs:
+        - name: GOLANG_VERSION
+          value: 1.16.4
+        - name: VERSION
+          value: 1.5.0
+        - name: LIBNVIDIA_CONTAINER_VERSION
+          value: 1.4.0
+        - name: NVIDIA_CONTAINER_TOOLKIT_VERSION
+          value: 1.5.0
+        - name: NVIDIA_CONTAINER_RUNTIME_VERSION
+          value: 3.5.0
+      dockerfilePath: docker/Dockerfile.ubi8
+      from:
+        kind: DockerImage
+        name: nvcr.io/nvidia/cuda:11.2.1-base-ubi8

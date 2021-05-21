@@ -1,0 +1,29 @@
+dcgm_exporter:
+  image: "dcgm-exporter"
+  repository: "nvcr.io/nvidia/k8s"
+  version: ""
+
+device_plugin:
+  image: "k8s-device-plugin"
+  repository: "nvcr.io/nvidia"
+  version: ""
+
+driver:
+  image: "driver"
+  repository: "nvcr.io/nvidia"
+  version: ""
+
+gpu_feature_discovery:
+  image: "gpu-feature-discovery"
+  repository: "nvcr.io/nvidia"
+  version: ""
+
+validator:
+  image: "gpu-operator-validator"
+  repository: "nvcr.io/nvidia/cloud-native"
+  version: ""
+
+container_toolkit:
+  image: "container-toolkit"
+  repository: "nvcr.io/nvidia/k8s"
+  version: ""

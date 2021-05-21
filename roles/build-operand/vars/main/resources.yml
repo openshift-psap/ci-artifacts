@@ -1,0 +1,3 @@
+---
+build_operand_namespace_deployment: roles/build-operand/files/namespace.yml.j2
+build_operand_imagestream: roles/build-operand/files/imagestream.yml.j2

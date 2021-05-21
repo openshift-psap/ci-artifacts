@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: ci-artifacts
+  name: gpu-feature-discovery
+  namespace: gpu-operator-resources
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: gpu-feature-discovery:latest
+      namespace: gpu-operator-resources
+  resources: {}
+  source:
+    type: Git
+    git:
+      uri: https://gitlab.com/nvidia/kubernetes/gpu-feature-discovery.git
+      ref: master
+    contextDir: .
+  triggers:
+    - type: ConfigChange
+  strategy:
+    type: Docker
+    dockerStrategy:
+      buildArgs:
+        - name: GFD_VERSION
+          value: v0.4.1-2-g77e0d08
+      dockerfilePath: Dockerfile

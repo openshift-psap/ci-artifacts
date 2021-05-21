@@ -1,0 +1,10 @@
+---
+- name: Check that build_operand_imagestream_name is defined
+  fail: msg="Bailing out. This play requires build_operand_imagestream_name"
+  when: build_operand_imagestream_name | default('', true) | length == 0
+
+- name: Delete BuildConfig
+  command: oc delete -n "{{ build_operand_namespace }}" buildconfig/{{ build_operand_imagestream_name }} --ignore-not-found
+
+- name: Delete ImageStream
+  command: oc delete -n "{{ build_operand_namespace }}" imagestream/{{ build_operand_imagestream_name }} --ignore-not-found

@@ -1,0 +1,33 @@
+---
+# The namespace to place the BuildConfig and ImageStream resources in. This should be the same namespaces as the pods
+# that pull the built operand image. This is also the name of the image repository in the cluster's internal registry
+build_operand_namespace: ""
+
+# The git repository to clone containing the sources and Dockerfile to build the operand image from
+build_operand_git_repo: ""
+
+# The git branch/tag/commit that should be checked out / built
+build_operand_git_ref: ""
+
+# The name that will be given to the ImageStream, BuildConfig and Build resources. This is also the name of the
+# operand image that will be built and pushed to the {{ build_operand_namespace }} repository in the internal
+# cluster registry
+build_operand_imagestream_name: ""
+
+# The image tag of the operand image in the internal registry
+build_operand_tag: ""
+
+# The location of the Dockerfile in the cloned repository, relative to {{ build_operand_docker_context }}
+build_operand_dockerfile: ""
+
+# The Docker context path to build the Dockerfile from. Relative to the root of the repository
+build_operand_docker_context: ""
+
+# A list of {"name": <>, "value": <>} dictionaries that will be used as Docker build-arguments when building the
+# Dockerfile
+build_operand_docker_build_args: []
+
+# A dictionary that will be merged with the BuildConfig's spec.strategy.dockerStrategy.
+# See https://docs.openshift.com/container-platform/4.7/cicd/builds/build-strategies.html#builds-strategy-docker-from-image_build-strategies
+# for more information
+build_operand_extra_docker_strategy: ""
