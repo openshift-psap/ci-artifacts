@@ -209,16 +209,16 @@ for a function to extract the PEM key from a <code class="docutils literal notra
 </div>
 <div class="section" id="other-changes">
 <h4>Other changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li><p>Change scaleup to set_scale - supported scale other than just 1 node <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/139">#139</a></p>
 <ul>
+<li><p>Change scaleup to set_scale - supported scale other than just 1 node <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/139">#139</a></p>
+<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/cluster/set_scale.sh</span></code> has been <a class="reference external" href="https://openshift-psap.github.io/ci-artifacts/toolbox/cluster.html#cluster-scale">introduced</a>
 to control the scale (node count, of a given AWS instance-type) of
 a cluster</p></li>
 </ul>
 </li>
 <li><p>Add easy ways to test the entitlement <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/120">#120</a></p>
-<ul>
+<ul class="simple">
 <li><p>new commands to test a PEM key before deploying it:</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/entitlement/test_in_podman.sh</span> <span class="pre">/path/to/key.pem</span></code></p></li>
@@ -228,7 +228,7 @@ a cluster</p></li>
 </ul>
 </li>
 <li><p>gpu_operator_set_repo-config: new role to set spec.driver.repoConfig <a class="reference external" href="https://github.com/openshift-psap/ci-artifacts/pull/124/files">#124</a></p>
-<ul>
+<ul class="simple">
 <li><p>new option to deploy a custom PEM CA file, to access private repo mirrors</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/entitlement/deploy.sh</span> <span class="pre">--pem</span> <span class="pre">&lt;/path/to/key.pem&gt;</span> <span class="pre">[--ca</span> <span class="pre">&lt;/path/to/key.ca.pem&gt;]</span></code></p></li>
@@ -240,6 +240,13 @@ a cluster</p></li>
 </ul>
 </li>
 </ul>
+</li>
+<li><p>gpu_operator_deploy_from_operatorhub: add support for setting the channel <cite># &lt;https://github.com/openshift-psap/ci-artifacts/pull/173&gt;</cite></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">toolbox/gpu-operator/deploy_from_operatorhub.sh</span> <span class="pre">[&lt;version&gt;</span> <span class="pre">[&lt;channel&gt;]]</span></code></p></li>
+</ul>
+</div></blockquote>
 </li>
 </ul>
 </div>

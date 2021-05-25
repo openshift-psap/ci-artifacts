@@ -176,10 +176,41 @@
 <ul class="simple">
 <li><p>Deploy from OperatorHub</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/gpu-operator/deploy_from_operatorhub.sh <span class="o">[</span>&lt;version&gt;<span class="o">]</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/gpu-operator/deploy_from_operatorhub.sh <span class="o">[</span>&lt;version&gt;<span class="o">]</span> <span class="o">[</span>&lt;channel&gt;<span class="o">]</span>
 toolbox/gpu-operator/undeploy_from_operatorhub.sh
 </pre></div>
 </div>
+<p><strong>Examples:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">./toolbox/gpu-operator/deploy_from_operatorhub.sh</span></code></p>
+<ul>
+<li><p>Installs the latest version available</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">./toolbox/gpu-operator/deploy_from_operatorhub.sh</span> <span class="pre">1.7.0</span> <span class="pre">v1.7</span></code></p>
+<ul>
+<li><p>Installs <code class="docutils literal notranslate"><span class="pre">v1.7.0</span></code> from the <code class="docutils literal notranslate"><span class="pre">v1.7</span></code> channel</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">./toolbox/gpu-operator/deploy_from_operatorhub.sh</span> <span class="pre">1.6.2</span> <span class="pre">stable</span></code></p>
+<ul>
+<li><p>Installs <code class="docutils literal notranslate"><span class="pre">v1.6.2</span></code> from the <code class="docutils literal notranslate"><span class="pre">stable</span></code> channel</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Note about the GPU Operator channel:</strong></p>
+<ul class="simple">
+<li><p>Before <code class="docutils literal notranslate"><span class="pre">v1.7.0</span></code>, the GPU Operator was using a unique channel name
+(<code class="docutils literal notranslate"><span class="pre">stable</span></code>). Within this channel, OperatorHub would automatically
+upgrade the operator to the latest available version. This was an
+issue as the operator doesn’t support (yet) being upgraded (remove
+and reinstall is the official way). OperatorHub allows specifying
+the upgrade as <code class="docutils literal notranslate"><span class="pre">Manual</span></code>, but this isn’t the default behavior.</p></li>
+<li><p>Starting with <code class="docutils literal notranslate"><span class="pre">v1.7.0</span></code>, the channel is set to <code class="docutils literal notranslate"><span class="pre">v1.7</span></code>, so that
+OperatorHub won’t trigger an automatic upgrade.</p></li>
+<li><p>See the <a class="reference external" href="https://docs.openshift.com/container-platform/4.7/operators/understanding/olm/olm-understanding-olm.html#olm-subscription_olm-understanding-olm">OpenShift Subscriptions and channel documentation</a> for
+further information.</p></li>
+</ul>
 <ul class="simple">
 <li><p>List the versions available from OperatorHub</p></li>
 </ul>
