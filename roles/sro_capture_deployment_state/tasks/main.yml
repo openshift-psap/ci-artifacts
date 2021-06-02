@@ -19,7 +19,7 @@
 
 - name: Get the Pods in openshift-special-resource-operator
   failed_when: false
-  shell: 
+  shell:
     oc get pods
        -n openshift-special-resource-operator
        -owide
@@ -28,8 +28,8 @@
 - name: Get the sro Pod object yaml
   failed_when: false
   shell:
-    oc get pods -n openshift-special-resource-operator 
-        -l control-plane=controller-manager -o yaml 
+    oc get pods -n openshift-special-resource-operator
+        -l control-plane=controller-manager -o yaml
         > {{ artifact_extra_logs_dir }}/sro_operator_pod.yml;
 
 # --
@@ -37,9 +37,9 @@
 - name: Get the SRO Operator pod logs
   failed_when: false
   shell:
-    oc logs deployment/special-resource-controller-manager 
-        -n openshift-special-resource-operator 
-        -c manager 
+    oc logs deployment/special-resource-controller-manager
+        -n openshift-special-resource-operator
+        -c manager
         > {{ artifact_extra_logs_dir }}/sro_operator.log
 
 - name: Get the driver-container-base pods

@@ -15,7 +15,7 @@ index a90587d4..1d58117a 100644
 @@ -6,7 +6,12 @@
  import os
  import sys
- 
+
 -from sphinx import application, build_main, locale
 +from sphinx import application, locale
 +try:
