@@ -129,7 +129,7 @@ case ${action} in
         exit 0
         ;;
     "test_commit")
-        test_commit "https://github.com/NVIDIA/gpu-operator.git" master
+        test_commit "https://gitlab.com/kpouget_psap/gpu-operator.git" "metrics"
         exit 0
         ;;
     "test_operatorhub")
