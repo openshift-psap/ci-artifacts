@@ -8,7 +8,7 @@
 
 - name: Store the MachineSet json definition in a file
   shell:
-    oc get 'machineset/{{ oc_get_machinesets.stdout_lines[0] }}'
+    oc get 'machineset/{{ oc_get_machinesets.stdout_lines[machineset | int] }}'
        -n openshift-machine-api
        -o json
        > {{ artifact_extra_logs_dir }}/source_machineset.json
