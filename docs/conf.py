@@ -21,23 +21,12 @@ project = 'Red Hat PSAP CI-Artifacts toolbox'
 copyright = '2021, Red Hat PSAP team'
 author = 'Red Hat PSAP team'
 
-import subprocess
-def run(what):
-    return subprocess.Popen(what, shell=True, stdout=subprocess.PIPE)\
-        .stdout.read()[:-1].decode('ascii')
-
-git_short_hash = run("git rev-parse --short HEAD")
-git_branch = run("git rev-parse --abbrev-ref HEAD")
-
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-import datetime
-version = datetime.date.today().strftime('%d, %b %Y')
-# The full version, including alpha/beta/rc tags.
-release = 'git-{}/{}'.format(git_branch, git_short_hash)
+release = 'v1.0.0'
 
 
 # -- General configuration ---------------------------------------------------
