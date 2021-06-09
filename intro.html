@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                08, Jun 2021
+                09, Jun 2021
               </div>
             
           
@@ -103,6 +103,7 @@
 <li class="toctree-l1"><a class="reference internal" href="toolbox/entitlement.html">Entitlement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="toolbox/gpu_operator.html">GPU Operator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="toolbox/nfd.html">Node Feature Discover Operator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/nto.html">Node Tuning Operator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="toolbox/sro.html">Special Resource Operator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="toolbox/local-ci.html">Local CI Execution</a></li>
 </ul>
@@ -277,9 +278,9 @@ toolbox
 ├── entitlement
 │   ├── deploy.sh
 │   ├── inspect.sh
+│   ├── test_cluster.sh
 │   ├── test_in_cluster.sh
 │   ├── test_in_podman.sh
-│   ├── test_cluster.sh
 │   ├── undeploy.sh
 │   └── wait.sh
 ├── gpu-operator
@@ -307,6 +308,8 @@ toolbox
 │   ├── has_nfd_labels.sh
 │   ├── undeploy_from_operatorhub.sh
 │   └── wait_gpu_nodes.sh
+├── nto
+│   └── run_e2e_test.sh
 └── special-resource-operator
     ├── capture_deployment_state.sh
     ├── deploy_from_commit.sh
