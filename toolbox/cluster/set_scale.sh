@@ -4,7 +4,7 @@ THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 if [[ -z "${1:-}" || -z "${2:-}" ]]; then
     echo "
-USAGE: ${0} <instance_type> <scale> [machineset] [--force]
+USAGE: ${0} <instance_type> <scale> [--base_machineset <base-machineset>] [--force]
 
 EXAMPLE:
       ${0} g4dn.xlarge 1 # ensure that the cluster has 1 GPU node
@@ -38,17 +38,22 @@ INSTANCE_TYPE=${1}
 shift 
 SCALE=${1}
 shift
-if ![ -z ${var+x} ]; then
-    if [ "${1}" != "--force" ]; then
-        MACHINESET=${1}
-        ANSIBLE_OPTS="${ANSIBLE_OPTS} -e machineset=${MACHINESET}"
-    else
+if [ $# -ne 0 ]; then
+    if [ "${1}" == "--base-machineset" ]; then
+        shift
+        BASE_MACHINESET=${1}
+        ANSIBLE_OPTS="${ANSIBLE_OPTS} -e base_machineset=${BASE_MACHINESET}"
+        shift
+        if [ $# -ne 0 && "${1}" == "--force" ]; then
+            ANSIBLE_OPTS="${ANSIBLE_OPTS} -e force_scale=true"
+        fi
+    elif ["${1}" == "--force" ]; then
         echo "Setting cluster ${INSTANCE_TYPE} machinesets to have scale '${SCALE}'"
-        ANSIBLE_OPTS="${ANSIBLE_OPTS} -e force_scale=true -e machineset=0"
+        ANSIBLE_OPTS="${ANSIBLE_OPTS} -e force_scale=true"
     fi
 else
     echo "Setting cluster ${INSTANCE_TYPE} machinesets to have scale '${SCALE}'"
-    ANSIBLE_OPTS="${ANSIBLE_OPTS} -e machineset=0"
+    ANSIBLE_OPTS="${ANSIBLE_OPTS}"
 fi
 
 ANSIBLE_OPTS="${ANSIBLE_OPTS} -e machineset_instance_type=${INSTANCE_TYPE}"
