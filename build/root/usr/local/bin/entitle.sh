@@ -29,12 +29,19 @@ if toolbox/entitlement/test_cluster.sh --no-inspect; then
     exit 0
 fi
 
+if [[ "${1:-}" == "--mirror" ]]; then
+    USE_ENTITLED_MIRROR=1
+else
+    USE_ENTITLED_MIRROR=0
+fi
+
 ENTITLEMENT_SECRET_PATH=/var/run/psap-entitlement-secret
 ENTITLEMENT_VERSION=${ENTITLEMENT_SECRET_PATH}/version
 
 ENTITLEMENT_PEM=${ENTITLEMENT_PEM:-${ENTITLEMENT_SECRET_PATH}/entitlement.pem}
 ENTITLEMENT_RESOURCES=${ENTITLEMENT_RESOURCES:-${ENTITLEMENT_SECRET_PATH}/01-cluster-wide-machineconfigs.yaml}
 ENTITLEMENT_REPO_CA=${ENTITLEMENT_REPO_CA:-${ENTITLEMENT_SECRET_PATH}/ops-mirror.pem}
+ENTITLED_MIRROR_CLIENT_CREDS=${ENTITLED_MIRROR_CLIENT_CREDS:-${ENTITLEMENT_SECRET_PATH}/entitled-mirror-client-creds.pem}
 
 echo "INFO: info about the entitlement secret:"
 md5sum ${ENTITLEMENT_SECRET_PATH}/* || true
@@ -43,6 +50,11 @@ if [[ -e "$ENTITLEMENT_VERSION" ]]; then
     cat "$ENTITLEMENT_VERSION"
 fi
 
+if [[ ${USE_ENTITLED_MIRROR} == "1" ]]; then
+    echo "INFO: Deploying the entitled-mirror yum credentials with PEM file ${ENTITLED_MIRROR_CLIENT_CREDS}"
+    toolbox/entitlement/deploy.sh --yum-client-auth="${ENTITLED_MIRROR_CLIENT_CREDS}"
+    exit 0
+fi
 
 if [[ -e "$ENTITLEMENT_RESOURCES" && ! -e "$ENTITLEMENT_PEM" ]]; then
     echo "INFO: found entitlement resource file but no entitlement key."
@@ -66,7 +78,7 @@ if [ ! -e "$ENTITLEMENT_PEM" ]; then
 fi
 
 echo "INFO: Deploying the entitlement with PEM key from ${ENTITLEMENT_PEM}"
-toolbox/entitlement/deploy.sh --pem "${ENTITLEMENT_PEM}"
+toolbox/entitlement/deploy.sh --pem="${ENTITLEMENT_PEM}"
 
 if ! toolbox/entitlement/wait.sh; then
     echo "FATAL: Failed to properly entitle the cluster, cannot continue."

@@ -6,4 +6,4 @@
        50-entitlement-key-pem
        50-entitlement-pem
        50-rhsm-conf
-       50-rhsm-repo-ca
+       50-yum-client-auth

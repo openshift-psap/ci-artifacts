@@ -8,19 +8,19 @@ Deployment
 
 * Deploy the entitlement cluster-wide
 
-Deploy a PEM key and RHSM configuration, and optionally, a custom CA
-PEM file.
+Deploy a PEM key and RHSM configuration, and optionally, a custom
+PEM file with yum client-auth cert and key.
 
-The custom CA file will be stored in
-``/etc/rhsm-host/ca/custom-repo-ca.pem`` in the host and in
-``/etc/rhsm/ca/custom-repo-ca.pem`` in the Pods.
+The yum PEM file will be stored in
+``/etc/rhsm-host/yum-client-auth/creds.pem`` in the host and in
+``/etc/rhsm/yum-client-auth/creds.pem`` in the Pods.
 
 .. code-block:: shell
 
-    toolbox/entitlement/deploy.sh --pem /path/to/key.pem
+    toolbox/entitlement/deploy.sh --pem=/path/to/key.pem
 
-* Undeploy the cluster-wide entitlement (PEM keys, RHSM configuration
-  and custom CA, if they exist)
+* Undeploy the cluster-wide entitlement (entitlement PEM keys, RHSM configuration
+  and yum client-auth PEM, if they exist)
 
 .. code-block:: shell
 

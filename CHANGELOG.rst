@@ -22,6 +22,14 @@ Retro-compatibility breaks
 
 - Add nfd test_master_branch protocol `#179 https://github.com/openshift-psap/ci-artifacts/pull/179>`_
 
+- Changes to ``toolbox/entitlement/deploy.sh`` to allow deploying yum client auth credentials machine configs instead of entitlement machineconfigs
+
+  - ``toolbox/entitlement/deploy.sh --pem /path/to/key.pem`` will now require an equals sign, e.g. ``toolbox/entitlement/deploy.sh --pem=/path/to/key.pem``
+  - Added new flag ``toolbox/entitlement/deploy.sh --yum-client-auth=/path/to/credentials.pem`` to allow deploying PEM credentials as machineconfigs
+
+...
+>>>>>>> 7590d9d... CI using mirror
+
   - ``toolbox/nfd/deploy_from_operatorhub.sh`` was moved to ``toolbox/nfd-operator/deploy_from_operatorhub.sh``
 
 Bug fixes

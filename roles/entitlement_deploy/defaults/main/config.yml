@@ -1,5 +1,5 @@
 ---
-# path to the PEM file of the entitlement
+# optional: path to the PEM file of the entitlement
 entitlement_pem: ''
-# optional: path to a CA PEM key to authenticate a custom repo
-entitlement_repo_ca: ''
+# optional: path to a YUM client auth PEM file containing the key and cert to authenticate to a custom repo
+entitlement_repo_yum_client_auth_pem_file: ''
