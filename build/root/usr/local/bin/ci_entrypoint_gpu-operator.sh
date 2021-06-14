@@ -5,9 +5,11 @@ set -o errexit
 set -o nounset
 
 prepare_cluster_for_gpu_operator() {
-    trap collect_must_gather ERR
-
     toolbox/cluster/capture_environment.sh
+
+    finalizers+=("collect_must_gather")
+    finalizers+=("toolbox/entitlement/undeploy.sh")
+
     entitle.sh
 
     if ! toolbox/nfd/has_nfd_labels.sh; then
@@ -21,31 +23,35 @@ prepare_cluster_for_gpu_operator() {
 }
 
 collect_must_gather() {
-    set +x
-    echo "Running gpu-operator_gather ..."
-    /usr/bin/gpu-operator_gather &> /dev/null
+    run_in_sub_shell() {
+        echo "Running gpu-operator_gather ..."
+        /usr/bin/gpu-operator_gather &> /dev/null
 
-    export TOOLBOX_SCRIPT_NAME=toolbox/gpu-operator/must-gather.sh
+        # extract ARTIFACT_EXTRA_LOGS_DIR from 'source toolbox/_common.sh' without sourcing it directly
 
-    COMMON_SH=$(
-        bash -c 'source toolbox/_common.sh;
-                 echo "8<--8<--8<--";
-                 # only evaluate these variables from _common.sh
-                 env | egrep "(^ARTIFACT_EXTRA_LOGS_DIR=)"'
-             )
-    ENV=$(echo "$COMMON_SH" | tac | sed '/8<--8<--8<--/Q' | tac) # keep only what's after the 8<--
-    eval $ENV
+        export TOOLBOX_SCRIPT_NAME=toolbox/gpu-operator/must-gather.sh
+        COMMON_SH=$(
+            bash -c 'source toolbox/_common.sh;
+                     echo "8<--8<--8<--";
+                     # only evaluate these variables from _common.sh
+                     env | egrep "(^ARTIFACT_EXTRA_LOGS_DIR=)"'
+                 )
+        ENV=$(echo "$COMMON_SH" | tac | sed '/8<--8<--8<--/Q' | tac) # keep only what's after the 8<--
+        eval $ENV
 
-    echo "Running gpu-operator_gather ... copying results to $ARTIFACT_EXTRA_LOGS_DIR"
+        echo "Running gpu-operator_gather ... copying results to $ARTIFACT_EXTRA_LOGS_DIR"
 
-    cp -r /must-gather/* "$ARTIFACT_EXTRA_LOGS_DIR"
+        cp -r /must-gather/* "$ARTIFACT_EXTRA_LOGS_DIR"
 
-    echo "Running gpu-operator_gather ... finished."
+        echo "Running gpu-operator_gather ... finished."
+    }
+
+    # run the function above in a subshell to avoid polluting the local `env`.
+    typeset -fx run_in_sub_shell
+    bash -c run_in_sub_shell
 }
 
 validate_gpu_operator_deployment() {
-    trap collect_must_gather EXIT
-
     toolbox/gpu-operator/wait_deployment.sh
     toolbox/gpu-operator/run_gpu_burn.sh
 }
@@ -110,6 +116,21 @@ test_helm() {
 undeploy_operatorhub() {
     toolbox/gpu-operator/undeploy_from_operatorhub.sh
 }
+
+finalizers=()
+run_finalizers() {
+    [ ${#finalizers[@]} -eq 0 ] && return
+    set +x
+
+    echo "Running exit finalizers ..."
+    for finalizer in "${finalizers[@]}"
+    do
+        echo "Running finalizer '$finalizer' ..."
+        eval $finalizer
+    done
+}
+
+trap run_finalizers EXIT
 
 if [ -z "${1:-}" ]; then
     echo "FATAL: $0 expects at least 1 argument ..."
