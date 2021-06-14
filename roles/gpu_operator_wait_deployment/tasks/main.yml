@@ -88,6 +88,8 @@
   - name: Make sure that namespace has the openshift.io/cluster-monitoring label
     command: oc label ns/gpu-operator-resources openshift.io/cluster-monitoring=true
 
+### DCGM metrics
+
 - name: Validate that the DCGM metrics are correctly exposed
   block:
   - name: Wait for the nvidia-dcgm-exporter Pod to respond appropriately
@@ -122,3 +124,79 @@
 
   - name: The GPU Operator does not correctly expose its DCGM metrics
     fail: msg="The GPU Opertor does not correctly expose the its DCGM metrics to Prometheus"
+
+- name: Check if the GPU-Operator operator metrics are exposed
+  command: oc get ServiceMonitor/gpu-operator -n openshift-operators -oname
+  failed_when: false
+  register: gpu_operator_has_servicemonitor
+
+- name: Inform that the GPU Operator operator metrics are not exposed
+  when: gpu_operator_has_servicemonitor.rc != 0
+  debug: msg="GPU-Operator ServiceMonitor not found, skipping the validation."
+
+### Operator metrics
+
+- name: Validate that the GPU Operator operator metrics are correctly exposed
+  when: gpu_operator_has_servicemonitor.rc == 0
+  block:
+  - name: Check if the namespace has the openshift.io/cluster-monitoring label
+    block:
+    - name: Check if the namespace has the openshift.io/cluster-monitoring label
+      shell: oc get ns -l openshift.io/cluster-monitoring -oname | grep openshift-operators
+    rescue:
+    - name: Get the namespace yaml specification
+      command: oc get ns/openshift-operators -oyaml
+
+    - name: Make sure that namespace has the openshift.io/cluster-monitoring label
+      command: oc label ns/openshift-operators openshift.io/cluster-monitoring=true
+
+  - name: Ensure that the gpu-operator Pod to respond appropriately
+    command:
+      bash "{{ gpu_operator_fetch_pod_metrics_script }}" \
+           8080 app.kubernetes.io/component=gpu-operator openshift-operators \
+           '# HELP'
+
+  - name: Wait for Prometheus to pick up the GPU-Operator operator target
+    shell:
+      set -o pipefail;
+      oc get secret prometheus-k8s -n openshift-monitoring -ojson | jq -r '.data["prometheus.yaml.gz"]'
+      | base64 -d
+      | gunzip
+      | grep /gpu-operator/
+    register: operator_metrics_exporter_prom
+    until: operator_metrics_exporter_prom.rc == 0
+    retries: 30
+    delay: 30
+
+  rescue:
+  - name: The GPU Operator does not correctly expose its operator metrics
+    fail: msg="The GPU Operator does not correctly expose its operator metrics to Prometheus"
+
+### Node Metrics
+
+- name: Check if the GPU-Operator node metrics are exposed
+  command: oc get ServiceMonitor/nvidia-node-metrics-exporter -n openshift-operators -oname
+
+- name: Validate that the GPU Operator node metrics are correctly exposed
+  block:
+  - name: Ensure that the gpu-operator Pod to respond appropriately
+    command:
+      bash "{{ gpu_operator_fetch_pod_metrics_script }}" \
+           8000 app=nvidia-node-metrics-exporter gpu-operator-resources \
+           '# HELP'
+
+  - name: Wait for Prometheus to pick up the GPU-Operator node target
+    shell:
+      set -o pipefail;
+      oc get secret prometheus-k8s -n openshift-monitoring -ojson | jq -r '.data["prometheus.yaml.gz"]'
+      | base64 -d
+      | gunzip
+      | grep nvidia-node-metrics-exporter
+    register: node_metrics_exporter_prom
+    until: node_metrics_exporter_prom.rc == 0
+    retries: 30
+    delay: 30
+
+  rescue:
+  - name: The GPU Operator does not correctly expose its node metrics
+    fail: msg="The GPU Operator does not correctly expose its node metrics to Prometheus"
