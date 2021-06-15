@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                14, Jun 2021
+                15, Jun 2021
               </div>
             
           
@@ -98,6 +98,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Node Feature Discover Operator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#deployment">Deployment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing-and-waiting">Testing and Waiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#end-to-end-testing">End-to-end Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cleaning-up">Cleaning Up</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="nto.html">Node Tuning Operator</a></li>
@@ -175,8 +177,8 @@
 <li><p>Deploy the NFD operator from OperatorHub, and control the install
 channel</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/nfd/deploy_from_operatorhub.sh <span class="o">[</span>nfd_channel, eg: <span class="m">4</span>.7<span class="o">]</span>
-toolbox/nfd/undeploy_from_operatorhub.sh
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/nfd-operator/deploy_from_operatorhub.sh <span class="o">[</span>nfd_channel, eg: <span class="m">4</span>.7<span class="o">]</span>
+toolbox/nfd-operator/undeploy_from_operatorhub.sh
 </pre></div>
 </div>
 </div>
@@ -209,12 +211,6 @@ feature.node.kubernetes.io/pci-0300_10de.present
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Test NFD Operator from its master branch</p></li>
-</ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/local-ci/deploy.sh <span class="s2">&quot;run nfd-operator test_master_branch&quot;</span> https://github.com/openshift-psap/ci-artifacts master
-</pre></div>
-</div>
-<ul class="simple">
 <li><p>Deploy NFD Operator from its master branch</p></li>
 </ul>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/nfd/deploy_from_commit.sh &lt;repo&gt; &lt;ref&gt; <span class="o">[</span>tag<span class="o">]</span>
@@ -222,6 +218,24 @@ feature.node.kubernetes.io/pci-0300_10de.present
 </div>
 <p>Example:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/nfd/deploy_from_commit.sh https://github.com/openshift/cluster-nfd-operator.git master
+</pre></div>
+</div>
+</div>
+<div class="section" id="end-to-end-testing">
+<h2>End-to-end Testing<a class="headerlink" href="#end-to-end-testing" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Test NFD Operator from its master branch</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/local-ci/deploy.sh <span class="s2">&quot;run nfd-operator test_master_branch&quot;</span> https://github.com/openshift-psap/ci-artifacts master
+</pre></div>
+</div>
+</div>
+<div class="section" id="cleaning-up">
+<h2>Cleaning Up<a class="headerlink" href="#cleaning-up" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Uninstall and cleanup NFD labels</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">toolbox</span><span class="o">/</span><span class="n">nfd</span><span class="o">-</span><span class="n">operator</span><span class="o">/</span><span class="n">undeploy_from_operatorhub</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 </div>

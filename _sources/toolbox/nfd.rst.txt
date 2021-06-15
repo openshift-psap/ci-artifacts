@@ -10,8 +10,8 @@ Deployment
 
 .. code-block:: shell
 
-    toolbox/nfd/deploy_from_operatorhub.sh [nfd_channel, eg: 4.7]
-    toolbox/nfd/undeploy_from_operatorhub.sh
+    toolbox/nfd-operator/deploy_from_operatorhub.sh [nfd_channel, eg: 4.7]
+    toolbox/nfd-operator/undeploy_from_operatorhub.sh
 
 Testing and Waiting
 ===================
@@ -47,20 +47,33 @@ Search for these NVIDIA GPU PCI labels (that's the labels used by the `GPU Opera
 
     toolbox/nfd/wait_gpu_nodes.sh
 
+* Deploy NFD Operator from its master branch
+
+.. code-block:: shell
+
+    toolbox/nfd/deploy_from_commit.sh <repo> <ref> [tag]
+
+Example:
+
+.. code-block:: shell
+
+    toolbox/nfd/deploy_from_commit.sh https://github.com/openshift/cluster-nfd-operator.git master
+
+End-to-end Testing
+==================
+
 * Test NFD Operator from its master branch
 
 .. code-block:: shell
 
     toolbox/local-ci/deploy.sh "run nfd-operator test_master_branch" https://github.com/openshift-psap/ci-artifacts master
 
-* Deploy NFD Operator from its master branch
 
-.. code-block:: shell
+Cleaning Up
+===========
 
-    toolbox/nfd/deploy_from_commit.sh <repo> <ref> [tag]   
+* Uninstall and cleanup NFD labels
 
-Example:
+.. code-block::
 
-.. code-block:: shell
-    
-    toolbox/nfd/deploy_from_commit.sh https://github.com/openshift/cluster-nfd-operator.git master
+    toolbox/nfd-operator/undeploy_from_operatorhub.sh
