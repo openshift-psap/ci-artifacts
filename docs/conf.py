@@ -25,8 +25,8 @@ author = 'Red Hat PSAP team'
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-# The short X.Y version.
-release = 'v1.0.0'
+# The short X.Y.Z version.
+release = 'v0.1.0'
 
 
 # -- General configuration ---------------------------------------------------

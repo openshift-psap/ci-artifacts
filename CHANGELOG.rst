@@ -2,7 +2,7 @@
 
 (Organized release by release)
 
-Features of version 1.0 (June 2021)
+Features of version 0.1 (June 2021)
 -----------------------------------
 
 (tracked since May 7th, 2021)
