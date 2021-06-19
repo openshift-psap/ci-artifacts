@@ -12,14 +12,10 @@
     failed_when: false
     register: gpu_operator_package_available
 
-  - name: Wait for the GPU Operator to be available or its catalog to be fully populated
+  - name: Wait for the GPU Operator to be available
     when: gpu_operator_package_available.rc != 0
-    shell:
+    command:
       oc get packagemanifests/gpu-operator-certified -n openshift-marketplace
-         ||
-      test $(oc get -oyaml CatalogSource/certified-operators
-                -n openshift-marketplace
-                '-ojsonpath={.status.connectionState.lastObservedState}{"\n"}') == "READY"
     register: gpu_operator_package_wait
     until: gpu_operator_package_wait.rc == 0
     retries: 15
