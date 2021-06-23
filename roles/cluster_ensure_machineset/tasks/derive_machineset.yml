@@ -6,7 +6,8 @@
   register: oc_get_machinesets
   failed_when: not oc_get_machinesets.stdout
 
-- set_fact:
+- name: Check if base_machineset specified
+  set_fact:
     base_machineset={{ base_machineset | default(oc_get_machinesets.stdout_lines[0]) }}
 
 - name: Ensure that the specified base machineset exists
