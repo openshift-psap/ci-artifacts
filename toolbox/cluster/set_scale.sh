@@ -39,20 +39,18 @@ shift
 SCALE=${1}
 shift
 if [ $# -ne 0 ]; then
-    if [ "${1}" == "--base-machineset" ]; then
+    if [ ${1:-} == "--base-machineset" ]; then
         shift
-        BASE_MACHINESET=${1}
+        BASE_MACHINESET=${1:-}
+        echo "Setting base machineset to '${BASE_MACHINESET}'"
         ANSIBLE_OPTS="${ANSIBLE_OPTS} -e base_machineset=${BASE_MACHINESET}"
         shift
-        if [ $# -ne 0 && "${1}" == "--force" ]; then
-            ANSIBLE_OPTS="${ANSIBLE_OPTS} -e force_scale=true"
-        fi
-    elif ["${1}" == "--force" ]; then
+    fi
+    if ["${1:-}" == "--force" ]; then
         echo "Setting cluster ${INSTANCE_TYPE} machinesets to have scale '${SCALE}'"
         ANSIBLE_OPTS="${ANSIBLE_OPTS} -e force_scale=true"
     fi
 else
-    echo "Setting cluster ${INSTANCE_TYPE} machinesets to have scale '${SCALE}'"
     ANSIBLE_OPTS="${ANSIBLE_OPTS}"
 fi
 
@@ -60,5 +58,4 @@ ANSIBLE_OPTS="${ANSIBLE_OPTS} -e machineset_instance_type=${INSTANCE_TYPE}"
 
 echo "Setting cluster ${INSTANCE_TYPE} machinesets to have scale '${SCALE}'"
 ANSIBLE_OPTS="${ANSIBLE_OPTS} -e scale=${SCALE}"
-
 exec ansible-playbook ${ANSIBLE_OPTS} playbooks/cluster_set_scale.yml
