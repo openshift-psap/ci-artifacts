@@ -31,7 +31,7 @@ To build & push new versions of the containers images, `podman login` to your qu
 ## TLS mutual authentication
 Typically TLS (HTTPS) is only deployed to authenticate the server, but in our mirror deployment we also authenticate the client because we don't want the mirror content to be publicly available. The `serve` container is (see "Containers" section) configured to perform both authentications.
 - Server authentication certificate generation is handled by the acme controller (see "Prerequisites") using LetsEncrypt.
-- Client authentication certificate generation is handled by the `auth` directory inside this directory, see the README.md inside of it for more information. 
+- Client authentication certificate generation is handled by the `auth` directory inside this directory, see the README.md inside of it for more information.
 
 ## Storage
 The OpenShift template `openshift/template.yaml` defines a persistent volume claim for enough storage to store all the mirror packages. It makes use of the cluster's default StorageClass.
@@ -39,8 +39,54 @@ The OpenShift template `openshift/template.yaml` defines a persistent volume cla
 # Installation
 ## Initial deployment
 - Make sure your KUBECONFIG points to the correct cluster on which you wish to deploy the mirror
-- Run `./deploy.sh` (note that this will launch a pod that will begin syncing all the repos defined in `containers/sync/sync_commands.sh`)
- into a mounted volume
+- Double check the list of repos that will be synced, adjust if necessary:
+```bash
+$ cat containers/sync/sync_commands.sh
+#!/bin/bash
+
+set -euxo pipefail
+
+reposync -p /repo --download-metadata --repoid rhel-8-for-x86_64-baseos-rpms
+reposync -p /repo --download-metadata --repoid rhel-8-for-x86_64-baseos-eus-rpms --releasever=8.2
+
+reposync -p /repo --download-metadata --repoid rhocp-4.5-for-rhel-8-x86_64-rpms
+reposync -p /repo --download-metadata --repoid rhocp-4.6-for-rhel-8-x86_64-rpms
+reposync -p /repo --download-metadata --repoid rhocp-4.7-for-rhel-8-x86_64-rpms
+
+# reposync -p /repo --download-metadata --repoid rhocp-4.8-for-rhel-8-x86_64-rpms
+```
+
+- Configure the mirror name and namespace
+```bash
+$ cat config.env
+# The quay repo to upload images to
+QUAY_REPO=quay.io/openshift-psap/entitled-mirror
+
+# The namespace to use for deploying the template CRs
+NAMESPACE=ci-entitled-mirror
+
+# The name of the CRs created by the template
+NAME=mirror
+```
+
+*WARNING:* Make sure that the mirror app hostname that will be
+ generated is shorted that
+ [64 chars](https://stackoverflow.com/questions/39035571/distinguished-name-length-constraint-in-x-509-certificate),
+ otherwise the certificate generation will fail:
+
+```bash
+. config.env
+MIRROR_APPNAME="$NAME-$NAMESPACE"
+MIRROR_HOSTNAME=$(oc get console/cluster -ojsonpath={@.status.consoleURL} | sed s/console-openshift-console/$MIRROR_APPNAME/ | sed 's|https://||')
+echo "$MIRROR_HOSTNAME --> $(echo $MIRROR_HOSTNAME | wc -c) chars"
+```
+
+- Run the deployment script. Note that this will launch a pod that will begin syncing all the repos defined in `nginx.conf` into a mounted volume.
+
+```bash
+./deploy.sh
+```
+
 - Follow the logs of the deployment containers to make sure everything is operating correctly, e.g.:
 
 ```bash
@@ -49,10 +95,21 @@ The OpenShift template `openshift/template.yaml` defines a persistent volume cla
 
 # Wait for the end of the repo mirror synchronization, > 15min
 oc logs -f deployments/${NAME} -c reposync -n ${NAMESPACE}
+```
+
+- Test the mirror and the client credentials
+
+```
+# Fetch the hostname of the mirror app
+MIRROR_HOSTNAME=$(oc get route/${NAME} -n ${NAMESPACE} -ojsonpath={.status.ingress[0].host})
+# Make sure that this repo is synced in containers/sync/sync_commands.sh
+REPO_NAME=rhel-8-for-x86_64-baseos-rpms
 
 # Check that the mirror is accessible and the credentials work
-MIRROR_HOSTNAME=$(oc get route/${NAME} -n ${NAMESPACE} -ojsonpath={.status.ingress[0].host})
-curl -E ./auth/client/generated_client_creds.pem ${MIRROR_HOSTNAME}/repodata/repomd.xml
+curl -E ./auth/client/generated_client_creds.pem https://${MIRROR_HOSTNAME}/$REPO_NAME/repodata/repomd.xml
+
+# Check that the mirror is not accessible without the credentials
+curl https://${MIRROR_HOSTNAME}/$REPO_NAME/repodata/repomd.xml
 ```
 
 ## Redeployment
@@ -78,7 +135,7 @@ After making changes, you may wish to -
 │   └── README.md
 ├── config.env # General configuration for the scripts in this directory
 ├── containers # See the "Containers" section above
-│   ├── build.sh 
+│   ├── build.sh
 │   ├── upload.sh
 │   ├── serve
 │   │   ├── Containerfile.serve
