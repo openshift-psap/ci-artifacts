@@ -109,21 +109,7 @@ objects:
       namespace: ${NAMESPACE}
     type: Opaque
     data:
-      client-ca: ${CLIENT_CA} 
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: ${NAME}-nginx
-      namespace: ${NAMESPACE}
-    binaryData:
-      nginx.conf: ${NGINX_CONFIG} 
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: ${NAME}-sync-script
-      namespace: ${NAMESPACE}
-    binaryData:
-      sync_commands.sh: ${SYNC_COMMANDS} 
+      client-ca: ${CLIENT_CA}
   - apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -232,13 +218,3 @@ parameters:
     description: A quay repo containing the tags `sync` and `serve` with the mirror images
     required: true
     value: "quay.io/openshift-psap/entitled-mirror"
-  - name: NGINX_CONFIG
-    displayName: NGINX Configuration File
-    description: NGINX Configuration File
-    required: true
-    value: ""
-  - name: SYNC_COMMANDS
-    displayName: The script used to sync the mirrored repositories
-    description: The script used to sync the mirrored repositories
-    required: true
-    value: ""
