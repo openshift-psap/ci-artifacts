@@ -2,6 +2,19 @@
 
 (Organized release by release)
 
+Features of version 0.1.1 (July 2021)
+-------------------------------------
+
+Bug fixes
+~~~~~~~~~
+
+- Use ``subscriptions.operators.coreos.com`` instead of
+  ``subscriptions`` to avoid conflicts with Knative `subscriptions
+  <https://knative.dev/docs/eventing/channels/subscriptions>`_ `#207
+  <https://github.com/openshift-psap/ci-artifacts/pull/207>`_ `#208
+  <https://github.com/openshift-psap/ci-artifacts/pull/208>`_
+
+
 Features of version 0.1 (June 2021)
 -----------------------------------
 
