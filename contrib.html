@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                01, Jul 2021
+                02, Jul 2021
               </div>
             
           
@@ -279,7 +279,8 @@ all the relevant information in the <code class="docutils literal notranslate"><
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Inspect the Subscriptions status (debug)</span>
   <span class="nt">shell</span><span class="p">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">oc describe subscriptions/gpu-operator-certified -n openshift-operators</span>
+    <span class="l l-Scalar l-Scalar-Plain">oc describe subscriptions.operators.coreos.com/gpu-operator-certified</span>
+       <span class="l l-Scalar l-Scalar-Plain">-n openshift-operators</span>
        <span class="l l-Scalar l-Scalar-Plain">&gt; {{ artifact_extra_logs_dir }}/gpu_operator_Subscription.log</span>
   <span class="nt">failed_when</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 </pre></div>
