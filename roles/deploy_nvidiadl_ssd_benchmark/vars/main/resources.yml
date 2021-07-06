@@ -1,0 +1,3 @@
+---
+nvidiapod: 'roles/deploy_nvidiadl_ssd_benchmark/files/nvidia-pod.yaml'
+entrypoint: 'roles/deploy_nvidiadl_ssd_benchmark/files/entrypoint.sh'

@@ -1,0 +1,3 @@
+---
+entrypoint: 'roles/deploy_coco_data_pvc/files/entrypoint.sh'
+nvidiapvc: 'roles/deploy_coco_data_pvc/files/nvidiadl-data-pvc.yaml'

@@ -1,0 +1,14 @@
+---
+- name: Create the entrypoint ConfigMap
+  command: 
+    oc create cm custom-config-script --from-file="{{ entrypoint }}"
+
+- name: Deploy pod to run Nvidia Deep Learning SSD Detection benchmark and download data
+  command: 
+    oc apply -f {{ nvidiapod }}
+
+# always:
+# - name: Save the logs of the Nvidia Deep Learning SSD benchmark
+#   shell: oc logs pod/gpu-burn-{{ item }} -n default | grep -o "[^$(printf '\r')]*$"
+#   with_items: "{{ gpu_burn_gpu_nodes.stdout_lines }}"
+#   failed_when: false

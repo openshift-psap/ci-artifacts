@@ -1,0 +1,8 @@
+---
+# - name: Create the entrypoint ConfigMap
+#   command: 
+#     oc apply -f "{{ entrypoint }}"
+
+- name: Create PVC for storing the coco dataset
+  command: 
+    oc create -f {{ nvidiapvc }}
