@@ -1,4 +1,4 @@
 ---
 dependencies:
   - role: check_deps
-  - role: deploy_coco_data_pvc
+  - role: coco_data_pvc_deploy

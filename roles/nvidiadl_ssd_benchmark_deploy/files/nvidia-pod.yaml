@@ -25,6 +25,12 @@ spec:
       - bash
       - -c
       - "/mnt/entrypoint/entrypoint.sh"
+  - name: init-fetch-data
+    image: quay.io/pbeardse/nvidiadl-ssd-example:latest
+    command:
+      - bash
+      - -c
+      - "/workspace/download_dataset.sh /storage"
   volumes:
   - name: config-volume
     configMap:
