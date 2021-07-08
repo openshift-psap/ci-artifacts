@@ -1,3 +1,3 @@
 ---
-entrypoint: 'roles/deploy_coco_data_pvc/files/entrypoint.sh'
-nvidiapvc: 'roles/deploy_coco_data_pvc/files/nvidiadl-data-pvc.yaml'
+entrypoint: 'roles/coco_data_pvc_deploy/files/entrypoint.sh'
+nvidiapvc: 'roles/coco_data_pvc_deploy/files/nvidiadl-data-pvc.yaml'

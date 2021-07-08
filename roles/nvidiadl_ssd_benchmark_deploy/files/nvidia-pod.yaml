@@ -8,7 +8,7 @@ spec:
   restartPolicy: Never   
   containers:
   - name: nvidiadl
-    image: quay.io/pbeardse/nvidiadl-ssd-example:latest
+    image: quay.io/openshift-psap/nvidiadl-ssd-training-benchmark
     resources:
       limits:
         nvidia.com/gpu: 1
@@ -25,12 +25,13 @@ spec:
       - bash
       - -c
       - "/mnt/entrypoint/entrypoint.sh"
+  initContainers:
   - name: init-fetch-data
-    image: quay.io/pbeardse/nvidiadl-ssd-example:latest
+    image: quay.io/openshift-psap/nvidiadl-ssd-training-benchmark
     command:
       - bash
       - -c
-      - "/workspace/download_dataset.sh /storage"
+      - "/workspace/download_dataset.sh '/storage'"
   volumes:
   - name: config-volume
     configMap:
