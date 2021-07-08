@@ -2,10 +2,9 @@
 
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-if [[ -z "${1:-}" || -z "${2:-}" || "${3:---force}" != "--force" ]]; then
-
+if [[ -z "${1:-}" || -z "${2:-}" ]]; then
     echo "
-USAGE: ${0} <instance_type> <scale> [--force]
+USAGE: ${0} <instance_type> <scale> [--base_machineset <base-machineset>] [--force]
 
 EXAMPLE:
       ${0} g4dn.xlarge 1 # ensure that the cluster has 1 GPU node
@@ -36,18 +35,26 @@ fi
 source ${THIS_DIR}/../_common.sh
 
 INSTANCE_TYPE=${1}
-ANSIBLE_OPTS="${ANSIBLE_OPTS} -e machineset_instance_type=${INSTANCE_TYPE}"
-
+shift 
+SCALE=${1}
 shift
-
-echo "Setting cluster ${INSTANCE_TYPE} machinesets to have scale '${1}'"
-ANSIBLE_OPTS="${ANSIBLE_OPTS} -e scale=${1}"
-
-shift
-
-if [ "${1-}" == "--force" ]; then
-    echo "Setting cluster ${INSTANCE_TYPE} machinesets to have scale '${1}'"
-    ANSIBLE_OPTS="${ANSIBLE_OPTS} -e force_scale=true"
+if [ $# -ne 0 ]; then
+    if [ ${1:-} == "--base-machineset" ]; then
+        shift
+        BASE_MACHINESET=${1:-}
+        echo "Setting base machineset to '${BASE_MACHINESET}'"
+        ANSIBLE_OPTS="${ANSIBLE_OPTS} -e base_machineset=${BASE_MACHINESET}"
+        shift
+    fi
+    if [ "${1:-}" == "--force" ]; then
+        ANSIBLE_OPTS="${ANSIBLE_OPTS} -e force_scale=true"
+    fi
+else
+    ANSIBLE_OPTS="${ANSIBLE_OPTS}"
 fi
 
+ANSIBLE_OPTS="${ANSIBLE_OPTS} -e machineset_instance_type=${INSTANCE_TYPE}"
+
+echo "Setting cluster ${INSTANCE_TYPE} machinesets to have scale '${SCALE}'"
+ANSIBLE_OPTS="${ANSIBLE_OPTS} -e scale=${SCALE}"
 exec ansible-playbook ${ANSIBLE_OPTS} playbooks/cluster_set_scale.yml
