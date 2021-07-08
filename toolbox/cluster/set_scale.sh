@@ -46,8 +46,7 @@ if [ $# -ne 0 ]; then
         ANSIBLE_OPTS="${ANSIBLE_OPTS} -e base_machineset=${BASE_MACHINESET}"
         shift
     fi
-    if ["${1:-}" == "--force" ]; then
-        echo "Setting cluster ${INSTANCE_TYPE} machinesets to have scale '${SCALE}'"
+    if [ "${1:-}" == "--force" ]; then
         ANSIBLE_OPTS="${ANSIBLE_OPTS} -e force_scale=true"
     fi
 else
