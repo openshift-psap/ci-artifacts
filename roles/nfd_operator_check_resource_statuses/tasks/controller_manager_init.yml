@@ -1,0 +1,9 @@
+---
+- name: Attempt to retreive the NFD Operator Controller Manager Pod, {{ nfd_operator_controller_manager }}
+  command: oc get pods -l control-plane=controller-manager -n '{{ nfd_operator_namespace }}' -oname | grep 'error'
+  register: nfd_operator_controller_manager_pod_does_not_exist
+  failed_when: false
+
+- name: If the NFD Operator Controller Manager Pod does not exist, then we cannot continue
+  fail: msg="The NFD Operator Controller Manager Pod must be defined before running this role"
+  when: nfd_operator_controller_manager_pod_does_not_exist.stdout_lines == ''

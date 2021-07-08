@@ -1,0 +1,20 @@
+---
+- name: Attempt to retreive the NFD Operator DaemonSets
+  command: oc get ds '{{ daemonset_name }}' -n '{{ nfd_operator_namespace }}' -oname | grep 'error'
+  retries: '{{ nfd_operator_resource_retries }}'
+  delay: '{{ nfd_operator_resource_delay }}'
+  register: nfd_operator_dses_do_not_exist
+  failed_when: false
+  with_items:
+    - '{{ nfd_operator_daemonset_master }}'
+    - '{{ nfd_operator_daemonset_worker }}'
+  loop_control:
+    loop_var: daemonset_name
+
+- name: If any of the NFD Operator DaemonSets do not exist, then we cannot continue
+  fail: msg="All NFD Operator DaemonSets must be initialized before running this role"
+  when: daemonset_status.stdout_lines == ''
+  with_items: "{{ nfd_operator_dses_do_not_exist.results }}"
+  loop_control:
+    loop_var: daemonset_status
+    label: "{{ daemonset_status.daemonset_name }}"
