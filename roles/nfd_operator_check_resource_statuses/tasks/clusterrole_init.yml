@@ -1,0 +1,20 @@
+---
+- name: Attempt to retreive the NFD Operator ClusterRoles
+  command: oc get clusterrole '{{ clusterrole_name }}' -n '{{ nfd_operator_namespace }}' -oname | grep 'error'
+  register: nfd_operator_clusterroles_do_not_exist
+  failed_when: false
+  with_items:
+    - '{{ nfd_operator_clusterrole_master }}'
+    - '{{ nfd_operator_clusterrole_operator }}'
+    - '{{ nfd_operator_clusterrole_metrics_reader }}'
+    - '{{ nfd_operator_clusterrole_proxy }}'
+  loop_control:
+    loop_var: clusterrole_name
+
+- name: If any of the NFD Operator ClusterRoles do not exist, then we cannot continue
+  fail: msg="All NFD Operator ClusterRoles must be defined before running this role"
+  when: clusterrole_status.stdout_lines == ''
+  with_items: "{{ nfd_operator_clusterroles_do_not_exist.results }}"
+  loop_control:
+    loop_var: clusterrole_status
+    label: "{{ clusterrole_status.clusterrole_name }}"

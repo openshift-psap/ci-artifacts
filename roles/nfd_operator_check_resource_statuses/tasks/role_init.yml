@@ -1,0 +1,18 @@
+---
+- name: Attempt to retreive the NFD Operator Roles
+  command: oc get role '{{ rrole_name }}' -n '{{ nfd_operator_namespace }}' -oname | grep 'error'
+  register: nfd_operator_roles_do_not_exist
+  failed_when: false
+  with_items:
+    - '{{ nfd_operator_leader_election_role }}'
+    - '{{ nfd_operator_worker_role }}'
+  loop_control:
+    loop_var: rrole_name
+
+- name: If any of the NFD Operator Roles do not exist, then we cannot continue
+  fail: msg="All NFD Operator Roles must be initialized before running this role"
+  when: role_status.stdout_lines == ''
+  with_items: "{{ nfd_operator_roles_do_not_exist.results }}"
+  loop_control:
+    loop_var: role_status
+    label: "{{ role_status.rrole_name }}"
