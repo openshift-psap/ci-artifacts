@@ -1,0 +1,7 @@
+---
+- name: Check the status of various NFD resources
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  roles:
+    - role: nfd_operator_check_resource_statuses
