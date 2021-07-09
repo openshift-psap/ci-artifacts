@@ -6,6 +6,10 @@ set -o nounset
 
 prepare_cluster_for_sro() {
     toolbox/cluster/capture_environment.sh
+
+    finalizers+=("collect_must_gather")
+    finalizers+=("toolbox/entitlement/undeploy.sh")
+
     entitle.sh
 
     if ! toolbox/nfd/has_nfd_labels.sh; then
@@ -14,8 +18,6 @@ prepare_cluster_for_sro() {
 }
 
 validate_sro_deployment() {
-    trap toolbox/special-resource-operator/capture_deployment_state.sh EXIT
-
     toolbox/special-resource-operator/run_e2e_test.sh "${CI_IMAGE_SRO_COMMIT_CI_REPO}" "${CI_IMAGE_SRO_COMMIT_CI_REF}"
 }
 
@@ -30,6 +32,20 @@ test_master_branch() {
                                                "${CI_IMAGE_SRO_COMMIT_CI_REF}"
     validate_sro_deployment
 }
+
+finalizers=()
+run_finalizers() {
+    [ ${#finalizers[@]} -eq 0 ] && return
+
+    echo "Running exit finalizers ..."
+    for finalizer in "${finalizers[@]}"
+    do
+        echo "$finalizer"
+        eval $finalizer
+    done
+}
+
+trap run_finalizers EXIT
 
 if [ -z "${1:-}" ]; then
     echo "FATAL: $0 expects at least 1 argument ..."
