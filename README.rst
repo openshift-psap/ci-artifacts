@@ -112,6 +112,9 @@ revolving around PSAP activities: entitlement, scale-up of GPU nodes,
 deployment of the NFD, SRO and NVIDIA GPU Operators, but also their
 configuration and troubleshooting.
 
+The entrypoint for the toolbox is the `./run.py <run.py>`_ at the root
+of this repository. Run it without any arguments to see the list of 
+available commands.
 
 The functionalities of the toolbox commands are described in the
 `documentation page
@@ -121,53 +124,26 @@ The functionalities of the toolbox commands are described in the
 
     $ tree toolbox | grep -v _common
     toolbox
-    ├── cluster
-    │   ├── capture_environment.sh
-    │   ├── set_scale.sh
-    │   └── upgrade_to_image.sh
-    ├── entitlement
-    │   ├── deploy.sh
-    │   ├── inspect.sh
-    │   ├── test_cluster.sh
-    │   ├── test_in_cluster.sh
-    │   ├── test_in_podman.sh
-    │   ├── undeploy.sh
-    │   └── wait.sh
+    ├── cluster.py
+    ├── entitlement.py
     ├── gpu-operator
-    │   ├── capture_deployment_state.sh
     │   ├── cleanup_resources.sh
-    │   ├── deploy_from_commit.sh
     │   ├── deploy_from_helm.sh
     │   ├── deploy_from_operatorhub.sh
     │   ├── diagnose.sh
+    │   ├── _helm_deploy_operator.sh
     │   ├── list_version_from_helm.sh
     │   ├── list_version_from_operator_hub.sh
     │   ├── must-gather.sh
-    │   ├── run_gpu_burn.sh
-    │   ├── set_repo-config.sh
-    │   ├── undeploy_from_commit.sh
-    │   ├── undeploy_from_helm.sh
-    │   ├── undeploy_from_operatorhub.sh
-    │   └── wait_deployment.sh
-    ├── local-ci
-    │   ├── cleanup.sh
-    │   └── deploy.sh
-    ├── nfd
-    │   ├── has_gpu_nodes.sh
-    │   ├── has_nfd_labels.sh
-    │   └── wait_nfd_labels.sh
-    ├── nfd-operator
-    │   ├── deploy_from_operatorhub.sh
-    │   ├── deploy_from_commit.sh
-    │   ├── undeploy_from_operatorhub.sh
-    │   └── wait_gpu_nodes.sh
+    │   └── undeploy_from_helm.sh
+    ├── gpu_operator.py
+    ├── local_ci.py
+    ├── nfd_operator.py
+    ├── nfd.py
     ├── nto
     │   └── run_e2e_test.sh
-    ├── repo
+    ├── repo.py
+    ├── repo_scripts
     │   ├── validate_role_files.py
     │   └── validate_role_vars_used.py
-    └── special-resource-operator
-        ├── capture_deployment_state.sh
-        ├── deploy_from_commit.sh
-        ├── run_e2e_test.sh
-        └── undeploy_from_commit.sh
+    └── special_resource_operator.py
