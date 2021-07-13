@@ -1,18 +1,41 @@
 ---
+# If no RoleBindings were found at all, then something is wrong.
+- name: Search to see if the NFD Operator RoleBindings exist
+  fail: msg="No RoleBindings were found"
+  when: all_nfd_operator_manifests.results | selectattr(search_key,'contains',search_val) | list | count == 0
+  vars:
+    search_key: 'stdout'
+    search_val: '{{ is_rolebinding }}'
+
+# Get RoleBinding names
+- name: Get the NFD Operator's RoleBinding names from the manifests
+  shell: |
+    cat '{{ rolebinding_manifest.manifest.path }}' | shyaml get-value metadata.name
+  register: nfd_operator_rolebinding_names
+  with_items: '{{ all_nfd_operator_manifests.results | selectattr(search_key,"contains",search_val) | list }}'
+  loop_control:
+    loop_var: rolebinding_manifest
+    label: '{{ rolebinding_manifest.stdout_lines }}'
+  vars:
+    search_key: 'stdout'
+    search_val: '{{ is_rolebinding }}'
+
+# Attempt to retreive the RoleBindings from the cluster to see if they exist
 - name: Attempt to retreive the NFD Operator RoleBindings
-  command: oc get rolebinding '{{ rolebinding_name }}' -n '{{ nfd_operator_namespace }}' -oname | grep 'error'
+  shell: oc get rolebinding '{{ rolebinding_name.stdout }}' -n '{{ nfd_operator_namespace }}' -oname | grep 'error'
+  retries: '{{ nfd_operator_resource_retries }}'
+  delay: '{{ nfd_operator_resource_delay }}'
   register: nfd_operator_rolebindings_do_not_exist
   failed_when: false
-  with_items:
-    - '{{ nfd_operator_leader_election_rolebinding }}'
-    - '{{ nfd_operator_worker_rolebinding }}'
+  with_items: '{{ nfd_operator_rolebinding_names.results }}'
   loop_control:
     loop_var: rolebinding_name
+    label: '{{ rolebinding_name.stdout }}'
 
 - name: If any of the NFD Operator RoleBindings do not exist, then we cannot continue
   fail: msg="All NFD Operator RoleBindings must be initialized before running this role"
-  when: rolebinding_status.stdout_lines == ''
+  when: rolebinding_status.stderr != ''
   with_items: "{{ nfd_operator_rolebindings_do_not_exist.results }}"
   loop_control:
     loop_var: rolebinding_status
-    label: "{{ rolebinding_status.rolebinding_name }}"
+    label: "{{ rolebinding_status.stdout }}"

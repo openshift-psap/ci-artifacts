@@ -1,9 +1,41 @@
 ---
-- name: Attempt to retreive the NFD Service, service/{{ nfd_operator_service }}
-  command: oc get '{{ nfd_operator_service }}' -n '{{ nfd_operator_namespace }}' -oname | grep 'error'
-  register: nfd_operator_svc_does_not_exist
-  failed_when: false
+# If no Service were found at all, then something is wrong.
+- name: Search to see if the NFD Operator Service exists
+  fail: msg="No Services were found"
+  when: all_nfd_operator_manifests.results | selectattr(search_key,'contains',search_val) | list | count == 0
+  vars:
+    search_key: 'stdout'
+    search_val: '{{ is_service }}'
 
-- name: If the NFD Operator Service does not exist, then we cannot continue
-  fail: msg="The '{{ nfd_operator_service }}' Service is not initially available"
-  when: nfd_operator_svc_does_not_exist.stdout_lines == ''
+# Get Service names
+- name: Get the NFD Operator's Service name from the manifests
+  shell: |
+    cat '{{ service_manifest.manifest.path }}' | shyaml get-value metadata.name
+  register: nfd_operator_service_names
+  with_items: '{{ all_nfd_operator_manifests.results | selectattr(search_key,"contains",search_val) | list }}'
+  loop_control:
+    loop_var: service_manifest
+    label: '{{ service_manifest.stdout_lines }}'
+  vars:
+    search_key: 'stdout'
+    search_val: '{{ is_service }}'
+
+# Attempt to retreive the Service from the cluster to see if they exist
+- name: Attempt to retreive the NFD Operator Service
+  shell: oc get service '{{ service_name.stdout }}' -n '{{ nfd_operator_namespace }}' -oname | grep 'error'
+  retries: '{{ nfd_operator_resource_retries }}'
+  delay: '{{ nfd_operator_resource_delay }}'
+  register: nfd_operator_services_do_not_exist
+  failed_when: false
+  with_items: '{{ nfd_operator_service_names.results }}'
+  loop_control:
+    loop_var: service_name
+    label: '{{ service_name.stdout }}'
+
+- name: If the NFD Service does not exist, then we cannot continue
+  fail: msg="The NFD Operator Service must be initialized before running this role"
+  when: service_status.stderr != ''
+  with_items: "{{ nfd_operator_services_do_not_exist.results }}"
+  loop_control:
+    loop_var: service_status
+    label: "{{ service_status.stdout }}"

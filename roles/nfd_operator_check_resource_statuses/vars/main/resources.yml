@@ -2,31 +2,6 @@
 # NFD Operator namespace name
 nfd_operator_namespace: "openshift-nfd"
 
-# NFD Operator Service name
-nfd_operator_service: "nfd-master"
-
-# NFD Operator ServiceAccount names
-nfd_operator_serviceaccount_worker: "nfd-worker"
-nfd_operator_serviceaccount_master: "nfd-master"
-nfd_operator_serviceaccount_operator: "nfd-operator"
-
-# NFD Operator SecurityContextConstraints (SCC) name
-nfd_operator_scc: "nfd-worker"
-
-# NFD Operator Role names
-nfd_operator_leader_election_role: "nfd-leader-election-role"
-nfd_operator_worker_role: "nfd-worker"
-
-# NFD Operator RoleBinding names
-nfd_operator_leader_election_rolebinding: "nfd-leader-election-rolebinding"
-nfd_operator_worker_rolebinding: "nfd-worker"
-
-# NFD Operator ClusterRole names
-nfd_operator_clusterrole_master: "nfd-master"
-nfd_operator_clusterrole_operator: "nfd-operator"
-nfd_operator_clusterrole_metrics_reader: "nfd-metrics-reader"
-nfd_operator_clusterrole_proxy: "nfd-proxy-role"
-
 # NFD Operator CRD Statuses
 nfd_operator_degraded_status: "Degraded"
 nfd_operator_progressing_status: "Progressing"
@@ -40,4 +15,12 @@ nfd_operator_resource_delay: 20
 tmp_cluster_nfd_operator: "/tmp/__cluster-nfd-operator"
 
 # Search keys
-is_daemonset: "IS_DAEMONSET"
+is_daemonset: "IS_DS"
+is_role: "IS_ROLE"
+is_rolebinding: "IS_RB"
+is_clusterrole: "IS_CR"
+is_clusterrolebinding: "IS_CLROB"
+is_service: "IS_SVC"
+is_serviceaccount: "IS_SA"
+is_configmap: "IS_CM"
+is_securitycontextconstraints: "IS_SCC"

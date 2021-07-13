@@ -1,0 +1,41 @@
+---
+# If no ClusterRoleBindings were found at all, then something is wrong.
+- name: Search to see if the NFD Operator ClusterRoleBindings exist
+  fail: msg="No ClusterRoleBindings were found"
+  when: all_nfd_operator_manifests.results | selectattr(search_key,'contains',search_val) | list | count == 0
+  vars:
+    search_key: 'stdout'
+    search_val: '{{ is_clusterrolebinding }}'
+
+# Get Role names
+- name: Get the NFD Operator's ClusterRoleBinding names from the manifests
+  shell: |
+    cat '{{ clusterrolebinding_manifest.manifest.path }}' | shyaml get-value metadata.name
+  register: nfd_operator_clusterrolebinding_names
+  with_items: '{{ all_nfd_operator_manifests.results | selectattr(search_key,"contains",search_val) | list }}'
+  loop_control:
+    loop_var: clusterrolebinding_manifest
+    label: '{{ clusterrolebinding_manifest.stdout_lines }}'
+  vars:
+    search_key: 'stdout'
+    search_val: '{{ is_clusterrolebinding }}'
+
+# Attempt to retreive the roles from the cluster to see if they exist
+- name: Attempt to retreive the NFD Operator ClusterRoleBindings
+  shell: oc get clusterrolebinding '{{ clusterrolebinding_name.stdout }}' -n '{{ nfd_operator_namespace }}' -oname | grep 'error'
+  retries: '{{ nfd_operator_resource_retries }}'
+  delay: '{{ nfd_operator_resource_delay }}'
+  register: nfd_operator_clusterrolebindings_do_not_exist
+  failed_when: false
+  with_items: '{{ nfd_operator_clusterrolebinding_names.results }}'
+  loop_control:
+    loop_var: clusterrolebinding_name
+    label: '{{ clusterrolebinding_name.stdout }}'
+
+- name: If any of the NFD Operator ClusterRoleBindings do not exist, then we cannot continue
+  fail: msg="All NFD Operator ClusterRoleBindings must be initialized before running this role"
+  when: clusterrolebinding_status.stderr != ''
+  with_items: "{{ nfd_operator_clusterrolebindings_do_not_exist.results }}"
+  loop_control:
+    loop_var: clusterrolebinding_status
+    label: "{{ clusterrolebinding_status.stdout }}"

@@ -32,10 +32,66 @@
       patterns: '*.yaml,*.yml'
     register: all_nfd_operator_master_manifests
 
+  # Label the manifests by resource type. Note that some manifests *may* have multple
+  # resources defined in them, hence a bunch of 'if-then' statements and not 'if-elif'
+  # statements.
+  - name: For all the worker and master manifests, label the manifest by resource type
+    shell: |
+      if grep -Fxq 'kind: DaemonSet' '{{ manifest.path }}'
+      then
+        echo '{{ is_daemonset }},'
+      fi
+      if grep -Fxq 'kind: RoleBinding' '{{ manifest.path }}' 
+      then
+        echo '{{ is_rolebinding }},'
+      fi
+      if grep -Fxq 'kind: Role' '{{ manifest.path }}' 
+      then
+        if ! grep -Fxq 'kind: RoleBinding' '{{ manifest.path }}' 
+        then
+          echo '{{ is_role }},' 
+        fi
+      fi
+      if grep -Fxq 'kind: ClusterRoleBinding' '{{ manifest.path }}' 
+      then
+        echo '{{ is_clusterrolebinding }},'
+      fi
+      if grep -Fxq 'kind: ClusterRole' '{{ manifest.path }}' 
+      then
+        if ! grep -Fxq 'kind: ClusterRoleBinding' '{{ manifest.path }}'
+        then
+            echo '{{ is_clusterrole }},'
+        fi
+      fi
+      if grep -Fxq 'kind: ServiceAccount' '{{ manifest.path }}' 
+      then
+        echo '{{ is_serviceaccount }},'
+      fi
+      if grep -Fxq 'kind: Service' '{{ manifest.path }}'
+      then
+        if ! grep -Fxq 'kind: ServiceAccount' '{{ manifest.path }}'
+        then
+            echo '{{ is_service }},'
+        fi
+      fi
+      if grep -Fxq 'kind: ConfigMap' '{{ manifest.path }}' 
+      then
+        echo '{{ is_configmap }},'
+      fi
+      if grep -Fxq 'kind: SecurityContextConstraints' '{{ manifest.path }}' 
+      then
+        echo '{{ is_securitycontextconstraints }},'
+      fi
+    with_items: '{{ all_nfd_operator_worker_manifests.files + all_nfd_operator_master_manifests.files }}'
+    loop_control:
+      loop_var: manifest
+      label: '{{ manifest.path }}'
+    register: all_nfd_operator_manifests
+    failed_when: false
+
   - name: Save manifest names
     set_fact:
-      nfd_operator_worker_manifests: '{{ all_nfd_operator_worker_manifests.files }}'
-      nfd_operator_master_manifests: '{{ all_nfd_operator_master_manifests.files }}'
+      nfd_operator_manifests: '{{ all_nfd_operator_manifests }}'
 
   when: >
     oc_version.stdout_lines[0] == "4.8" or
