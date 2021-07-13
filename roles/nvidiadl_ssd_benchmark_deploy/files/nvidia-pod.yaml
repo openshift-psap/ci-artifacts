@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nvidiadl
+  labels:
+    name: nvidiadl
+spec:
+  restartPolicy: Never   
+  containers:
+  - name: nvidiadl
+    image: quay.io/openshift-psap/nvidiadl-ssd-training-benchmark
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+      requests:
+        nvidia.com/gpu: 1
+    volumeMounts: 
+      - name: config-volume
+        mountPath: /mnt/entrypoint/entrypoint.sh
+        readOnly: false
+        subPath: entrypoint.sh
+      - mountPath: /storage/
+        name: storage
+    command:
+      - bash
+      - -c
+      - "/mnt/entrypoint/entrypoint.sh"
+  initContainers:
+  - name: init-fetch-data
+    image: quay.io/openshift-psap/nvidiadl-ssd-training-benchmark
+    command:
+      - bash
+      - -c
+      - "/workspace/download_dataset.sh '/storage'"
+  volumes:
+  - name: config-volume
+    configMap:
+      defaultMode: 0777
+      name: custom-config-script
+  - name: storage
+    persistentVolumeClaim:
+      claimName: nvidiadl-data-pvc
+   

@@ -1,0 +1,5 @@
+---
+- name: Create PVC for storing the coco dataset
+  command: 
+    oc create -f {{ nvidiapvc }}
+

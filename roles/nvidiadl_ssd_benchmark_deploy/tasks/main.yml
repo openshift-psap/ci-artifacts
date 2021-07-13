@@ -1,0 +1,15 @@
+---
+- name: Create the entrypoint ConfigMap
+  command: 
+    oc create cm custom-config-script --from-file="{{ entrypoint }}"
+
+- name: Deploy pod to run Nvidia Deep Learning SSD Detection benchmark and download data
+  command: 
+    oc apply -f {{ nvidiapod }}
+
+# - name: Store the logs of the Nvidia Deep Learning SSD Training benchmark
+#   shell:
+#     oc logs pod/nvidiadl -n default | grep -o "[^$(printf '\r')]*$"
+#        -oyaml
+#        -n openshift-operators
+#        > {{ artifact_extra_logs_dir }}/nvidiadl-bench.yml
