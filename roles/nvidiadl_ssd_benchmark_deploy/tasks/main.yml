@@ -7,8 +7,9 @@
   command: 
     oc apply -f {{ nvidiapod }}
 
-# always:
-# - name: Save the logs of the Nvidia Deep Learning SSD benchmark
-#   shell: oc logs pod/gpu-burn-{{ item }} -n default | grep -o "[^$(printf '\r')]*$"
-#   with_items: "{{ gpu_burn_gpu_nodes.stdout_lines }}"
-#   failed_when: false
+# - name: Store the logs of the Nvidia Deep Learning SSD Training benchmark
+#   shell:
+#     oc logs pod/nvidiadl -n default | grep -o "[^$(printf '\r')]*$"
+#        -oyaml
+#        -n openshift-operators
+#        > {{ artifact_extra_logs_dir }}/nvidiadl-bench.yml
