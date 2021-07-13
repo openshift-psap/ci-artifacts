@@ -1,5 +1,8 @@
 ---
 
+#
+- include: get_cluster_nfd_operator_resources.yml
+
 # Run all init checks to ensure that all resources are available, despite what
 # the CRD 'status' field may say
 - name: Run init checks to ensure NFD is up and running
@@ -8,12 +11,12 @@
 
 - include: "{{ item }}"
   with_items:
-    - "namespace_init.yml"
-    - "clusterrole_init.yml"
-    - "controller_manager_init.yml"
-    - "serviceaccount_init.yml"
-    - "service_init.yml"
-    - "scc_init.yml"
-    - "role_init.yml"
-    - "rolebinding_init.yml"
     - "daemonset_init.yml"
+#    - "namespace_init.yml"
+#    - "clusterrole_init.yml"
+#    - "controller_manager_init.yml"
+#    - "serviceaccount_init.yml"
+#    - "service_init.yml"
+#    - "scc_init.yml"
+#    - "role_init.yml"
+#    - "rolebinding_init.yml"

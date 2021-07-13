@@ -13,10 +13,6 @@ nfd_operator_serviceaccount_operator: "nfd-operator"
 # NFD Operator SecurityContextConstraints (SCC) name
 nfd_operator_scc: "nfd-worker"
 
-# NFD Operator DaemonSet names
-nfd_operator_daemonset_master: "daemonset.apps/nfd-master"
-nfd_operator_daemonset_worker: "daemonset.apps/nfd-worker"
-
 # NFD Operator Role names
 nfd_operator_leader_election_role: "nfd-leader-election-role"
 nfd_operator_worker_role: "nfd-worker"
@@ -39,3 +35,9 @@ nfd_operator_available_status: "Available"
 # NFD Operator Resource retries and delays (in seconds)
 nfd_operator_resource_retries: 10
 nfd_operator_resource_delay: 20
+
+# cluster-nfd-operator temporary repo
+tmp_cluster_nfd_operator: "/tmp/__cluster-nfd-operator"
+
+# Search keys
+is_daemonset: "IS_DAEMONSET"

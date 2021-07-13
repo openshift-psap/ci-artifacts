@@ -1,0 +1,44 @@
+---
+
+- name: Determine the OpenShift cluster version being used
+  shell: |
+    set -o pipefail;
+    oc version -o json | jq --raw-output '.openshiftVersion' | cut -d"." -f1-2
+  register: oc_version
+
+- name: Remove cluster-nfd-operator repo if it exists
+  file:
+    path: '{{ tmp_cluster_nfd_operator }}'
+    state: absent
+
+- name: Clone cluster-nfd-operator repo
+  git:
+    repo: https://github.com/openshift/cluster-nfd-operator.git
+    dest: '{{ tmp_cluster_nfd_operator }}'
+    version: release-{{ oc_version.stdout_lines[0] }}
+
+# For 4.8 and beyond
+- block:
+
+  - name: Get the list of all the relevant worker manifests
+    find:
+      paths: '{{ tmp_cluster_nfd_operator }}/build/assets/worker'
+      patterns: '*.yaml,*.yml'
+    register: all_nfd_operator_worker_manifests
+
+  - name: Get the list of all the relevant master manifests
+    find:
+      paths: '{{ tmp_cluster_nfd_operator }}/build/assets/master'
+      patterns: '*.yaml,*.yml'
+    register: all_nfd_operator_master_manifests
+
+  - name: Save manifest names
+    set_fact:
+      nfd_operator_worker_manifests: '{{ all_nfd_operator_worker_manifests.files }}'
+      nfd_operator_master_manifests: '{{ all_nfd_operator_master_manifests.files }}'
+
+  when: >
+    oc_version.stdout_lines[0] == "4.8" or
+    oc_version.stdout_lines[0] == "4.9" or
+    oc_version.stdout_lines[0] == "4.10"
+
