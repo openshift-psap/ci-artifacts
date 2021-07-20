@@ -1,0 +1,19 @@
+---
+- include: 'generic_resource_tests.yml'
+  vars:
+    resource_type: '{{ resource.type }}'
+    oc_resource: '{{ resource.octype }}'
+    nfd_operator_resource_names: '{{ resource.names }}'
+  with_items:
+    - { type: 'DaemonSet', octype: 'daemonset', names: '{{ nfd_operator_daemonset_names.results }}' }
+    - { type: 'ServiceAccount', octype: 'serviceaccount', names: '{{ nfd_operator_serviceaccount_names.results }}' }
+    - { type: 'Service', octype: 'service', names: '{{ nfd_operator_service_names.results }}' }
+    - { type: 'SecurityContextConstraints', octype: 'scc', names: '{{ nfd_operator_scc_names.results }}' }
+    - { type: 'Role', octype: 'role', names: '{{ nfd_operator_role_names.results }}' }
+    - { type: 'RoleBinding', octype: 'rolebinding', names: '{{ nfd_operator_rolebinding_names.results }}' }
+    - { type: 'ClusterRole', octype: 'clusterrole', names: '{{ nfd_operator_clusterrole_names.results }}' }
+    - { type: 'ClusterRoleBinding', octype: 'clusterrolebinding', names: '{{ nfd_operator_clusterrolebinding_names.results }}' }
+    - { type: 'ConfigMap', octype: 'configmap', names: '{{ nfd_operator_configmap_names.results }}' }
+  loop_control:
+    loop_var:  resource
+    label: resource.type

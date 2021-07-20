@@ -10,6 +10,7 @@ nfd_operator_available_status: "Available"
 # NFD Operator Resource retries and delays (in seconds)
 nfd_operator_resource_retries: 10
 nfd_operator_resource_delay: 20
+default_terminate_wait_time: 20
 
 # cluster-nfd-operator temporary repo
 tmp_cluster_nfd_operator: "/tmp/__cluster-nfd-operator"
@@ -24,3 +25,7 @@ is_service: "IS_SVC"
 is_serviceaccount: "IS_SA"
 is_configmap: "IS_CM"
 is_securitycontextconstraints: "IS_SCC"
+
+# Test passing
+test_passed: "TEST_PASSED"
+test_failed: "TEST_FAILED"

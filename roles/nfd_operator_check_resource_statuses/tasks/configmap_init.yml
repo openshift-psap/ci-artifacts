@@ -1,0 +1,40 @@
+---
+# If no ConfigMaps were found at all, then something is wrong.
+- name: Search to see if the NFD Operator ConfigMap exists
+  fail: msg="Worker ConfigMap not found"
+  when: all_nfd_operator_manifests.results | selectattr(search_key,'contains',search_val) | list | count == 0
+  vars:
+    search_key: 'stdout'
+    search_val: '{{ is_configmap }}'
+
+# Get DaemonSet names
+- name: Get the NFD Operator's ConfigMap name(s) from the manifests
+  shell: |
+    cat '{{ configmap_manifest.manifest.path }}' | shyaml get-value metadata.name
+  register: nfd_operator_configmap_names
+  with_items: '{{ all_nfd_operator_manifests.results | selectattr(search_key,"contains",search_val) | list }}'
+  loop_control:
+    loop_var: configmap_manifest
+    label: '{{ configmap_manifest.stdout_lines }}'
+  vars:
+    search_key: 'stdout'
+    search_val: '{{ is_configmap }}'
+
+- name: Attempt to retreive the NFD Operator ConfigMap(s)
+  shell: oc get cm '{{ configmap_name.stdout }}' -n '{{ nfd_operator_namespace }}' -oname | grep 'error'
+  retries: '{{ nfd_operator_resource_retries }}'
+  delay: '{{ nfd_operator_resource_delay }}'
+  register: nfd_operator_configmaps_do_not_exist
+  failed_when: false
+  with_items: '{{ nfd_operator_configmap_names.results }}'
+  loop_control:
+    loop_var: configmap_name
+    label: '{{ configmap_name.stdout }}'
+
+- name: If any of the NFD Operator ConfigMap(s) do not exist, then we cannot continue
+  fail: msg="All NFD Operator ConfigMaps must be initialized before running this role"
+  when: configmap_status.stderr != ''
+  with_items: "{{ nfd_operator_configmaps_do_not_exist.results }}"
+  loop_control:
+    loop_var: configmap_status
+    label: "{{ configmap_status.stdout }}"

@@ -5,23 +5,33 @@
 
 # Run all init checks to ensure that all resources are available, despite what
 # the CRD 'status' field may say
-- name: Run init checks to ensure NFD is up and running before attempting to test status checking
-  debug:
-    msg: "Checking to see if NFD is already up and running. If NFD is not up and running, then this playbook will fail."
+- block:
+  - name: Run init checks to ensure NFD is up and running before attempting to test status checking
+    debug:
+      msg: "Checking to see if NFD is already up and running. If NFD is not up and running, then this playbook will fail."
 
-- include: "{{ item }}"
-  with_items:
-    - "namespace_init.yml"
-    - "clusterrole_init.yml"
-    - "clusterrolebinding_init.yml"
-    - "controller_manager_init.yml"
-    - "serviceaccount_init.yml"
-    - "service_init.yml"
-    - "scc_init.yml"
-    - "role_init.yml"
-    - "rolebinding_init.yml"
-    - "daemonset_init.yml"
+  # Ensure all resources are initialized *first*
+  - include: "{{ resource_init_test }}"
+    with_items:
+      - "namespace_init.yml"
+      - "clusterrole_init.yml"
+      - "clusterrolebinding_init.yml"
+      - "controller_manager_init.yml"
+      - "serviceaccount_init.yml"
+      - "service_init.yml"
+      - "scc_init.yml"
+      - "role_init.yml"
+      - "rolebinding_init.yml"
+      - "daemonset_init.yml"
+      - "configmap_init.yml"
+    loop_control:
+      loop_var: resource_init_test
+
+  # Test deletion of resources to determine if resources are Available
+  - include: "all_resources_available_tests.yml" 
+
   when: >
     oc_version.stdout_lines[0] == "4.8" or
     oc_version.stdout_lines[0] == "4.9" or
     oc_version.stdout_lines[0] == "4.10"
+

@@ -1,0 +1,25 @@
+---
+# Before running any tests, ensure the 'nfd-instance' is listed as 'Available'. If
+# not 'Available', then there is no point in testing any further.
+- debug:
+    msg: 'Ensuring the NFD Operator status is {{ nfd_operator_available_status }} before testing {{ resource_type }}'
+- include: 'ensure_availability.yml'
+
+# Break the operator by deleting the DaemonSets, one at a time
+- name: Intentionally break the operator by deleting the {{ resource_type }} resource(s).
+  shell: oc delete '{{ oc_resource }}' '{{ resource_name.stdout }}' -n '{{ nfd_operator_namespace }}'
+  with_items: '{{ nfd_operator_resource_names }}'
+  loop_control:
+    loop_var: resource_name
+    label: '{{ resource_name.stdout }}'
+
+# Check that the status is 'Available' again
+- include: 'ensure_availability.yml'
+
+###
+### XXX TODO --> Check if the status goes to degraded and then in-progress
+###
+
+# Let user know the test succeeded if the previous task was not triggered
+- debug:
+    msg: '{{ resource_type }} status checking succeeded.'
