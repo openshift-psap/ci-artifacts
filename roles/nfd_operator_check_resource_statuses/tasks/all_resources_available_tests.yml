@@ -1,5 +1,5 @@
 ---
-- include: 'generic_resource_tests.yml'
+- include: 'generic_resource_available_tests.yml'
   vars:
     resource_type: '{{ resource.type }}'
     oc_resource: '{{ resource.octype }}'
