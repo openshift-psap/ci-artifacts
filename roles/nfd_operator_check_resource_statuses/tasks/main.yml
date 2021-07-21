@@ -33,4 +33,3 @@
     oc_version.stdout_lines[0] == "4.8" or
     oc_version.stdout_lines[0] == "4.9" or
     oc_version.stdout_lines[0] == "4.10"
-

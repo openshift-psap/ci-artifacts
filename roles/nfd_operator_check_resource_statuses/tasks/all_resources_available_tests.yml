@@ -15,5 +15,5 @@
     - {type: 'ClusterRoleBinding', octype: 'clusterrolebinding', names: '{{ nfd_operator_clusterrolebinding_names.results }}'}
     - {type: 'ConfigMap', octype: 'configmap', names: '{{ nfd_operator_configmap_names.results }}'}
   loop_control:
-    loop_var:  resource
+    loop_var: resource
     label: resource.type
