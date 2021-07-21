@@ -2,6 +2,26 @@
 
 (Organized release by release)
 
+Features of version 0.1.3 (July 2021)
+-------------------------------------
+
+New feature
+~~~~~~~~~~~
+
+- gpu_operator_deploy_from_operatorhub: allow overriding subscription.spec.installPlanApproval `#219<https://github.com/openshift-psap/ci-artifacts/pull/219>`_
+
+  - ``./toolbox/gpu-operator/deploy_from_operatorhub.sh`` can receive a new flag ``--install-plan=Manual|Automatic`` (``Manual`` is the default) to override the Subscription install-plan approval setting when deploying from OperatorHub.
+
+
+Features of version 0.1.2 (July 2021)
+-------------------------------------
+
+Bug fixes
+~~~~~~~~~
+
+- Extra fix for the ``subscriptions`` conflict `#218 <https://github.com/openshift-psap/ci-artifacts/pull/218>`_
+
+
 Features of version 0.1.1 (July 2021)
 -------------------------------------
 

@@ -9,7 +9,7 @@ Deployment
 
 .. code-block:: shell
 
-    toolbox/gpu-operator/deploy_from_operatorhub.sh [<version>] [<channel>]
+    toolbox/gpu-operator/deploy_from_operatorhub.sh [<version> [<channel>]] [--install-plan=Automatic|Manual]
     toolbox/gpu-operator/undeploy_from_operatorhub.sh
 
 **Examples:**
@@ -25,6 +25,10 @@ Deployment
 - ``./toolbox/gpu-operator/deploy_from_operatorhub.sh 1.6.2 stable``
 
   - Installs ``v1.6.2`` from the ``stable`` channel
+
+- ``./toolbox/gpu-operator/deploy_from_operatorhub.sh --install-plan=Automatic``
+
+  - Forces the install plan approval to be set to ``Automatic``.
 
 **Note about the GPU Operator channel:**
 
