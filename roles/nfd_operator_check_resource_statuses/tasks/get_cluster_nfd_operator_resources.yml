@@ -1,5 +1,4 @@
 ---
-
 - name: Determine the OpenShift cluster version being used
   shell: |
     set -o pipefail;
@@ -97,4 +96,3 @@
     oc_version.stdout_lines[0] == "4.8" or
     oc_version.stdout_lines[0] == "4.9" or
     oc_version.stdout_lines[0] == "4.10"
-

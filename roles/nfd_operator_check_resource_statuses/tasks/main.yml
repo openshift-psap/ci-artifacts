@@ -1,5 +1,4 @@
 ---
-
 # First get the Cluster NFD Operator resources and label them by type
 - include: get_cluster_nfd_operator_resources.yml
 
