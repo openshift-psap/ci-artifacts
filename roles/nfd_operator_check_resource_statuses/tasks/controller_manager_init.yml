@@ -6,4 +6,4 @@
 
 - name: If the NFD Operator Controller Manager Pod does not exist, then we cannot continue
   fail: msg="The NFD Operator Controller Manager Pod must be defined before running this role"
-  when: nfd_operator_controller_manager_pod_does_not_exist.stdout_lines == ''
+  when: nfd_operator_controller_manager_pod_does_not_exist.rc == 0

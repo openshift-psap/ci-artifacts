@@ -1,7 +1,8 @@
 ---
 # Before running any tests, ensure the 'nfd-instance' is listed as 'Available'. If
 # not 'Available', then there is no point in testing any further.
-- debug:
+- name: Before any tests are run, ensure the NFD Operator status is {{ nfd_operator_available_status }}
+  debug:
     msg: 'Ensuring the NFD Operator status is {{ nfd_operator_available_status }} before testing {{ resource_type }}'
 - include: 'ensure_availability.yml'
 
@@ -23,5 +24,6 @@
 ###
 
 # Let user know the test succeeded if the previous task was not triggered
-- debug:
+- name: Let user know the test has succeeded
+  debug:
     msg: '{{ resource_type }} status checking succeeded.'
