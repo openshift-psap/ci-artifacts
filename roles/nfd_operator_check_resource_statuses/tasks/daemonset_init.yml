@@ -36,7 +36,7 @@
 
 - name: If any of the NFD Operator DaemonSets do not exist, then we cannot continue
   fail: msg="All NFD Operator DaemonSets must be initialized before running this role"
-  when: daemonset_status.stderr != ''
+  when: daemonset_status.stderr | length > 0
   with_items: "{{ nfd_operator_dses_do_not_exist.results }}"
   loop_control:
     loop_var: daemonset_status

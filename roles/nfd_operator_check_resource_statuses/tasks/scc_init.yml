@@ -37,7 +37,7 @@
 
 - name: If the NFD SecurityContextConstraints do not exist, then we cannot continue
   fail: msg="The NFD Operator SecurityContextConstraints must be initialized before running this role"
-  when: scc_status.stderr != ''
+  when: scc_status.stderr | length > 0
   with_items: "{{ nfd_operator_sccs_do_not_exist.results }}"
   loop_control:
     loop_var: scc_status

@@ -37,7 +37,7 @@
 
 - name: If any of the NFD Operator Roles do not exist, then we cannot continue
   fail: msg="All NFD Operator Roles must be initialized before running this role"
-  when: rrole_status.stderr != ''
+  when: rrole_status.stderr | length > 0
   with_items: "{{ nfd_operator_roles_do_not_exist.results }}"
   loop_control:
     loop_var: rrole_status

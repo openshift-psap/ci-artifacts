@@ -6,4 +6,4 @@
 
 - name: If the NFD Operator namespace does not exist, then no NFD Operator resources exist
   fail: msg="The '{{ nfd_operator_namespace }}' namespace must be defined before running this role"
-  when: nfd_operator_ns_does_not_exist.stdout_lines == ''
+  when: nfd_operator_ns_does_not_exist.stdout_lines | length == 0

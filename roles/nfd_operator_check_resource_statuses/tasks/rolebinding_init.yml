@@ -37,7 +37,7 @@
 
 - name: If any of the NFD Operator RoleBindings do not exist, then we cannot continue
   fail: msg="All NFD Operator RoleBindings must be initialized before running this role"
-  when: rolebinding_status.stderr != ''
+  when: rolebinding_status.stderr | length > 0
   with_items: "{{ nfd_operator_rolebindings_do_not_exist.results }}"
   loop_control:
     loop_var: rolebinding_status

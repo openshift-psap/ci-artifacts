@@ -12,4 +12,4 @@
 # If the instance status is NOT "Available", then fail
 - name: If the NFD Operator's 'nfd-instance' status is NOT ' {{ nfd_operator_available_status }}', then trigger a fail
   fail: msg="The NFD Operator's 'nfd-instance' is not available."
-  when: nfd_operator_instance_ok.stderr != ''
+  when: nfd_operator_instance_ok.stderr | length > 0

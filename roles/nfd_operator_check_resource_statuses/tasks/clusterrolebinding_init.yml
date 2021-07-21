@@ -37,7 +37,7 @@
 
 - name: If any of the NFD Operator ClusterRoleBindings do not exist, then we cannot continue
   fail: msg="All NFD Operator ClusterRoleBindings must be initialized before running this role"
-  when: clusterrolebinding_status.stderr != ''
+  when: clusterrolebinding_status.stderr | length > 0
   with_items: "{{ nfd_operator_clusterrolebindings_do_not_exist.results }}"
   loop_control:
     loop_var: clusterrolebinding_status

@@ -37,7 +37,7 @@
 
 - name: If the NFD Service does not exist, then we cannot continue
   fail: msg="The NFD Operator Service must be initialized before running this role"
-  when: service_status.stderr != ''
+  when: service_status.stderr | length > 0
   with_items: "{{ nfd_operator_services_do_not_exist.results }}"
   loop_control:
     loop_var: service_status

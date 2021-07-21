@@ -36,7 +36,7 @@
 
 - name: If any of the NFD Operator ConfigMap(s) do not exist, then we cannot continue
   fail: msg="All NFD Operator ConfigMaps must be initialized before running this role"
-  when: configmap_status.stderr != ''
+  when: configmap_status.stderr | length > 0
   with_items: "{{ nfd_operator_configmaps_do_not_exist.results }}"
   loop_control:
     loop_var: configmap_status
