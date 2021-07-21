@@ -10,6 +10,7 @@
 # Get SecurityContextConstraints names
 - name: Get the NFD Operator's SecurityContextConstraints name from the manifests
   shell: |
+    set -o pipefail;
     cat '{{ scc_manifest.manifest.path }}' | shyaml get-value metadata.name
   register: nfd_operator_scc_names
   with_items: '{{ all_nfd_operator_manifests.results | selectattr(search_key,"contains",search_val) | list }}'
@@ -22,7 +23,9 @@
 
 # Attempt to retreive the SecurityContextConstraints from the cluster to see if they exist
 - name: Attempt to retreive the NFD Operator SecurityContextConstraints
-  shell: oc get scc '{{ scc_name.stdout }}' -n '{{ nfd_operator_namespace }}' -oname | grep 'error'
+  shell: |
+    set -o pipefail;
+    oc get scc '{{ scc_name.stdout }}' -n '{{ nfd_operator_namespace }}' -oname | grep 'error'
   retries: '{{ nfd_operator_resource_retries }}'
   delay: '{{ nfd_operator_resource_delay }}'
   register: nfd_operator_sccs_do_not_exist

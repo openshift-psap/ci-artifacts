@@ -2,6 +2,7 @@
 # Get NFD Operator instance status to ensure it's listed as "Available"
 - name: Get the NFD Operator's 'nfd-instance' status to ensure its status is listed as 'Available'
   shell: |
+    set -o pipefail;
     oc get nodefeaturediscoveries/nfd-instance -n '{{ nfd_operator_namespace }}' -o yaml | grep '{{ nfd_operator_available_status }}' -B 1 | grep status | cut -d'"' -f2
   retries: '{{ nfd_operator_resource_retries }}'
   delay: '{{ nfd_operator_resource_delay }}'

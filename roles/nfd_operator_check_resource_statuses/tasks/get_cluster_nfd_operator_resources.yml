@@ -36,6 +36,7 @@
   # statements.
   - name: For all the worker and master manifests, label the manifest by resource type
     shell: |
+      set -o pipefail;
       if grep -Fxq 'kind: DaemonSet' '{{ manifest.path }}'
       then
         echo '{{ is_daemonset }},'

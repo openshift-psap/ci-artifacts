@@ -7,7 +7,9 @@
 
 # Break the operator by deleting the DaemonSets, one at a time
 - name: Intentionally break the operator by deleting the {{ resource_type }} resource(s).
-  shell: oc delete '{{ oc_resource }}' '{{ resource_name.stdout }}' -n '{{ nfd_operator_namespace }}'
+  shell: |
+    set -o pipefail;
+    oc delete '{{ oc_resource }}' '{{ resource_name.stdout }}' -n '{{ nfd_operator_namespace }}'
   with_items: '{{ nfd_operator_resource_names }}'
   loop_control:
     loop_var: resource_name
