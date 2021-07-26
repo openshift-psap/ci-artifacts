@@ -58,31 +58,58 @@ test_master_branch() {
 }
 
 test_commit() {
-    gpu_operator_git_repo="${1:-}"
-    gpu_operator_git_ref="${2:-}"
-    CI_IMAGE_GPU_COMMIT_CI_IMAGE_UID="ci-image"
+    oc create secret generic mirror-secret \
+       -n default \
+       --from-file=mirror.pem=/var/run/psap-entitlement-secret/entitled-mirror-client-creds.pem
+    cat << 'EOF' | oc create -f-
+apiVersion: v1
+kind: Pod
+metadata:
+ name: download-mirror
+ namespace: default
+spec:
+ restartPolicy: Never
+ containers:
+ - name: test
+   image: registry.access.redhat.com/ubi8/ubi-minimal:8.3
+   command:
+   - bash
+   - -c
+   - set -ex; mkdir /tmp/download/ && cd /tmp/download/ && time curl -E $CERT_FILE $DATASET_URL_BASE/$DATASET_FILENAME | md5sum || echo "FAILED :(";
+   env:
+   - name: DATASET_URL_BASE
+     value: "https://mirror-dataset.apps.ci-mirror.psap.aws.rhperfscale.org/coco"
+   - name: DATASET_FILENAME
+     value: train2017.zip
+   - name: CERT_FILE
+     value: /etc/mirror-secret/mirror.pem
+   volumeMounts:
+   - name: mirror-secret
+     mountPath: "/etc/mirror-secret"
+     readOnly: true
+ volumes:
+ - name: mirror-secret
+   secret:
+     secretName: mirror-secret
+EOF
+    while true; do
+        state=$(oc get pod/download-mirror \
+           --no-headers \
+           -ocustom-columns=phase:status.phase \
+           -n default || true)
+        echo "$state"
+        if [[ "$state" == Succeeded || "$state" == Failed || "$state" == Error ]]; then
+            break
+        fi
+        sleep 5
+    done
 
-    if [[ -z "$gpu_operator_git_repo" || -z "$gpu_operator_git_ref" ]]; then
-        echo "FATAL: test_commit must receive a git repo/ref to be tested."
-        return 1
+    if [[ "${ARTIFACT_DIR:-}" ]]; then
+        oc logs -f pod/download-mirror -n default > $ARTIFACT_DIR/download.log
     fi
-
-    echo "Using Git repository ${gpu_operator_git_repo} with ref ${gpu_operator_git_ref}"
-
-    prepare_cluster_for_gpu_operator
-
-    GPU_OPERATOR_QUAY_BUNDLE_PUSH_SECRET=${GPU_OPERATOR_QUAY_BUNDLE_PUSH_SECRET:-"/var/run/psap-entitlement-secret/openshift-psap-openshift-ci-secret.yml"}
-    GPU_OPERATOR_QUAY_BUNDLE_IMAGE_NAME=${GPU_OPERATOR_QUAY_BUNDLE_IMAGE_NAME:-"quay.io/openshift-psap/ci-artifacts"}
-
-    toolbox/gpu-operator/bundle_from_commit.sh "${gpu_operator_git_repo}" \
-                                               "${gpu_operator_git_ref}" \
-                                               "${GPU_OPERATOR_QUAY_BUNDLE_PUSH_SECRET}" \
-                                               "${GPU_OPERATOR_QUAY_BUNDLE_IMAGE_NAME}" \
-                                               "${CI_IMAGE_GPU_COMMIT_CI_IMAGE_UID}"
-
-    toolbox/gpu-operator/deploy_from_operatorhub.sh "--from-bundle=${GPU_OPERATOR_QUAY_BUNDLE_IMAGE_NAME}:operator_bundle_gpu-operator-ci-image"
-
-    validate_gpu_operator_deployment
+    oc logs -f pod/download-mirror -n default
+    oc delete pod/download-mirror -n default
+    echo "final state: $state"
 }
 
 test_operatorhub() {
