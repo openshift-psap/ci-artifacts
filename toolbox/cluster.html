@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                23, Jul 2021
+                27, Jul 2021
               </div>
             
           
@@ -177,20 +177,20 @@
 <div class="section" id="cluster-scale">
 <span id="toolbox-cluster-scale"></span><h2>Cluster Scale<a class="headerlink" href="#cluster-scale" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Set number of nodes with given instance type on AWS</p></li>
+<li><p>Set number of nodes with given instance type</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./toolbox/cluster/set_scale.sh &lt;machine-type&gt; &lt;replicas&gt;
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py cluster set_scale &lt;machine-type&gt; &lt;replicas&gt;
 </pre></div>
 </div>
 <p><strong>Example usage:</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the total number of g4dn.xlarge nodes to 2</span>
-./toolbox/cluster/set_scale.sh g4dn.xlarge <span class="m">2</span>
+./run_toolbox.py cluster set_scale g4dn.xlarge <span class="m">2</span>
 </pre></div>
 </div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the total number of g4dn.xlarge nodes to 5,</span>
 <span class="c1"># even when there are some machinesets that might need to be downscaled</span>
 <span class="c1"># to 0 to achive that.</span>
-./toolbox/cluster/set_scale.sh g4dn.xlarge <span class="m">5</span> --force
+./run_toolbox.py cluster set_scale g4dn.xlarge <span class="m">5</span> --force
 </pre></div>
 </div>
 </div>

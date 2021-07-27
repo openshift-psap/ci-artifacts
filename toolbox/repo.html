@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                23, Jul 2021
+                27, Jul 2021
               </div>
             
           
@@ -179,14 +179,14 @@
 <li><p>Ensure that all the Ansible variables defining a filepath
 (<code class="docutils literal notranslate"><span class="pre">roles/</span></code>) do point to an existing file</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/repo/validate_role_files.py
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py repo validate_role_files
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Ensure that all the Ansible variables defined are actually used in
 their role (with an exception for symlinks)</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/repo/validate_role_vars_used.py
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py repo validate_role_vars_used
 </pre></div>
 </div>
 </div>

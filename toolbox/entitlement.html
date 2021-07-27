@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                23, Jul 2021
+                27, Jul 2021
               </div>
             
           
@@ -186,14 +186,14 @@ PEM file.</p>
 <p>The custom CA file will be stored in
 <code class="docutils literal notranslate"><span class="pre">/etc/rhsm-host/ca/custom-repo-ca.pem</span></code> in the host and in
 <code class="docutils literal notranslate"><span class="pre">/etc/rhsm/ca/custom-repo-ca.pem</span></code> in the Pods.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/entitlement/deploy.sh --pem /path/to/key.pem
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py entitlement deploy --pem /path/to/key.pem
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Undeploy the cluster-wide entitlement (PEM keys, RHSM configuration
 and custom CA, if they exist)</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/entitlement/undeploy.sh
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py entitlement undeploy
 </pre></div>
 </div>
 </div>
@@ -203,33 +203,33 @@ and custom CA, if they exist)</p></li>
 <li><p>Test a PEM key in a local <code class="docutils literal notranslate"><span class="pre">podman</span></code> container (requires access to
 <code class="docutils literal notranslate"><span class="pre">registry.access.redhat.com/ubi8/ubi</span></code>)</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/entitlement/test_in_podman.sh /path/to/key.pem
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py entitlement test_in_podman /path/to/key.pem
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Test a PEM key inside a cluster Pod (without deploying it)</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/entitlement/test_in_cluster.sh /path/to/key.pem
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py entitlement test_in_cluster /path/to/key.pem
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Test cluster-wide entitlement</p></li>
 </ul>
 <p>(currently tested on a <em>random</em> node of the cluster)</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/entitlement/test_cluster.sh <span class="o">[</span>--no-inspect<span class="o">]</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py entitlement test_cluster <span class="o">[</span>--no-inspect<span class="o">]</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Wait for the cluster-wide entitlement to be deployed</p></li>
 </ul>
 <p>(currently tested on a <em>random</em> node of the cluster)</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/entitlement/wait.sh
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py entitlement <span class="nb">wait</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/entitlement/inspect.sh
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py entitlement inspect
 </pre></div>
 </div>
 </div>

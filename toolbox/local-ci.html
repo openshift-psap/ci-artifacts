@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                23, Jul 2021
+                27, Jul 2021
               </div>
             
           
@@ -180,16 +180,16 @@
 <ul class="simple">
 <li><p>Build the image used for the Prow CI testing, and run a given command in the Pod</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/local-ci/deploy.sh                 <span class="se">\</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py local-ci deploy                   <span class="se">\</span>
           &lt;ci command&gt;                     <span class="se">\</span>
           &lt;git repository&gt; &lt;git reference&gt; <span class="se">\</span>
-          <span class="o">[</span>gpu_operator_image_tag_uid<span class="o">]</span>
+          <span class="o">[</span>--tag_uid<span class="o">=</span>TAG_UID<span class="o">]</span>
 </pre></div>
 </div>
 <p><strong>Example:</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/local-ci/deploy.sh                        <span class="se">\</span>
-            <span class="s2">&quot;run gpu-operator test_master_branch&quot;</span> <span class="se">\</span>
-            https://github.com/openshift-psap/ci-artifacts.git master
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py local-ci deploy                          <span class="se">\</span>
+         <span class="s2">&quot;run gpu-operator test_master_branch&quot;</span> <span class="se">\</span>
+         https://github.com/openshift-psap/ci-artifacts.git master
 </pre></div>
 </div>
 </div>
@@ -198,7 +198,7 @@
 <ul class="simple">
 <li><p>Cleanup the resources used to deploy the test image</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/local-ci/cleanup.sh
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py local-ci cleanup
 </pre></div>
 </div>
 </div>

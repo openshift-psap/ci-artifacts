@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                23, Jul 2021
+                27, Jul 2021
               </div>
             
           
@@ -183,8 +183,8 @@
 <li><p>Deploy the NFD operator from OperatorHub, and control the install
 channel</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/nfd-operator/deploy_from_operatorhub.sh <span class="o">[</span>nfd_channel, eg: <span class="m">4</span>.7<span class="o">]</span>
-toolbox/nfd-operator/undeploy_from_operatorhub.sh
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py nfd_operator deploy_from_operatorhub <span class="o">[</span>--channel<span class="o">=</span>CHANNEL, eg: <span class="m">4</span>.7<span class="o">]</span>
+./run_toolbox.py nfd_operator undeploy_from_operatorhub
 </pre></div>
 </div>
 </div>
@@ -195,7 +195,7 @@ toolbox/nfd-operator/undeploy_from_operatorhub.sh
 </ul>
 <p>(search for <code class="docutils literal notranslate"><span class="pre">feature.node.kubernetes.io/system-os_release.ID=rhcos</span></code>
 label)</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/nfd/has_nfd_labels.sh
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py nfd has_labels
 </pre></div>
 </div>
 <ul class="simple">
@@ -207,23 +207,23 @@ feature.node.kubernetes.io/pci-0302_10de.present
 feature.node.kubernetes.io/pci-0300_10de.present
 </pre></div>
 </div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/nfd/has_gpu_nodes.sh
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py nfd has_gpu_nodes
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Wait with NFD for GPU nodes to become available</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/nfd/wait_gpu_nodes.sh
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py nfd wait_gpu_nodes
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Deploy NFD Operator from its master branch</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/nfd/deploy_from_commit.sh &lt;repo&gt; &lt;ref&gt; <span class="o">[</span>tag<span class="o">]</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py nfd_operator deploy_from_commit &lt;repo&gt; &lt;ref&gt; <span class="o">[</span>tag<span class="o">]</span>
 </pre></div>
 </div>
 <p>Example:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/nfd/deploy_from_commit.sh https://github.com/openshift/cluster-nfd-operator.git master
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py nfd_operator deploy_from_commit https://github.com/openshift/cluster-nfd-operator.git master
 </pre></div>
 </div>
 </div>
@@ -232,7 +232,7 @@ feature.node.kubernetes.io/pci-0300_10de.present
 <ul class="simple">
 <li><p>Test NFD Operator from its master branch</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>toolbox/local-ci/deploy.sh <span class="s2">&quot;run nfd-operator test_master_branch&quot;</span> https://github.com/openshift-psap/ci-artifacts master
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py local_ci deploy <span class="s2">&quot;run nfd-operator test_master_branch&quot;</span> https://github.com/openshift-psap/ci-artifacts master
 </pre></div>
 </div>
 </div>
@@ -241,7 +241,7 @@ feature.node.kubernetes.io/pci-0300_10de.present
 <ul class="simple">
 <li><p>Uninstall and cleanup NFD labels</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">toolbox</span><span class="o">/</span><span class="n">nfd</span><span class="o">-</span><span class="n">operator</span><span class="o">/</span><span class="n">undeploy_from_operatorhub</span><span class="o">.</span><span class="n">sh</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">run_toolbox</span><span class="o">.</span><span class="n">py</span> <span class="n">nfd_operator</span> <span class="n">undeploy_from_operatorhub</span>
 </pre></div>
 </div>
 </div>
