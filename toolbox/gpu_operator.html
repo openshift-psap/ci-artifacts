@@ -183,7 +183,7 @@
 <ul class="simple">
 <li><p>Deploy from OperatorHub</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py gpu_operator deploy_from_operatorhub <span class="o">[</span>--version<span class="o">=</span>&lt;version&gt;<span class="o">]</span> <span class="o">[</span>--chanel<span class="o">=</span>&lt;channel&gt;<span class="o">]</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py gpu_operator deploy_from_operatorhub <span class="o">[</span>--version<span class="o">=</span>&lt;version&gt;<span class="o">]</span> <span class="o">[</span>--channel<span class="o">=</span>&lt;channel&gt;<span class="o">]</span>
 ./run_toolbox.py gpu_operator undeploy_from_operatorhub
 </pre></div>
 </div>
@@ -301,7 +301,7 @@ in gpu-operator-resources, …)</p>
 ./run_toolbox.py nfd has_labels
 ./run_toolbox.py nfd has_gpu_nodes
 ./run_toolbox.py gpu_operator wait_deployment
-./run_toolbox.py gpu_operator run_gpu_burn <span class="m">30</span>
+./run_toolbox.py gpu_operator run_gpu_burn --runtime<span class="o">=</span><span class="m">30</span>
 ./run_toolbox.py gpu_operator capture_deployment_state
 </pre></div>
 </div>
