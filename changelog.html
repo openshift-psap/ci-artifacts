@@ -251,6 +251,11 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/repo/validate_role_vars_used.py</span></code> is a new script to ensure that all the Ansible variables defined are actually used in their role (with an exception for symlinks)</p></li>
 </ul>
 </li>
+<li><p>gpu_operator_deploy_from_operatorhub: allow overriding subscription.spec.installPlanApproval <a href="#id21"><span class="problematic" id="id22">`#219&lt;https://github.com/openshift-psap/ci-artifacts/pull/219&gt;`_</span></a></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">./toolbox/gpu-operator/deploy_from_operatorhub.sh</span></code> can receive a new flag <code class="docutils literal notranslate"><span class="pre">-install-plan=Manual|Automatic</span></code> (<code class="docutils literal notranslate"><span class="pre">Manual</span></code> is the default) to override the Subscription install-plan approval setting when deploying from OperatorHub.</p></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>

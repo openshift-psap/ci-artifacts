@@ -183,7 +183,7 @@
 <ul class="simple">
 <li><p>Deploy from OperatorHub</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py gpu_operator deploy_from_operatorhub <span class="o">[</span>--version<span class="o">=</span>&lt;version&gt;<span class="o">]</span> <span class="o">[</span>--channel<span class="o">=</span>&lt;channel&gt;<span class="o">]</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py gpu_operator deploy_from_operatorhub <span class="o">[</span>--version<span class="o">=</span>&lt;version&gt;<span class="o">]</span> <span class="o">[</span>--channel<span class="o">=</span>&lt;channel&gt;<span class="o">]</span> <span class="o">[</span>--installPlan<span class="o">=</span>Automatic<span class="p">|</span>Manual<span class="o">]</span>
 ./run_toolbox.py gpu_operator undeploy_from_operatorhub
 </pre></div>
 </div>
@@ -202,6 +202,11 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">./run_toolbox.py</span> <span class="pre">gpu_operator</span> <span class="pre">deploy_from_operatorhub</span> <span class="pre">--version=1.6.2</span> <span class="pre">--channel=stable</span></code></p>
 <ul>
 <li><p>Installs <code class="docutils literal notranslate"><span class="pre">v1.6.2</span></code> from the <code class="docutils literal notranslate"><span class="pre">stable</span></code> channel</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">./run_toolbox.py</span> <span class="pre">gpu_operator</span> <span class="pre">deploy_from_operatorhub</span> <span class="pre">--installPlan=Automatic</span></code></p>
+<ul>
+<li><p>Forces the install plan approval to be set to <code class="docutils literal notranslate"><span class="pre">Automatic</span></code>.</p></li>
 </ul>
 </li>
 </ul>
