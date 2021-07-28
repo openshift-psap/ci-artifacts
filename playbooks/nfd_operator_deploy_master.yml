@@ -1,0 +1,8 @@
+---
+- name: Deploy NFD Operator from openshift/cluster-nfd-operator@master
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  roles:
+    - nfd_operator_deploy_master
+    - nfd_test_wait_labels

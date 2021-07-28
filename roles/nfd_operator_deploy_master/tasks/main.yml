@@ -7,12 +7,8 @@
   fail: msg="Bailing out. This play requires 'nfd_git_repo'"
   when: nfd_operator_git_repo is undefined
 
-- name: Check that nfd_git_ref is defined
-  fail: msg="Bailing out. This play requires 'nfd_git_ref'"
-  when: nfd_operator_git_ref is undefined
-
-- name: Build nfd from custom commit
+- name: Build nfd from master
   include_tasks: build.yml
 
-- name: Deploy nfd from custom commit
+- name: Deploy nfd from master
   include_tasks: deploy.yml

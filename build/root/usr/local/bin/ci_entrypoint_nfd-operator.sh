@@ -21,15 +21,13 @@ validate_nfd_deployment() {
 
 test_master_branch() {
     CI_IMAGE_NFD_COMMIT_CI_REPO="${1:-https://github.com/openshift/cluster-nfd-operator.git}"
-    CI_IMAGE_NFD_COMMIT_CI_REF="${2:-master}"
 
     echo "Using Git repository ${CI_IMAGE_NFD_COMMIT_CI_REPO} with ref ${CI_IMAGE_NFD_COMMIT_CI_REF}"
 
-    CI_IMAGE_NFD_COMMIT_CI_IMAGE_TAG="ci-image"
+    CI_IMAGE_NFD_COMMIT_CI_IMAGE_TAG="${JOB_TYPE}-ci-image"
 
     prepare_cluster_for_nfd
-    ./run_toolbox.py nfd_operator deploy_from_commit "${CI_IMAGE_NFD_COMMIT_CI_REPO}" \
-                                             "${CI_IMAGE_NFD_COMMIT_CI_REF}"  \
+    ./run_toolbox.py nfd_operator deploy_from_master "${CI_IMAGE_NFD_COMMIT_CI_REPO}" \
                                              --image-tag="${CI_IMAGE_NFD_COMMIT_CI_IMAGE_TAG}"
     validate_nfd_deployment
 }

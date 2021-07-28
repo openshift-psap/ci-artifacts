@@ -17,7 +17,7 @@ data:
 
     mkdir /work && cd /work
 
-    git clone ${OPERATOR_GIT_REPO} cluster-nfd-operator -b ${OPERATOR_GIT_REF} --depth 1
+    git clone ${OPERATOR_GIT_REPO} cluster-nfd-operator -b master --depth 1
 
     cd cluster-nfd-operator
 
@@ -45,4 +45,4 @@ data:
 
     podman push $AUTH $IMAGE_NAME $IMAGE_STREAM
 
-    echo "NFD Operator built from $OPERATOR_GIT_REPO / $OPERATOR_GIT_REF and pushed to $IMAGE_STREAM"
+    echo "NFD Operator built from ${OPERATOR_GIT_REPO}@master and pushed to $IMAGE_STREAM"
