@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nfd-operator
+  labels:
+    app: nfd-operator-ci-presubmit
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: nfd-operator-ci-presubmit
+  labels:
+    app: nfd-operator-ci-presubmit
+spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nfd-operator-resources
+  labels:
+    app: nfd-operator-ci-presubmit
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: nfd-operator-ci-presubmit-utils
+  labels:
+    app: nfd-operator-ci-presubmit
+spec: {}

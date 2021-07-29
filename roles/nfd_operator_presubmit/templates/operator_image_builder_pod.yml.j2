@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: nfd-operator-ci-presubmit
+  name: operator-image-builder-pod
+  namespace: nfd-operator-ci-presubmit
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - /mnt/helper/run_operator_image_builder.sh
+    image: image-registry.openshift-image-registry.svc:5000/nfd-operator-ci-presubmit-utils/nfd-operator-ci-presubmit-utils:builder_helper
+    name: operator-image-builder
+    imagePullPolicy: Always
+    securityContext:
+      privileged: true
+    env:
+      - name: OPERATOR_GIT_REPO
+        value: "{{ nfd_operator_git_repo }}"
+      - name: IMAGESTREAM_NAMESPACED_NAME
+        value: "nfd-operator-ci-presubmit/nfd-operator-ci-presubmit"
+      - name: IMAGESTREAM_TAG
+        value: "{{ nfd_operator_image_tag }}"
+      - name: PULL_BASE_REF
+        value: "{{ presubmit_pull_base_ref }}"
+      - name: PULL_NUMBER
+        value: "{{ presubmit_pull_number }}"
+      - name: PULL_PULL_SHA
+        value: "{{ presubmit_pull_pull_sha }}"
+    volumeMounts:
+    - mountPath: /mnt/helper/run_operator_image_builder.sh
+      name: operator-image-builder-script
+      readOnly: true
+      subPath: run_operator_image_builder.sh
+    - mountPath: /var/run/secrets/openshift.io/push
+      name: builder-dockercfg-push
+      readOnly: true
+  nodeSelector:
+    tuned.module.fuse: ""
+  restartPolicy: Never
+  volumes:
+  - configMap:
+      defaultMode: 511
+      name: operator-image-builder-script
+    name: operator-image-builder-script
+  - name: builder-dockercfg-push
+    secret:
+      defaultMode: 384
+      secretName: "{{ builder_secret }}"

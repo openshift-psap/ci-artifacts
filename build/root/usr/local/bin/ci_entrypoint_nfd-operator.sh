@@ -32,6 +32,21 @@ test_master_branch() {
     validate_nfd_deployment
 }
 
+presubmit_job() {
+    echo "${JOB_TYPE} ${PULL_NUMBER} with ref ${PULL_PULL_SHA}"
+
+    PRESUBMIT_JOB_REPO="https://github.com/${REPO_OWNER}/${REPO_NAME}.git"
+
+    CI_IMAGE_NFD_COMMIT_CI_IMAGE_TAG="${JOB_TYPE}-ci-image"
+
+    prepare_cluster_for_nfd
+    ./run_toolbox.py nfd_operator presubmit_job "${PRESUBMIT_JOB_REPO}" \
+                                                "${PULL_NUMBER}" "${PULL_BASE_REF}" \
+                                                "${PULL_PULL_SHA}" \
+                                                "${CI_IMAGE_NFD_COMMIT_CI_IMAGE_TAG}"
+    validate_nfd_deployment
+}
+
 if [ -z "${1:-}" ]; then
     echo "FATAL: $0 expects at least 1 argument ..."
     exit 1
@@ -45,6 +60,10 @@ set -x
 case ${action:-} in
     "test_master_branch")
         test_master_branch "$@"
+        exit 0
+        ;;
+    "presubmit")
+        presubmit_job
         exit 0
         ;;
     *)

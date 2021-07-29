@@ -11,7 +11,7 @@ class NFDOperator:
         Deploys the NFD operator from the given git commit
 
         Args:
-            git_rep: The git repository to deploy from, e.g. https://github.com/openshift/cluster-nfd-operator.git
+            git_repo: The git repository to deploy from, e.g. https://github.com/openshift/cluster-nfd-operator.git
             image_tag: The NFD operator image tag UID.
         """
         opts = {
@@ -22,6 +22,30 @@ class NFDOperator:
             opts["nfd_operator_image_tag"] = image_tag
 
         return PlaybookRun("nfd_operator_deploy_master", opts)
+    
+    @staticmethod
+    def presubmit_job(git_repo, pull_number, pull_base_ref, pull_pull_sha, image_tag=None):
+        """
+        Deploys the NFD operator from the given git commit of a presubmit job
+
+        Args:
+            git_repo: The git repository to deploy from, e.g. https://github.com/openshift/cluster-nfd-operator.git
+            pull_number: Pull request number
+            pull_base_ref: Ref name of the base branch
+            presubmit_pull_pull_sha: Pull request head SHA
+            image_tag: The NFD operator image tag UID
+        """
+        opts = {
+            "nfd_operator_git_repo": git_repo,
+            "presubmit_pull_number": pull_number,
+            "presubmit_pull_base_ref": pull_base_ref,
+            "presubmit_pull_pull_sha": pull_pull_sha,
+        }
+
+        if image_tag is not None:
+            opts["nfd_operator_image_tag"] = image_tag
+
+        return PlaybookRun("nfd_operator_presubmit", opts)
 
     @staticmethod
     def deploy_from_operatorhub(channel=None):

@@ -1,0 +1,18 @@
+---
+kind: ImageStream
+apiVersion: v1
+metadata:
+  name: nfd-operator-ci-presubmit
+  namespace: nfd-operator-ci-presubmit
+  labels:
+    app: nfd-operator-ci-presubmit
+spec: {}
+---
+kind: ImageStream
+apiVersion: v1
+metadata:
+  name: nfd-operator-ci-presubmit-utils
+  namespace: nfd-operator-ci-presubmit-utils
+  labels:
+    app: nfd-operator-ci-presubmit
+spec: {}

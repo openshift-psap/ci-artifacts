@@ -1,0 +1,8 @@
+---
+- name: Deploy NFD Operator from presubmit job ref
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  roles:
+    - nfd_operator_presubmit
+    - nfd_test_wait_labels
