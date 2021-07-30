@@ -85,6 +85,53 @@ test_commit() {
     validate_gpu_operator_deployment
 }
 
+test_driver_toolkit() {
+    trap collect_must_gather EXIT
+
+    # ensure that the cluster is not entitled
+    echo "INFO: Testing if the cluster is already entitled ..."
+    if ./run_toolbox.py entitlement test_cluster --no_inspect; then
+        echo "INFO: Cluster already entitled :("
+        exit 1
+    fi
+    echo "###"
+    echo "### Cluster is not entitled"
+    echo "###"
+
+    # install the NFD Operator
+    ./run_toolbox.py nfd_operator deploy_from_operatorhub
+
+    # install the last published version of the GPU Operator
+    ./run_toolbox.py gpu_operator deploy_from_operatorhub
+
+    # disable the driver DaemonSet
+    oc patch clusterpolicy/gpu-cluster-policy \
+       --type='json' \
+       -p='[{"op": "replace", "path": "/spec/driver/enabled", "value": false}]'
+
+    # restart the operator Pod (only required because we patched the
+    # ClusterPolicy after its creation)
+    oc delete pod -lapp.kubernetes.io/component=gpu-operator -n openshift-operators
+
+    # create the driver-toolkit daemonset
+    OCP_VERSION=$(oc get clusterversion/version -ojsonpath={.status.desired.version})
+    DRIVER_TOOLKIT_IMAGE=$(oc adm release info $OCP_VERSION --image-for=driver-toolkit)
+    echo "OCP VERSION: $OCP_VERSION"
+    echo "DRIVER_TOOLKIT_IMAGE: $DRIVER_TOOLKIT_IMAGE"
+
+    cat ${HOME}/gpu-operator_driver-toolkit.yml \
+        | sed "s|{{ DRIVER_TOOLKIT_IMAGE }}|$DRIVER_TOOLKIT_IMAGE|" \
+        > $ARTIFACT_DIR/gpu-operator_driver-toolkit.yml
+
+    oc apply -f $ARTIFACT_DIR/gpu-operator_driver-toolkit.yml
+
+    # add a GPU node to the cluster
+    ./run_toolbox.py cluster set_scale g4dn.xlarge 1
+
+    # wait and validate the deployment
+    validate_gpu_operator_deployment
+}
+
 test_operatorhub() {
     if [ "${1:-}" ]; then
         OPERATOR_VERSION="--version=$1"
@@ -134,7 +181,8 @@ case ${action} in
         exit 0
         ;;
     "test_commit")
-        test_commit "https://github.com/NVIDIA/gpu-operator.git" master
+        test_driver_toolkit
+
         exit 0
         ;;
     "test_operatorhub")

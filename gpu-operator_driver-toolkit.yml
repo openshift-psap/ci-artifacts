@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: nvidia-driver-daemonset
+  name: nvidia-driver-toolkit-daemonset
+  namespace: gpu-operator-resources
+  annotations:
+    openshift.io/scc: nvidia-driver
+spec:
+  selector:
+    matchLabels:
+      app: nvidia-driver-daemonset
+  template:
+    metadata:
+      labels:
+        app: nvidia-driver-daemonset
+    spec:
+      nodeSelector:
+        nvidia.com/gpu.deploy.driver: "true"
+      serviceAccount: nvidia-driver
+      serviceAccountName: nvidia-driver
+      hostPID: true
+      initContainers:
+      - name: assets
+        image: nvcr.io/nvidia/driver:460.73.01-rhcos4.8
+        command: [bash, -c]
+        args:
+          - >-
+           mkdir /shared/nvidia/bin;
+           cp /tmp/install.sh /shared/nvidia/;
+           cp -r /usr/local/bin/nvidia-driver /usr/local/bin/extract-vmlinux /shared/nvidia/bin;
+           cp -r /drivers /shared/nvidia/;
+           env | sed 's/=/="/' | sed 's/$/"/' > /shared/nvidia/env
+        imagePullPolicy: Always
+        volumeMounts:
+        - mountPath: /shared/nvidia
+          name: shared-nvidia
+      containers:
+      - name: driver-container
+        # OCP_VERSION=$(oc get clusterversion/version -ojsonpath={.status.desired.version})
+        # DRIVER_TOOLKIT_IMAGE=$(oc adm release info $OCP_VERSION --image-for=driver-toolkit)
+        image: {{ DRIVER_TOOLKIT_IMAGE }}
+        command: [bash, -cx]
+        args:
+            - >-
+              mv /etc/pki/entitlement-host{,.back};
+              set -o allexport; source /shared/nvidia/env; set +o allexport;
+              export PATH=/shared/nvidia/bin:$PATH;
+              cp /shared/nvidia/install.sh /tmp;
+              cd /shared/nvidia/drivers;
+              gcc --version;
+              rm -rf NVIDIA-Linux-x86_64-460.73.01;
+              sed 's/elfutils-libelf.x86_64//' -i $(which nvidia-driver);
+              sed 's|rm -rf /lib/modules/${KERNEL_VERSION}/video||' -i $(which nvidia-driver);
+              sed 's|rm -rf /lib/modules/${KERNEL_VERSION}||' -i $(which nvidia-driver);
+
+              bash -ex nvidia-driver init
+        env:
+        - name: RESOLVE_OCP_VERSION
+          value: ""
+        - name: OPENSHIFT_VERSION
+          value: "4.8"
+        securityContext:
+          privileged: true
+          seLinuxOptions:
+            level: "s0"
+        volumeMounts:
+          - mountPath: /shared/nvidia
+            name: shared-nvidia
+            readOnly: false
+          - name: run-nvidia
+            mountPath: /run/nvidia
+            mountPropagation: Bidirectional
+          - name: run-nvidia-topologyd
+            mountPath: /run/nvidia-topologyd
+          - name: var-log
+            mountPath: /var/log
+          - name: dev-log
+            mountPath: /dev/log
+          - name: host-os-release
+            mountPath: "/host-etc/os-release"
+            readOnly: true
+      volumes:
+        - name: shared-nvidia
+          emptyDir: {}
+        - name: run-nvidia
+          hostPath:
+            path: /run/nvidia
+        - name: var-log
+          hostPath:
+            path: /var/log
+        - name: dev-log
+          hostPath:
+            path: /dev/log
+        - name: host-os-release
+          hostPath:
+            path: "/etc/os-release"
+        - name: run-nvidia-topologyd
+          hostPath:
+            path: /run/nvidia-topologyd
