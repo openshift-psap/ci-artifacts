@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: entitled-driver
+  labels:
+    app: entitled-driver
+  namespace: gpu-operator-resources
+spec:
+  nodeSelector:
+    node.kubernetes.io/instance-type: g4dn.xlarge
+  serviceAccount: nvidia-driver
+  serviceAccountName: nvidia-driver
+  imagePullSecrets:
+  - name: builder-dockercfg-jdw5v
+  containers:
+  - name: base
+    image: image-registry.openshift-image-registry.svc:5000/gpu-operator-resources/entitled-driver:entitled-driver-builder
+    command: [bash, /mnt/driver-toolkit-script/entrypoint.sh]
+    env:
+    - name: DRIVER_VERSION
+      value: 460.73.01
+    securityContext:
+      privileged: true
+      seLinuxOptions:
+        level: "s0"
+    volumeMounts:
+    - name: host-os-release
+      mountPath: "/host-etc/os-release"
+      readOnly: true
+    - name: run-nvidia
+      mountPath: /run/nvidia
+      mountPropagation: Bidirectional
+    - name: run-nvidia-topologyd
+      mountPath: /run/nvidia-topologyd
+    - name: var-log
+      mountPath: /var/log
+    - name: dev-log
+      mountPath: /dev/log
+    - name: driver-toolkit-script
+      mountPath: /mnt/driver-toolkit-script
+  volumes:
+  - name: run-nvidia
+    hostPath:
+      path: /run/nvidia
+  - name: var-log
+    hostPath:
+      path: /var/log
+  - name: dev-log
+    hostPath:
+      path: /dev/log
+  - name: host-os-release
+    hostPath:
+      path: "/etc/os-release"
+  - name: run-nvidia-topologyd
+    hostPath:
+      path: /run/nvidia-topologyd
+  - name: driver-toolkit-script
+    configMap:
+      name: driver-toolkit-script

@@ -1,0 +1,25 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: entitled-driver
+  name: driver-toolkit
+  namespace: gpu-operator-resources
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: entitled-driver:driver-toolkit
+  source:
+    type: Dockerfile
+    dockerfile: |
+      FROM not/used
+
+  strategy:
+    dockerStrategy:
+      from:
+        kind: DockerImage
+        name: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:1aa3d1eaae7847eb426267e7cce8d780827508812aa8ee31b73703a4902c8c45
+    type: Docker
+  triggers:
+  - type: ConfigChange

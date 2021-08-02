@@ -1,0 +1,54 @@
+
+This assumes that some pieces from the GPU Operator are available:
+- gpu-operator-resources namespace
+- the driver assets (except the DaemonSet): https://gitlab.com/nvidia/kubernetes/gpu-operator/-/tree/master/assets/state-driver
+
+The Role is extended with this, to be able to query the image pull secret:
+
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - '*'
+
+```
+# make sure that you have a 'g4dn.xlarge' node
+oc get nodes -l node.kubernetes.io/instance-type=g4dn.xlarge
+
+# Deploy the NTO profile loading 'fuse' module
+oc create -f tuned.yaml
+
+# Create an image stream to host the images
+oc create -f imagestream.yaml
+
+# Make a local copy of the driver toolkit image (for testing/progressing purpose)
+oc create -f builconfig_dtk.yaml
+
+# Create the image where buildah will run
+oc create -f builconfig.yaml
+
+# Create a CM with the our entrypoint script
+oc delete cm driver-toolkit-script --ignore-not-found=true
+oc create cm driver-toolkit-script --from-file=./entrypoint.sh
+
+# Create the test Pod
+oc create -f test_pod.yaml
+
+# Watch the progress
+oc logs -f Pod/entitled-driver -n gpu-operator-resources
+```
+
+Expected result:
+
+```
+c726213cd99c0200b01f2fd70634033a  /tmp/nvidia/nvidia-modeset.ko
+ca31e11a18a7c7eb7c11e5c4c465999c  /tmp/nvidia/nvidia-uvm.ko
+2dbd9eb4400b969f3fa197a59e2f4fd8  /tmp/nvidia/nvidia.ko
+```
+
+Open problems:
+
+- how to fetch the driver toolkit image
+`quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:...` from inside the Pod, without using the temporary cluster registry? (biggest difficulty)
+- how get nvidia-persistenced to work? (maybe by using the driver-toolkit only for building the driver, and not running any NVIDIA binary)
