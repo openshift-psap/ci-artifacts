@@ -1,0 +1,84 @@
+{
+  "spec": {
+    "dcgmExporter": {
+      "env": [
+        {
+          "name": "CI_UPGRADE_CANARY",
+          "value": "UPGRADED"
+        }
+      ]
+    },
+    "dcgm": {
+      "env": [
+        {
+          "name": "CI_UPGRADE_CANARY",
+          "value": "UPGRADED"
+        }
+      ]
+    },
+    "devicePlugin": {
+      "env": [
+        {
+          "name": "CI_UPGRADE_CANARY",
+          "value": "UPGRADED"
+        }
+      ]
+    },
+    "driver": {
+      "env": [
+         {
+           "name": "CI_UPGRADE_CANARY",
+           "value": "UPGRADED"
+         }
+      ],
+      "manager": {
+        "env": [
+          {
+            "name": "CI_UPGRADE_CANARY",
+            "value": "UPGRADED"
+          }
+        ]
+      }
+    },
+    "gfd": {
+      "env": [
+        {
+          "name": "CI_UPGRADE_CANARY",
+          "value": "UPGRADED"
+        }
+      ]
+    },
+    "migManager": {
+      "env": [
+        {
+          "name": "CI_UPGRADE_CANARY",
+          "value": "UPGRADED"
+        }
+      ]
+    },
+    "nodeStatusExporter": {
+      "env": [
+        {
+          "name": "CI_UPGRADE_CANARY",
+          "value": "UPGRADED"
+        }
+      ]
+    },
+    "toolkit": {
+      "env": [
+        {
+          "name": "CI_UPGRADE_CANARY",
+          "value": "UPGRADED"
+        }
+      ]
+    },
+    "validator": {
+      "env": [
+        {
+          "name": "CI_UPGRADE_CANARY",
+          "value": "UPGRADED"
+        }
+      ]
+    }
+  }
+}

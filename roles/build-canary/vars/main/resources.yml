@@ -1,0 +1,3 @@
+---
+build_operand_canary_namespace_deployment: roles/build-canary/templates/namespace.yml.j2
+build_operand_canary_imagestream: roles/build-canary/templates/imagestream.yml.j2

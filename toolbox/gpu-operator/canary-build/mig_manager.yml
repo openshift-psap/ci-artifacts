@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: ci-artifacts
+  name: k8s-mig-manager
+  namespace: gpu-operator-resources
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: k8s-mig-manager:latest
+      namespace: gpu-operator-resources
+  resources: {}
+  source:
+    type: Git
+    git:
+      uri: https://github.com/openshift-psap/gpu-operand-upgrade-canary.git
+      ref: main
+    contextDir: .
+  triggers:
+    - type: ConfigChange
+  strategy:
+    type: Docker
+    dockerStrategy:
+      buildArgs:
+        - name: OPERAND_IMAGE
+          value: "{{ mig_manager_operand_repo.stdout }}/{{ build_operand_canary_imagestream_name }}{% if mig_manager_operand_tag.stdout.startswith('sha256') %}@{% else %}:{% endif %}{{ mig_manager_operand_tag.stdout }}"
+      dockerfilePath: Containerfile

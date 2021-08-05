@@ -1,8 +1,13 @@
 import sys
 import secrets
+import yaml
 
-from toolbox._common import PlaybookRun
+from toolbox._common import PlaybookRun, PlaybookRuns
+from pathlib import Path
 
+SCRIPT_DIR = Path(__file__).absolute().parent
+
+operand_canaries_dir = (SCRIPT_DIR / "gpu-operator" / "canary-build")
 
 class GPUOperator:
     """
@@ -240,3 +245,42 @@ class GPUOperator:
         }
 
         return PlaybookRun("gpu_operator_prepare_test_alerts", opts)
+
+    @staticmethod
+    def build_operand_canary(buildconfig_path):
+        """
+        Build a GPU-operator operand image canary, given its BuildConfig yaml
+
+        Canaries are used for testing upgrade tests - they're the "fake" images
+        we asked the operator to upgrade to, then check whether the upgrade by
+        successful by looking for a specific file inside the canary
+
+        Args:
+            buildconfig_path: Path to a yaml file containing the BuildConfig resource
+        """
+        buildconfig_path = Path(buildconfig_path)
+        try:
+            with open(buildconfig_path) as f:
+                buildconfig = yaml.safe_load(f)
+        except FileNotFoundError:
+            print(f"Couldn't find {buildconfig_path}")
+            sys.exit(1)
+
+        build_operand_canary_imagestream_name, image_tag = buildconfig["spec"]["output"]["to"]["name"].split(":")
+
+        return PlaybookRun(
+                "build-canary",
+                opts={
+                    "operand_buildconfig": buildconfig_path.absolute(),
+                    "build_operand_canary_tag": image_tag,
+                    "build_operand_canary_namespace": buildconfig["metadata"]["namespace"],
+                    "build_operand_canary_imagestream_name": build_operand_canary_imagestream_name,
+                },
+            )
+
+    @classmethod
+    def build_all_operands_canaries(cls):
+        return PlaybookRuns(
+            cls.build_operand_canary(canary_yml_path)
+            for canary_yml_path in operand_canaries_dir.glob("*.yml")
+        )

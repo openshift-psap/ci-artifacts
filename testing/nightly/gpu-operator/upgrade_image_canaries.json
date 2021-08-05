@@ -1,0 +1,45 @@
+{
+  "spec": {
+    "dcgmExporter": {
+      "version": "latest",
+      "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+    },
+    "dcgm": {
+      "version": "latest",
+      "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+    },
+    "devicePlugin": {
+      "version": "latest",
+      "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+    },
+    "driver": {
+      "version": "latest",
+      "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources",
+      "manager": {
+        "version": "latest",
+        "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+      }
+    },
+    "gfd": {
+      "version": "latest",
+      "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+    },
+    "migManager": {
+      "version": "latest",
+      "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+    },
+    "nodeStatusExporter": {
+      "image": "node-status-exporter",
+      "version": "latest",
+      "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+    },
+    "toolkit": {
+      "version": "latest",
+      "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+    },
+    "validator": {
+      "version": "latest",
+      "repository": "image-registry.openshift-image-registry.svc:5000/gpu-operator-resources"
+    }
+  }
+}

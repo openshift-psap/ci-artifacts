@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: ci-artifacts
+  name: k8s-device-plugin
+  namespace: gpu-operator-resources
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: k8s-device-plugin:latest
+      namespace: gpu-operator-resources
+  resources: {}
+  source:
+    type: Git
+    git:
+      uri: https://github.com/openshift-psap/gpu-operand-upgrade-canary.git
+      ref: main
+    contextDir: .
+  triggers:
+    - type: ConfigChange
+  strategy:
+    type: Docker
+    dockerStrategy:
+      buildArgs:
+        - name: OPERAND_IMAGE
+          value: "{{ device_plugin_operand_repo.stdout }}/{{ build_operand_canary_imagestream_name }}{% if device_plugin_operand_tag.stdout.startswith('sha256') %}@{% else %}:{% endif %}{{ device_plugin_operand_tag.stdout }}"
+      dockerfilePath: Containerfile

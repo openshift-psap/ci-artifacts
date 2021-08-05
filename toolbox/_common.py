@@ -4,6 +4,7 @@ import os
 import time
 import sys
 from pathlib import Path
+from typing import Iterable
 
 
 top_dir = Path(__file__).resolve().parent.parent
@@ -36,6 +37,38 @@ class PlaybookRun:
 
     def _run(self):
         run_ansible_playbook(self.playbook_name, self.opts)
+
+class PlaybookRuns:
+    """
+    Aggregates multiple instances of PlaybookRun, while exposing the same interface
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    If you're seeing this text, put the --help flag earlier in your list
+    of command-line arguments, this is a limitation of the CLI parsing library
+    used by the toolbox.
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    """
+    def __init__(self, runs: Iterable[PlaybookRun]):
+        self.runs = list(runs)
+
+    def __str__(self):
+        return ""
+
+    def _run(self):
+        for playbook_run in self.runs:
+            print(f"Running the {playbook_run} playbook")
+            try:
+                playbook_run._run()
+            except SystemExit as e:
+                if e.code != 0:
+                    raise
+
+        raise SystemExit(0)
 
 
 def flatten(lst):

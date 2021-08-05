@@ -1,0 +1,12 @@
+---
+# The namespace to place the BuildConfig and ImageStream resources in. This should be the same namespaces as the pods
+# that pull the built operand image. 
+build_operand_canary_namespace: ""
+
+# The name that will be given to the ImageStream, BuildConfig and Build resources. This is also the name of the
+# operand image that will be built and pushed to the {{ build_operand_canary_namespace }} repository in the internal
+# cluster registry
+build_operand_canary_imagestream_name: ""
+
+# The image tag of the operand image in the internal registry
+build_operand_canary_tag: ""

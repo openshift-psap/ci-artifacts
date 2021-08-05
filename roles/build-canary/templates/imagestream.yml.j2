@@ -1,0 +1,9 @@
+---
+kind: ImageStream
+apiVersion: v1
+metadata:
+  name: "{{ build_operand_canary_imagestream_name }}"
+  namespace: "{{ build_operand_canary_namespace }}"
+  labels:
+    app: ci-artifacts
+spec: {}

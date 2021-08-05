@@ -1,0 +1,140 @@
+---
+- name: Make sure imagestream name is set
+  when: not build_operand_canary_imagestream_name
+  fail: msg="Failed because build_operand_canary_imagestream_name has to be set"
+
+- name: Make sure build_operand_canary_tag is set
+  when: not build_operand_canary_tag
+  fail: msg="Failed because build_operand_canary_tag has to be set"
+
+- name: Create the namespace manifest
+  template:
+    src: "{{ build_operand_canary_namespace_deployment }}"
+    dest: "{{ artifact_extra_logs_dir }}/{{ build_operand_canary_imagestream_name }}_namespace.yml"
+
+- name: Apply the namespace manifest
+  command:
+    oc apply -f "{{ artifact_extra_logs_dir }}/{{ build_operand_canary_imagestream_name }}_namespace.yml"
+
+- name: Create the imagestream manifest
+  template:
+    src: "{{ build_operand_canary_imagestream }}"
+    dest: "{{ artifact_extra_logs_dir }}/{{ build_operand_canary_imagestream_name }}_imagestream.yml"
+
+- name: Apply the namespace manifest
+  command:
+    oc apply -f "{{ artifact_extra_logs_dir }}/{{ build_operand_canary_imagestream_name }}_imagestream.yml"
+
+- name: Search if the CI image exists
+  command: oc get imagestreamtag \
+              -n "{{ build_operand_canary_namespace }}" \
+              "{{ build_operand_canary_imagestream_name }}:{{ build_operand_canary_tag }}" \
+              -oname --ignore-not-found
+  register: has_ci_image
+
+- name: Build the CI image
+  when: has_ci_image.stdout == ""
+  block:
+  - name: Wait for the GPU Operator OperatorHub ClusterServiceVersion name
+    command:
+      oc get ClusterServiceVersion
+         -l operators.coreos.com/gpu-operator-certified.openshift-operators
+         -oname
+         -n openshift-operators
+    register: gpu_operator_csv_name_cmd
+    until: gpu_operator_csv_name_cmd.stdout != ""
+    retries: 15
+    delay: 30
+
+  - name: Get the clusterpolicy of the GPU Operator from OperatorHub CSV
+    shell:
+      set -o pipefail;
+      oc get "{{ gpu_operator_csv_name_cmd.stdout }}"
+         -n openshift-operators
+         -ojson
+      | jq -r '.metadata.annotations."alm-examples"'
+      | jq .[0] > "{{ artifact_extra_logs_dir }}/gpu_operator_clusterpolicy.json"
+
+  - name: input_clusterpolicy
+    set_fact: 
+      input_clusterpolicy: "{{ artifact_extra_logs_dir }}/gpu_operator_clusterpolicy.json"
+
+  - name: Get the repo/image:version for all the operands
+    block:
+    - command: jq -r '.spec.dcgmExporter.version' {{ input_clusterpolicy }}
+      register: dcgm_exporter_operand_tag
+    - command: jq -r '.spec.dcgmExporter.repository' {{ input_clusterpolicy }}
+      register: dcgm_exporter_operand_repo
+    - command: jq -r '.spec.dcgmExporter.image' {{ input_clusterpolicy }}
+      register: dcgm_exporter_operand_image
+    - command: jq -r '.spec.dcgm.version' {{ input_clusterpolicy }}
+      register: dcgm_operand_tag
+    - command: jq -r '.spec.dcgm.repository' {{ input_clusterpolicy }}
+      register: dcgm_operand_repo
+    - command: jq -r '.spec.dcgm.image' {{ input_clusterpolicy }}
+      register: dcgm_operand_image
+    - command: jq -r '.spec.devicePlugin.version' {{ input_clusterpolicy }}
+      register: device_plugin_operand_tag
+    - command: jq -r '.spec.devicePlugin.repository' {{ input_clusterpolicy }}
+      register: device_plugin_operand_repo
+    - command: jq -r '.spec.devicePlugin.image' {{ input_clusterpolicy }}
+      register: device_plugin_operand_image
+    - command: jq -r '.spec.driver.manager.version' {{ input_clusterpolicy }}
+      register: driver_manager_operand_tag
+    - command: jq -r '.spec.driver.manager.repository' {{ input_clusterpolicy }}
+      register: driver_manager_operand_repo
+    - command: jq -r '.spec.driver.manager.image' {{ input_clusterpolicy }}
+      register: driver_manager_operand_image
+    - command: jq -r '.spec.driver.version' {{ input_clusterpolicy }}
+      register: driver_operand_tag
+    - command: jq -r '.spec.driver.repository' {{ input_clusterpolicy }}
+      register: driver_operand_repo
+    - command: jq -r '.spec.driver.image' {{ input_clusterpolicy }}
+      register: driver_operand_image
+    - command: jq -r '.spec.gfd.version' {{ input_clusterpolicy }}
+      register: gfd_operand_tag
+    - command: jq -r '.spec.gfd.repository' {{ input_clusterpolicy }}
+      register: gfd_operand_repo
+    - command: jq -r '.spec.gfd.image' {{ input_clusterpolicy }}
+      register: gfd_operand_image
+    - command: jq -r '.spec.validator.version' {{ input_clusterpolicy }}
+      register: validator_operand_tag
+    - command: jq -r '.spec.validator.repository' {{ input_clusterpolicy }}
+      register: validator_operand_repo
+    - command: jq -r '.spec.validator.image' {{ input_clusterpolicy }}
+      register: validator_operand_image
+    - command: jq -r '.spec.migManager.version' {{ input_clusterpolicy }}
+      register: mig_manager_operand_tag
+    - command: jq -r '.spec.migManager.repository' {{ input_clusterpolicy }}
+      register: mig_manager_operand_repo
+    - command: jq -r '.spec.migManager.image' {{ input_clusterpolicy }}
+      register: mig_manager_operand_image
+    - command: jq -r '.spec.toolkit.version' {{ input_clusterpolicy }}
+      register: container_toolkit_operand_tag
+    - command: jq -r '.spec.toolkit.repository' {{ input_clusterpolicy }}
+      register: container_toolkit_operand_repo
+    - command: jq -r '.spec.toolkit.image' {{ input_clusterpolicy }}
+      register: container_toolkit_operanaimageg
+    - command: jq -r '.spec.nodeStatusExporter.version' {{ input_clusterpolicy }}
+      register: node_status_exporter_operand_tag
+    - command: jq -r '.spec.nodeStatusExporter.repository' {{ input_clusterpolicy }}
+      register: node_status_exporter_operand_repo
+    - command: jq -r '.spec.nodeStatusExporter.image' {{ input_clusterpolicy }}
+      register: node_status_exporter_operand_image
+
+  - name: Render buildconfig template
+    template:
+      src: "{{ operand_buildconfig }}"
+      dest: "{{ artifact_extra_logs_dir }}/{{ build_operand_canary_imagestream_name }}_buildconfig.yml"
+
+  - name: Delete any old image builder manifest
+    command: oc delete -f "{{ artifact_extra_logs_dir }}/{{ build_operand_canary_imagestream_name }}_buildconfig.yml" --ignore-not-found
+
+  - name: Apply the buildconfig manifest
+    command: oc apply -f "{{ artifact_extra_logs_dir }}/{{ build_operand_canary_imagestream_name }}_buildconfig.yml"
+
+  - name: Wait for the image to be built
+    shell: oc logs -f "buildconfig/{{ build_operand_canary_imagestream_name }}" -n "{{ build_operand_canary_namespace }}" > /dev/null
+
+- name: Ensure that the image exists
+  command: oc get imagestreamtag -n "{{ build_operand_canary_namespace }}" "{{ build_operand_canary_imagestream_name }}:{{ build_operand_canary_tag }}" -oname

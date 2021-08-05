@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: ci-artifacts
+  name: node-status-exporter
+  namespace: gpu-operator-resources
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: node-status-exporter:latest
+      namespace: gpu-operator-resources
+  resources: {}
+  source:
+    type: Git
+    git:
+      uri: https://github.com/openshift-psap/gpu-operand-upgrade-canary.git
+      ref: main
+    contextDir: .
+  triggers:
+    - type: ConfigChange
+  strategy:
+    type: Docker
+    dockerStrategy:
+      buildArgs:
+        - name: OPERAND_IMAGE
+          value: "{{ node_status_exporter_operand_repo.stdout }}/{{ node_status_exporter_operand_image.stdout }}{% if node_status_exporter_operand_tag.stdout.startswith('sha256') %}@{% else %}:{% endif %}{{ node_status_exporter_operand_tag.stdout }}"
+      dockerfilePath: Containerfile
