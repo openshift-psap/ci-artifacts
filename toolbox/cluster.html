@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                10, Aug 2021
+                12, Aug 2021
               </div>
             
           
@@ -179,7 +179,7 @@
 <ul class="simple">
 <li><p>Set number of nodes with given instance type</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py cluster set_scale &lt;machine-type&gt; &lt;replicas&gt;
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./run_toolbox.py cluster set_scale &lt;machine-type&gt; &lt;replicas&gt; <span class="o">[</span>--base_machineset<span class="o">=</span>BASE_MACHINESET<span class="o">]</span>
 </pre></div>
 </div>
 <p><strong>Example usage:</strong></p>
@@ -187,10 +187,24 @@
 ./run_toolbox.py cluster set_scale g4dn.xlarge <span class="m">2</span>
 </pre></div>
 </div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the total number of g4dn.xlarge nodes to 5,</span>
-<span class="c1"># even when there are some machinesets that might need to be downscaled</span>
-<span class="c1"># to 0 to achive that.</span>
-./run_toolbox.py cluster set_scale g4dn.xlarge <span class="m">5</span> --force
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>   <span class="c1"># Set the total number of g4dn.xlarge nodes to 5,</span>
+   <span class="c1"># even when there are some machinesets that might need to be downscaled</span>
+   <span class="c1"># to 0 to achive that.</span>
+   ./run_toolbox.py cluster set_scale g4dn.xlarge <span class="m">5</span> --force
+
+.. code-block:: shell
+
+   <span class="c1"># list the machinesets of the cluster</span>
+   $ oc get machinesets -n openshift-machine-api
+
+   NAME                                      DESIRED   CURRENT   READY   AVAILABLE   AGE
+   playground-8p9vm-worker-eu-central-1a      <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       <span class="m">1</span>           57m
+   playground-8p9vm-worker-eu-central-1b      <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       <span class="m">1</span>           57m
+   playground-8p9vm-worker-eu-central-1c      <span class="m">0</span>         <span class="m">0</span>                             57m
+
+   <span class="c1"># Set the total number of m5.xlarge nodes to 1</span>
+   <span class="c1"># using &#39;playground-8p9vm-worker-eu-central-1c&#39; to derive the new machineset</span>
+   ./run_toolbox.py cluster set_scale m5.xlarge <span class="m">1</span> --base_machineset<span class="o">=</span>playground-8p9vm-worker-eu-central-1c
 </pre></div>
 </div>
 </div>
