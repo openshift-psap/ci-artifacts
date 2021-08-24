@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi
+FROM quay.io/centos/centos:stream8
 
 MAINTAINER OpenShift PSAP Team <openshift-psap@redhat.com>
 
