@@ -1,4 +1,3 @@
-
 ---
 # Manifest files for installing index builder pod
 builder_namespace_file: roles/sro_deploy_art_bundle/files/builder_namespace.yml

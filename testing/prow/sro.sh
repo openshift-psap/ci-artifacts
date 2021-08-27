@@ -37,6 +37,17 @@ test_master_branch() {
     validate_sro_deployment
 }
 
+test_art_bundle() {
+    SRO_BUNDLE_VERSION="{$1:-latest}"
+    CI_IMAGE_SRO_COMMIT_CI_REPO="${2:-https://github.com/openshift-psap/special-resource-operator.git}"
+    CI_IMAGE_SRO_COMMIT_CI_REF="${3:-master}"
+    echo "Using latest bundle version ${SRO_BUNDLE_VERSION} using git repository ${CI_IMAGE_SRO_COMMIT_CI_REPO} with ref ${CI_IMAGE_SRO_COMMIT_CI_REF}"
+    prepare_cluster_for_sro
+    ./run_toolbox.py sro deploy_art_bundle "${SRO_BUNDLE_VERSION}" "${CI_IMAGE_SRO_COMMIT_CI_REPO}" \
+                                    "${CI_IMAGE_SRO_COMMIT_CI_REF}"
+    validate_sro_deployment
+}
+
 finalizers=()
 run_finalizers() {
     [ ${#finalizers[@]} -eq 0 ] && return
@@ -64,6 +75,10 @@ set -x
 case ${action:-} in
     "test_master_branch")
         test_master_branch "$@"
+        exit 0
+        ;;
+    "test_art_bundle")
+        test_art_bundle "$@"
         exit 0
         ;;
     *)

@@ -30,6 +30,23 @@ class SpecialResourceOperator:
         return PlaybookRun("sro_deploy_custom_commit", opts)
 
     @staticmethod
+    def deploy_art_bundle(art_version, git_repo, git_ref):
+        """
+        Deploys the SRO operator from an ART bundle in operator hub.
+
+        Args:
+            art_version: Openshift version to grab the ART build from. E.g.: 4.9
+        """
+        if art_version == 'latest':
+            art_version = ''
+        opts = {
+            "sro_art_version": art_version,
+            "sro_git_ref": git_ref,
+            "sro_git_repo": git_repo,
+        }
+        return PlaybookRun("sro_deploy_art_bundle", opts)
+
+    @staticmethod
     def run_e2e_test(git_repo, git_ref):
         """
         Runs e2e test on the given SRO repo and ref

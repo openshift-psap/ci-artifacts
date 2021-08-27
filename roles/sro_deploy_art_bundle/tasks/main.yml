@@ -1,3 +1,4 @@
+---
 #TODO: setup pull secrets for brew from openshift/registry config.
 
 - name: Create ImageContentSourcePolicy
@@ -11,7 +12,7 @@
         koji list-builds
           --package=special-resource-operator-bundle-container
           --state=COMPLETE
-          --pattern="*art*"
+          --pattern="*{{ sro_art_version }}*art*"
           --reverse
           --quiet
           | head -1
