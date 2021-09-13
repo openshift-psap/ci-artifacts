@@ -40,6 +40,21 @@ RUN cd /usr/local/bin \
  && mv operator-sdk_linux_amd64 operator-sdk \
  && chmod +x operator-sdk
 
+# Install dependencies: `koji`
+ARG KOJI_VERSION=1.26.0
+RUN yum install -y bzip2 python3 python3-devel krb5-devel gcc \
+	&& curl -LO https://releases.pagure.org/koji/koji-${KOJI_VERSION}.tar.bz2 \
+	&& tar xf koji-${KOJI_VERSION}.tar.bz2 \
+	&& cd koji-${KOJI_VERSION} \
+	&& python3 setup.py install \
+	&& cd .. \
+	&& rm -rf koji* \
+	&& yum remove -y gcc krb5-devel bzip2 python3-devel \
+	&& yum clean all \
+	&& rm -rf $HOME/.cache \
+	&& rm -rf /var/cache/yum
+COPY config/koji.conf /etc/koji.conf
+
 # Set up Ansible
 RUN mkdir -p /etc/ansible \
     && echo "localhost ansible_connection=local" > /etc/ansible/hosts
