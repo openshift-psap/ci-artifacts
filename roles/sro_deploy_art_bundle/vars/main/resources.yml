@@ -1,0 +1,18 @@
+
+---
+# Manifest files for installing index builder pod
+builder_namespace_file: roles/sro_deploy_art_bundle/files/builder_namespace.yml
+builder_imagestream_file: roles/sro_deploy_art_bundle/files/builder_imagestream.yml
+builder_buildconfig_file: roles/sro_deploy_art_bundle/files/builder_buildconfig.yml
+builder_script_file: roles/sro_deploy_art_bundle/files/builder_script.yml
+builder_pod_file: roles/sro_deploy_art_bundle/templates/builder_pod.yml.j2
+
+# Manifest files for installing SRO ART bundle from OperatorHub
+sro_namespace_file: roles/sro_deploy_art_bundle/files/sro_namespace.yml
+sro_operatorgroup_file: roles/sro_deploy_art_bundle/files/sro_operatorgroup.yml
+sro_imagecontentsourcepolicy_file: roles/sro_deploy_art_bundle/files/sro_imagecontentsourcepolicy.yml
+sro_catalogsource_file: roles/sro_deploy_art_bundle/files/sro_catalogsource.yml
+sro_operatorhub_sub_file: roles/sro_deploy_art_bundle/templates/sro_sub.yml.j2
+
+# Catalog index container
+catalog_index_container: image-registry.openshift-image-registry.svc:5000/ci-artifacts/ci-artifacts-index

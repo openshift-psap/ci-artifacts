@@ -1,0 +1,212 @@
+#TODO: setup pull secrets for brew from openshift/registry config.
+
+- name: Create ImageContentSourcePolicy
+  command: oc apply -f "{{ sro_imagecontentsourcepolicy_file }}"
+
+- name: Search latest ART bundle container
+  block:
+    - name: Retrieve ART bundle container list and get the most recent one
+      shell:
+        set -o pipefail;
+        koji list-builds
+          --package=special-resource-operator-bundle-container
+          --state=COMPLETE
+          --pattern="*art*"
+          --reverse
+          --quiet
+          | head -1
+          | cut -d' ' -f 1
+      register: art_bundle_build_name
+
+    - name: Set ART bundle build name
+      set_fact:
+        art_bundle_build: "{{ art_bundle_build_name.stdout }}"
+
+    - name: Get the container name
+      shell:
+        set -o pipefail;
+        koji --noauth call
+          --json getBuild {{ art_bundle_build }}
+          | jq -r '.extra.image.index.pull[0]'
+      register: art_bundle_container_name
+
+    - name: Set ART bundle image variable
+      set_fact:
+        art_bundle: "{{ art_bundle_container_name.stdout }}"
+
+- name: Create namespace ci-artifacts
+  command: oc apply -f "{{ builder_namespace_file }}"
+
+- name: Prepare builder-dockercfg secret
+  block:
+  - name: Find the name of the builder-dockercfg secret
+    shell:
+      set -o pipefail;
+      oc get secrets -oname -n ci-artifacts
+      | cut -d/ -f2
+      | grep builder-dockercfg
+    register: builder_secret_cmd
+
+  - name: Set variable for builder_secret
+    set_fact:
+      builder_secret: "{{ builder_secret_cmd.stdout }}"
+
+  rescue:
+  - name: Failed to find the builder-dockercfg secret
+    fail: msg="No builder-dockercfg secret in the 'ci-artifacts' namespace ..."
+
+- name: Create imagestream for index and index builder
+  command: oc apply -f "{{ builder_imagestream_file }}"
+
+- name: Create build config bundle-builder-helper
+  command: oc apply -f "{{ builder_buildconfig_file }}"
+
+- name: Create builder script bundle-builder-helper
+  command: oc apply -f "{{ builder_script_file }}"
+
+- name: Build index from latest ART bundle in a pod
+  block:
+
+  - name: Generate pod resource yaml
+    template:
+      src: "{{ builder_pod_file }}"
+      dest: "{{ artifact_extra_logs_dir }}/builder_pod.yml"
+      mode: 0400
+
+  - name: Create builder pod
+    command: oc apply -f "{{ artifact_extra_logs_dir }}/builder_pod.yml"
+
+  - name: Wait pod finish.
+    command: 
+      oc get pod/ci-artifacts-index-builder
+        -n ci-artifacts
+        -ojsonpath='{.status.conditions[].reason}'
+    register: bundle_builder_ready
+    until: "'PodComplete' in bundle_builder_ready.stdout"
+    retries: 15
+    delay: 30
+
+- name: Create SRO catalog from the private index
+  command: oc apply -f "{{ sro_catalogsource_file }}"
+
+- name: Add system puller policy
+  command:
+    oc policy add-role-to-user system:image-puller system:serviceaccount:openshift-marketplace:special-resource-operator-catalog
+      -n ci-artifacts
+
+- name: Ensure SRO PackageManifest is available
+  block:
+  - name: Capture the state of the CatalogSource/special-resource-operator-catalog (debug)
+    command:
+      oc get CatalogSource/special-resource-operator-catalog
+        -n openshift-marketplace
+        -oyaml
+        '-ojsonpath={.status.connectionState.lastObservedState}{"\n"}'
+    failed_when: false
+
+  - name: Wait for the SRO to be available
+    command:
+      oc get packagemanifests
+        -n openshift-marketplace
+        -l catalog=special-resource-operator-catalog
+    register: sro_package_wait
+    until: sro_package_wait.rc == 0
+    retries: 15
+    delay: 30
+
+  rescue:
+  - name: Mark the failure as flake
+    shell:
+      echo "Failed because of the SRO packagemanifest not available"
+           > "{{ artifact_dir }}/FLAKE"
+
+  - name: Failing because of previous error
+    fail: msg="Failing because of the SRO packagemanifest not available"
+
+
+- name: Save SRO PackageManifest for debug
+  shell:
+    oc get packagemanifests
+      -n openshift-marketplace -oyaml
+      -l catalog=special-resource-operator-catalog
+      > {{ artifact_extra_logs_dir }}/sro_packagemanifest.yml
+  failed_when: false
+
+
+- name: Create Namespace
+  command: oc apply -f "{{ sro_namespace_file }}"
+
+
+- name: Create OperatorGroup
+  command: oc apply -f "{{ sro_operatorgroup_file }}"
+
+
+- name: Set default SRO channel
+  block:
+  - name: Find SRO default channel
+    command:
+      oc get packagemanifests
+        -n openshift-marketplace
+        -l catalog=special-resource-operator-catalog
+        -ojsonpath='{.items[].status.defaultChannel}'
+    register: sro_default_channel
+
+  - name: Set SRO channel
+    set_fact:
+      sro_channel: "{{ sro_default_channel.stdout }}"
+
+
+- name: Generate Subscription resource yaml
+  template:
+    src: "{{ sro_operatorhub_sub_file }}"
+    dest: "{{ artifact_extra_logs_dir }}/sro_sub.yml"
+    mode: 0400
+
+
+- name: "Create the OperatorHub subscription for the SRO"
+  command: oc apply -f "{{ artifact_extra_logs_dir }}/sro_sub.yml"
+
+
+- name: Wait for SRO OperatorHub ClusterServiceVersion
+  block:
+  - name: Wait for the SRO OperatorHub ClusterServiceVersion
+    command:
+      oc get ClusterServiceVersion
+         -l operators.coreos.com/special-resource-operator.openshift-special-resource-operator
+         -oname
+         -n openshift-special-resource-operator
+    register: sro_csv_name
+    until: sro_csv_name.stdout != ""
+    retries: 40
+    delay: 30
+
+  rescue:
+  - name: List the ClusterServiceVersion in the openshift-special-resource-operator namespace (debug)
+    command: oc get ClusterServiceVersion -n openshift-special-resource-operator
+
+  - name: Store the YAML of the ClusterServiceVersion in the openshift-special-resource-operator namespace (debug)
+    shell:
+      oc get ClusterServiceVersion
+        -n openshift-special-resource-operator
+        -oyaml
+        > {{ artifact_extra_logs_dir }}/openshift-sro_ClusterServiceVersions.yml
+
+  - name: Failed to find SRO ClusterServiceVersion
+    fail: msg="Failed to find SRO ClusterServiceVersion"
+
+
+- name: Get the CR of the SRO from OperatorHub CSV
+  shell:
+    set -o pipefail;
+    oc get {{ sro_csv_name.stdout }}
+       -n openshift-special-resource-operator
+       -ojson
+    | jq -r '.metadata.annotations."alm-examples"'
+    | jq .[0]
+    | jq --arg  ns openshift-special-resource-operator '.metadata.namespace = $ns'
+    | jq --arg  ns openshift-special-resource-operator '.spec.namespace = $ns'
+    > {{ artifact_extra_logs_dir }}/sro_cr.json
+  register: operatorhub_clusterpolicy
+  until: operatorhub_clusterpolicy.rc == 0
+  retries: 20
+  delay: 15

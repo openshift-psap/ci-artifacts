@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: ci-artifacts
+  name: ci-artifacts-index-builder
+  namespace: ci-artifacts
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - /mnt/helper/run_index_builder.sh
+    image: image-registry.openshift-image-registry.svc:5000/ci-artifacts/ci-artifacts-builder
+    name: ci-artifacts-index-builder
+    imagePullPolicy: Always
+    securityContext:
+      privileged: true
+    env:
+      - name: BUNDLE
+        value: "{{ art_bundle }}"
+      - name: CATALOG_INDEX
+        value: "{{ catalog_index_container }}"
+    volumeMounts:
+    - mountPath: /mnt/helper/run_index_builder.sh
+      name: ci-artifacts-script
+      readOnly: true
+      subPath: run_index_builder.sh
+    - mountPath: /var/lib/kubelet/config.json
+      name: node-pullsecrets
+      readOnly: true
+    - mountPath: /var/run/secrets/openshift.io/push
+      name: builder-dockercfg-push
+      readOnly: true
+  restartPolicy: Never
+  volumes:
+  - configMap:
+      defaultMode: 511
+      name: ci-artifacts-script
+    name: ci-artifacts-script
+  - hostPath:
+      path: /var/lib/kubelet/config.json
+      type: File
+    name: node-pullsecrets
+  - secret:
+      defaultMode: 384
+      secretName: "{{ builder_secret }}"
+    name: builder-dockercfg-push

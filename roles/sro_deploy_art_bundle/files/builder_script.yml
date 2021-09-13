@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: ci-artifacts
+  name: ci-artifacts-script
+  namespace: ci-artifacts
+data:
+  run_index_builder.sh: |
+    #! /bin/bash
+    set -ex
+    set -o nounset
+
+    BUNDLE=$(echo $BUNDLE | sed -e 's/registry-proxy.engineering.redhat.com/brew.registry.redhat.io/g')
+    echo "BUNDLE=${BUNDLE}"
+    echo "CATALOG_INDEX=${CATALOG_INDEX}"
+
+    REGISTRY_AUTH_FILE=/var/lib/kubelet/config.json /usr/local/go/bin/opm index add --bundles ${BUNDLE} --tag ${CATALOG_INDEX} -c podman
+
+    AUTH="--tls-verify=false --authfile /tmp/.dockercfg"
+    cp /var/run/secrets/openshift.io/push/.dockercfg /tmp
+    (echo "{ \"auths\": " ; cat /var/run/secrets/openshift.io/push/.dockercfg ; echo "}") > /tmp/.dockercfg
+    podman push $AUTH $CATALOG_INDEX

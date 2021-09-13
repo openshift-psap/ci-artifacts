@@ -1,0 +1,51 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: ci-artifacts
+  name: ci-artifacts-builder
+  namespace: ci-artifacts
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: ci-artifacts-builder:latest
+      namespace: ci-artifacts
+  source:
+    type: Dockerfile
+    dockerfile: |
+      FROM registry.fedoraproject.org/fedora:latest
+
+      RUN dnf -y update \
+          && dnf -y install podman chkconfig java-headless gcc jq
+
+      RUN curl -LO https://golang.org/dl/go1.17.linux-amd64.tar.gz \
+          && tar -C /usr/local -xzf go1.17.linux-amd64.tar.gz
+
+      RUN export PATH=$PATH:/usr/local/go/bin \
+          && dnf install -y git make \
+          && git clone https://github.com/operator-framework/operator-registry \
+          && cd operator-registry \
+          && make bin/opm \
+          && mv bin/opm /usr/local/go/bin/
+
+      # Adjust storage.conf to enable Fuse storage.
+      ADD https://raw.githubusercontent.com/containers/buildah/master/contrib/buildahimage/stable/containers.conf /etc/containers/
+
+      RUN chmod 644 /etc/containers/containers.conf \
+          && sed -i -e 's|^#mount_program|mount_program|g' -e '/additionalimage.*/a "/var/lib/shared",' -e 's|^mountopt[[:space:]]*=.*$|mountopt = "nodev,fsync=0"|g' /etc/containers/storage.conf
+
+      RUN mkdir -p /var/lib/shared/overlay-images /var/lib/shared/overlay-layers /var/lib/shared/vfs-images /var/lib/shared/vfs-layers \
+          && touch /var/lib/shared/overlay-images/images.lock \
+          && touch /var/lib/shared/overlay-layers/layers.lock \
+          && touch /var/lib/shared/vfs-images/images.lock \
+          && touch /var/lib/shared/vfs-layers/layers.lock
+
+  strategy:
+    dockerStrategy:
+      from:
+        kind: DockerImage
+        name: registry.fedoraproject.org/fedora:latest
+    type: Docker
+  triggers:
+  - type: ConfigChange

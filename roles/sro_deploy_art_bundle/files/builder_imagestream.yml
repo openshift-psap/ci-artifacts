@@ -1,0 +1,17 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: ci-artifacts-builder
+  namespace: ci-artifacts
+  labels:
+    app: ci-artifacts
+spec: {}
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: ci-artifacts-index
+  namespace: ci-artifacts
+  labels:
+   app: ci-artifacts
+spec: {}

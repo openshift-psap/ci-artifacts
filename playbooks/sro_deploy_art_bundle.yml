@@ -1,0 +1,7 @@
+---
+- name: Deploy a SRO ART bundle
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  roles:
+    - role: sro_deploy_art_bundle

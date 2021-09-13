@@ -1,0 +1,10 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: special-resource-operator-catalog
+  namespace: openshift-marketplace
+spec:
+  sourceType: grpc
+  image: image-registry.openshift-image-registry.svc:5000/ci-artifacts/ci-artifacts-index
+  displayName: CI artifacts catalog
+  publisher: ci-artifacts
