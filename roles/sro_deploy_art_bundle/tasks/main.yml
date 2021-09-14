@@ -1,5 +1,24 @@
 ---
-#TODO: setup pull secrets for brew from openshift/registry config.
+- name: Add brew pull secrets
+  block:
+    - name: Grab the current secrets
+      shell:
+        oc get secret/pull-secret -n openshift-config -o json
+        | jq -r '.data.".dockerconfigjson"'
+        | base64 -d
+        > "{{ artifact_extra_logs_dir }}/authfile"
+
+    - name: Merge brew secrets with existing ones
+      command: jq -s '.[0] * .[1]' "{{ artifact_extra_logs_dir }}/authfile" /var/run/brew-pullsecret/.dockerconfigjson
+
+    - name: Update secrets in the cluster
+      command:
+        oc set data secret/pull-secret
+          -n openshift-config
+          --from-file=.dockerconfigjson="{{ artifact_extra_logs_dir }}/authfile"
+  rescue:
+  - name: Failed to update pull secrets
+    fail: msg="Unable to update pull secrets"
 
 - name: Create ImageContentSourcePolicy
   command: oc apply -f "{{ sro_imagecontentsourcepolicy_file }}"
