@@ -12,6 +12,7 @@ sro_operatorgroup_file: roles/sro_deploy_art_bundle/files/sro_operatorgroup.yml
 sro_imagecontentsourcepolicy_file: roles/sro_deploy_art_bundle/files/sro_imagecontentsourcepolicy.yml
 sro_catalogsource_file: roles/sro_deploy_art_bundle/files/sro_catalogsource.yml
 sro_operatorhub_sub_file: roles/sro_deploy_art_bundle/templates/sro_sub.yml.j2
+sro_serviceaccount_file: roles/sro_deploy_art_bundle/files/sro_serviceaccount.yml
 
 # Catalog index container
 catalog_index_container: image-registry.openshift-image-registry.svc:5000/ci-artifacts/ci-artifacts-index

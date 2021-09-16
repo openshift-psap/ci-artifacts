@@ -11,7 +11,9 @@ data:
     set -ex
     set -o nounset
 
-    BUNDLE=$(echo $BUNDLE | sed -e 's/registry-proxy.engineering.redhat.com/brew.registry.redhat.io/g')
+    BUNDLE=$(podman search --authfile /var/lib/kubelet/config.json \
+      brew.registry.redhat.io/rh-osbs/openshift-ose-special-resource-operator-bundle \
+      --list-tags --limit 500 | grep "art" | sort -r | head -1 | awk '{print $1":"$2}')
     echo "BUNDLE=${BUNDLE}"
     echo "CATALOG_INDEX=${CATALOG_INDEX}"
 

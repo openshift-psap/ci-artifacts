@@ -16,8 +16,6 @@ spec:
     securityContext:
       privileged: true
     env:
-      - name: BUNDLE
-        value: "{{ art_bundle }}"
       - name: CATALOG_INDEX
         value: "{{ catalog_index_container }}"
     volumeMounts:
