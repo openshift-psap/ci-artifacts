@@ -130,15 +130,15 @@ def run_ansible_playbook(playbook_name, opts: dict = dict()):
         ]
     )
 
+    with open(artifact_extra_logs_dir / "_ansible.env", "w") as f:
+        for k, v in os.environ.items():
+            print(f"{k}={v}", file=f)
+
     cmd = ["ansible-playbook", "-vv", *option_flags, f"playbooks/{playbook_name}.yml"]
 
     with open(artifact_extra_logs_dir / "_ansible.cmd", "w") as f:
         print(" ".join(cmd), file=f)
 
-    with open(artifact_extra_logs_dir / "_ansible.env", "w") as f:
-        for k, v in os.environ.items():
-            print(f"{k}={v}", file=f)
+    run_result = subprocess.run(cmd, env=os.environ.copy())
 
-    os.execvpe(cmd[0], cmd, os.environ)
-
-    raise RuntimeError("os.execvpe shouldn't return ...")
+    raise SystemExit(run_result.returncode)

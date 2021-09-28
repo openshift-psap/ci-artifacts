@@ -2,21 +2,15 @@
 
 import sys
 
-try:
-    import fire
-except ModuleNotFoundError:
-    print("The toolbox requires the Python `fire` package, see requirements.txt for a full list of requirements")
-    sys.exit(1)
-
+from toolbox.benchmarking import Benchmarking
 from toolbox.cluster import Cluster
 from toolbox.entitlement import Entitlement
 from toolbox.gpu_operator import GPUOperator
+from toolbox.local_ci import LocalCI
 from toolbox.nfd import NFD
 from toolbox.nfd_operator import NFDOperator
-from toolbox.local_ci import LocalCI
 from toolbox.repo import Repo
 from toolbox.special_resource_operator import SpecialResourceOperator
-from toolbox.benchmarking import Benchmarking
 
 
 class Toolbox:
@@ -41,7 +35,14 @@ class Toolbox:
         self.sro = SpecialResourceOperator
         self.benchmarking = Benchmarking
 
+
 def main(no_exit=False):
+    try:
+        import fire
+    except ModuleNotFoundError:
+        print("The toolbox requires the Python `fire` package, see requirements.txt for a full list of requirements")
+        sys.exit(1)
+
     # Print help rather than opening a pager
     fire.core.Display = lambda lines, out: print(*lines, file=out)
 
