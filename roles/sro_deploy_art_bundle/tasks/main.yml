@@ -226,6 +226,21 @@
     - name: Failed to find SRO ClusterServiceVersion
       fail: msg="Failed to find SRO ClusterServiceVersion"
 
+- name: Store the SRO operator version
+  block:
+    - name: Get version from CSV
+      command:
+        oc get {{ sro_csv_name.stdout }}
+          -n openshift-special-resource-operator
+          -o jsonpath='{.spec.version}'
+      register: sro_operator_version_cmd
+      failed_when: sro_operator_version_cmd.stdout | length == 0
+    - name: Store version as variable
+      set_fact:
+        sro_operator_version: '{{ sro_operator_version_cmd.stdout }}'
+    - name: Store in artifacts
+      shell:
+        echo "{{ sro_operator_version }}.git.{{ git_commit }}" > {{ artifact_extra_logs_dir }}/sro_operator.version
 
 - name: Get the CR of the SRO from OperatorHub CSV
   shell:
