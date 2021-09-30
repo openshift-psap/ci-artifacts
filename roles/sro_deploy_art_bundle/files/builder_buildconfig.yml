@@ -17,7 +17,7 @@ spec:
       FROM registry.fedoraproject.org/fedora:latest
 
       RUN dnf -y update \
-          && dnf -y install podman chkconfig java-headless gcc jq
+          && dnf -y install podman chkconfig java-headless gcc jq git
 
       RUN curl -LO https://golang.org/dl/go1.17.linux-amd64.tar.gz \
           && tar -C /usr/local -xzf go1.17.linux-amd64.tar.gz

@@ -52,7 +52,7 @@ test_art_bundle() {
 
     SRO_BUNDLE_VERSION="${1:-latest}"
     shift || true
-    CI_IMAGE_SRO_COMMIT_CI_REPO="${1:-https://github.com/openshift-psap/special-resource-operator.git}"
+    CI_IMAGE_SRO_COMMIT_CI_REPO="${1:-https://github.com/openshift/special-resource-operator.git}"
     shift || true
     CI_IMAGE_SRO_COMMIT_CI_REF="${1:-master}"
     echo "Using latest bundle version ${SRO_BUNDLE_VERSION} using git repository ${CI_IMAGE_SRO_COMMIT_CI_REPO} with ref ${CI_IMAGE_SRO_COMMIT_CI_REF}"

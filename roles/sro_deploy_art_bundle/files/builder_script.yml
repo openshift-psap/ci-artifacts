@@ -8,14 +8,35 @@ metadata:
 data:
   run_index_builder.sh: |
     #! /bin/bash
-    set -ex
+    set -x
     set -o nounset
 
-    BUNDLE=$(podman search --authfile /var/lib/kubelet/config.json \
-      brew.registry.redhat.io/rh-osbs/openshift-ose-special-resource-operator-bundle \
-      --list-tags --limit 500 | grep "art" | sort -r | head -1 | awk '{print $1":"$2}')
+    IMAGE_NAME="brew.registry.redhat.io/rh-osbs/openshift-ose-special-resource-operator-bundle"
+
+    BUNDLES="/tmp/bundles"
+    podman search --authfile /var/lib/kubelet/config.json \
+      ${IMAGE_NAME} \
+      --list-tags --limit 500 | sort -r > ${BUNDLES}
+
+    git clone -b ${GIT_COMMIT} ${GIT_REPO} /tmp/special-resource-operator
+    cd /tmp/special-resource-operator
+    COMMITS=`git log --pretty=format:"%h"`
+
+    for commit in ${COMMITS}; do
+      match=`egrep -m 1 ".+\.${commit}\..+" ${BUNDLES}`
+      if [[ -n ${match} ]]; then
+        break
+      fi
+    done
+    if [[ -z ${match} ]]; then
+      echo "No bundles found in registry"
+      exit 1
+    fi
+    BUNDLE=`echo ${match} | awk '{print $1":"$2}'`
+
     echo "BUNDLE=${BUNDLE}"
     echo "CATALOG_INDEX=${CATALOG_INDEX}"
+    echo "COMMIT=${commit}"
 
     REGISTRY_AUTH_FILE=/var/lib/kubelet/config.json /usr/local/go/bin/opm index add --bundles ${BUNDLE} --tag ${CATALOG_INDEX} -c podman
 

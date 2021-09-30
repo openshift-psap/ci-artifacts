@@ -16,6 +16,10 @@ spec:
     securityContext:
       privileged: true
     env:
+      - name: GIT_REPO
+        value: "{{ sro_git_repo }}"
+      - name: GIT_COMMIT
+        value: "{{ sro_git_ref }}"
       - name: CATALOG_INDEX
         value: "{{ catalog_index_container }}"
     volumeMounts:

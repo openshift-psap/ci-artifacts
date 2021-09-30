@@ -23,8 +23,12 @@
       fail: msg="Unable to update pull secrets"
   always:
     - name: Remove secrets from local storage
-      shell:
-        rm -f /tmp/{authfile,dockerconfigjson}
+      file:
+        path: '/tmp/{{ item }}'
+        state: absent
+      loop:
+        - authfile
+        - dockerconfigjson
 
 - name: Create ImageContentSourcePolicy
   command: oc apply -f "{{ sro_imagecontentsourcepolicy_file }}"
@@ -99,9 +103,15 @@
       register: index_builder_ready
       until: "'PodComplete' in index_builder_ready.stdout"
       retries: 30
-      delay: 30
+      delay: 20
 
   rescue:
+    - name: "Store described index builder"
+      shell:
+        oc describe pod ci-artifacts-index-builder
+          -n ci-artifacts
+          > "{{ artifact_extra_logs_dir }}"/failed_index_builder.desc
+
     - name: "Store logs from index builder"
       shell:
         oc logs ci-artifacts-index-builder
