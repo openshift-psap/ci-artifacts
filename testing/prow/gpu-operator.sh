@@ -255,6 +255,55 @@ validate_deployment_post_upgrade() {
     validate_gpu_operator_deployment
 }
 
+validate_gpu_operator_daemonset_update() {
+    OPERATOR_NAMESPACE=nvidia-gpu-operator
+    date > ${ARTIFACT_DIR}/DO_VALIDATE_DAEMONSET_UPDATE
+
+    finalizers+=("oc get ds -n $OPERATOR_NAMESPACE")
+    for i in 1 2; do
+
+        if [[ "$i" == 2 ]]; then
+            # make the driver busy
+
+            GPU_BURN_RUN_TIME=$((10 * 60)) # 10min
+            ./run_toolbox.py gpu-operator run_gpu_burn $GPU_BURN_RUN_TIME & > ${ARTIFACT_DIR}/gpu_burn.log
+            state="<just started>"
+            while [[ "$state" != "Running" ]]; do
+                echo "Waiting for GPU burn to start running. Current state: $state"
+                sleep 15
+                state=$(oc get pods -n default -lapp=gpu-burn -o custom-columns=:.status.phase --no-headers)
+            done
+        fi
+
+        test_value="VALUE_$i"
+        oc patch clusterpolicy/gpu-cluster-policy \
+           --type='json' \
+           -p='[{"op": "replace", "path": "/spec/driver/env", "value": [{"name":"CUSTOM_TEST","value":"'$test_value'"}]}]'
+        echo "INFO: Env value set to $test_value"
+
+        iter=0
+        while true; do
+            iter=$(($iter + 1))
+            pod_all_env=$(oc get pods -n $OPERATOR_NAMESPACE -lapp=nvidia-driver-daemonset -ojsonpath={.items[*].spec.containers[*].env})
+            pod_test_value=$(echo "$pod_all_env" | jq -r '.[] | select(.name=="CUSTOM_TEST").value')
+
+            if [ "${pod_test_value}" == "$test_value" ]; then
+                echo "INFO: pod updated after $iter loops" | tee ${ARTIFACT_DIR}/UPDATE_${i}_done
+                break
+            fi
+            if [[ -z "$pod_all_env" ]]; then
+                echo "WARNING: no driver pod ..."
+            else
+                echo "WARNING: pod has env var but  wrong value :( ($pod_test_value)"
+            fi
+            sleep 10
+        done
+
+        ./run_toolbox.py gpu_operator wait_deployment
+        date > ${ARTIFACT_DIR}/UPDATE_${i}_SUCCESS
+    done
+}
+
 finalizers=()
 run_finalizers() {
     [ ${#finalizers[@]} -eq 0 ] && return
@@ -283,6 +332,7 @@ set -x
 case ${action} in
     "test_master_branch")
         test_master_branch "$@"
+        validate_gpu_operator_daemonset_update
         exit 0
         ;;
     "test_commit")
@@ -290,7 +340,7 @@ case ${action} in
         exit 0
         ;;
     "test_operatorhub")
-        test_operatorhub "$@"
+        #test_operatorhub "$@"
         exit 0
         ;;
     "validate_deployment_post_upgrade")
@@ -298,7 +348,7 @@ case ${action} in
         exit 0
         ;;
     "cleanup_cluster")
-        cleanup_cluster
+        #cleanup_cluster
         exit 0
         ;;
     "source")
