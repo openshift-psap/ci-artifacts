@@ -30,17 +30,15 @@ class SpecialResourceOperator:
         return PlaybookRun("sro_deploy_custom_commit", opts)
 
     @staticmethod
-    def deploy_art_bundle(art_version, git_repo, git_ref):
+    def deploy_art_bundle(git_repo, git_ref):
         """
         Deploys the SRO operator from an ART bundle in operator hub.
 
         Args:
-            art_version: Openshift version to grab the ART build from. E.g.: 4.9
+            git_repo: The git repository to deploy from, e.g. https://github.com/openshift/special-resource-operator.git
+            git_ref: The git ref to deploy from, e.g. master
         """
-        if art_version == 'latest':
-            art_version = ''
         opts = {
-            "sro_art_version": art_version,
             "sro_git_ref": git_ref,
             "sro_git_repo": git_repo,
         }

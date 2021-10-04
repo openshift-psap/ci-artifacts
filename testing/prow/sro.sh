@@ -7,15 +7,6 @@ set -o nounset
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd ${THIS_DIR}/../..
 
-copy_operator_version() {
-    run_in_sub_shell(){
-        eval `bash -c "source toolbox/common.sh; env | egrep '(^ARTIFACT_EXTRA_LOGS_DIR=)|(^ARTIFACT_DIR=)'"`
-        (cat "$ARTIFACT_EXTRA_LOGS_DIR"/*__sro__deploy_art_bundle/sro_operator.version || echo MISSING) > ${ARTIFACT_DIR}/operator.version
-    }
-    typeset -fx run_in_sub_shell
-    bash -c run_in_sub_shell
-}
-
 prepare_cluster_for_sro() {
     ./run_toolbox.py cluster capture_environment
 
@@ -48,16 +39,12 @@ test_master_branch() {
 }
 
 test_art_bundle() {
-    trap copy_operator_version EXIT
-
-    SRO_BUNDLE_VERSION="${1:-latest}"
-    shift || true
     CI_IMAGE_SRO_COMMIT_CI_REPO="${1:-https://github.com/openshift/special-resource-operator.git}"
     shift || true
     CI_IMAGE_SRO_COMMIT_CI_REF="${1:-master}"
-    echo "Using latest bundle version ${SRO_BUNDLE_VERSION} using git repository ${CI_IMAGE_SRO_COMMIT_CI_REPO} with ref ${CI_IMAGE_SRO_COMMIT_CI_REF}"
+    echo "Testing latest bundle version using git repository ${CI_IMAGE_SRO_COMMIT_CI_REPO} with ref ${CI_IMAGE_SRO_COMMIT_CI_REF}"
     prepare_cluster_for_sro
-    ./run_toolbox.py sro deploy_art_bundle "${SRO_BUNDLE_VERSION}" "${CI_IMAGE_SRO_COMMIT_CI_REPO}" \
+    ./run_toolbox.py sro deploy_art_bundle "${CI_IMAGE_SRO_COMMIT_CI_REPO}" \
                                     "${CI_IMAGE_SRO_COMMIT_CI_REF}"
     validate_sro_deployment
 }

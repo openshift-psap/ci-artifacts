@@ -22,6 +22,8 @@ spec:
         value: "{{ sro_git_ref }}"
       - name: CATALOG_INDEX
         value: "{{ catalog_index_container }}"
+      - name: NODE_PULLSECRET
+        value: "/var/lib/kubelet/config.json"
     volumeMounts:
     - mountPath: /mnt/helper/run_index_builder.sh
       name: ci-artifacts-script

@@ -8,13 +8,13 @@ metadata:
 data:
   run_index_builder.sh: |
     #! /bin/bash
-    set -x
+    set -ex
     set -o nounset
 
     IMAGE_NAME="brew.registry.redhat.io/rh-osbs/openshift-ose-special-resource-operator-bundle"
 
     BUNDLES="/tmp/bundles"
-    podman search --authfile /var/lib/kubelet/config.json \
+    podman search --authfile ${NODE_PULLSECRET} \
       ${IMAGE_NAME} \
       --list-tags --limit 500 | sort -r > ${BUNDLES}
 
@@ -23,7 +23,7 @@ data:
     COMMITS=`git log --pretty=format:"%h"`
 
     for commit in ${COMMITS}; do
-      match=`egrep -m 1 ".+\.${commit}\..+" ${BUNDLES}`
+      match=$(egrep -m 1 ".+\.${commit}\..+" ${BUNDLES} || true)
       if [[ -n ${match} ]]; then
         break
       fi
@@ -32,13 +32,13 @@ data:
       echo "No bundles found in registry"
       exit 1
     fi
-    BUNDLE=`echo ${match} | awk '{print $1":"$2}'`
+    BUNDLE=$(echo ${match} | awk '{print $1":"$2}')
 
     echo "BUNDLE=${BUNDLE}"
     echo "CATALOG_INDEX=${CATALOG_INDEX}"
     echo "COMMIT=${commit}"
 
-    REGISTRY_AUTH_FILE=/var/lib/kubelet/config.json /usr/local/go/bin/opm index add --bundles ${BUNDLE} --tag ${CATALOG_INDEX} -c podman
+    REGISTRY_AUTH_FILE=${NODE_PULLSECRET} /usr/local/go/bin/opm index add --bundles ${BUNDLE} --tag ${CATALOG_INDEX} -c podman
 
     AUTH="--tls-verify=false --authfile /tmp/.dockercfg"
     cp /var/run/secrets/openshift.io/push/.dockercfg /tmp
