@@ -410,7 +410,14 @@ fi
 
 case ${action} in
     "test_master_branch")
-        test_master_branch "$@"
+        if [[ "$@" == *"no_undeploy"* ]]; then
+            echo "Running as part of as upgrade testing, deploy with DTK"
+
+            testing/recipes/run_gpu_operator_with_dtk.sh
+        else
+            echo "Running as part of /test gpu-operator-e2e"
+            echo "Skip master branch testing."
+        fi
         exit 0
         ;;
     "test_commit")
@@ -418,17 +425,61 @@ case ${action} in
         exit 0
         ;;
     "test_operatorhub")
-        if [[ -z "$*" ]]; then
-            # Testing of v1.9.0-beta currently broken, use v1.8 instead
-            test_operatorhub 1.8.2 v1.8
-        else
-            # Test the latest version available (using the PackageManifest default channel)
-            test_operatorhub "$@"
-        fi
+        testing/recipes/run_gpu_operator_with_dtk.sh
         exit 0
         ;;
     "validate_deployment_post_upgrade")
-        validate_gpu_operator_deployment
+        finalizers+=("collect_must_gather")
+        # TEMPORARY: required while DTK imagestram not available in all the OCP versions
+        testing/recipes/prepare_dtk_imagestream.sh
+        # END TEMPORARY
+
+        testing/recipes/prepare_dtk_imagestream.sh
+
+        ./run_toolbox.py gpu_operator wait_deployment
+
+        date >  ${ARTIFACT_DIR}/DTK_SUCCESS
+
+        ./run_toolbox.py gpu-operator capture_deployment_state || true
+
+        oc patch clusterpolicy/gpu-cluster-policy --type='json' -p='[{"op": "replace", "path": "/spec/driver/use_ocp_driver_toolkit", "value": false}]'
+
+        testing/prow/entitle.sh
+
+        if ! validate_gpu_operator_deployment; then
+            oc label nodes -lnvidia.com/gpu.present=true --overwrite \
+               nvidia.com/gpu.deploy.container-toolkit=true \
+               nvidia.com/gpu.deploy.dcgm-exporter=true \
+               nvidia.com/gpu.deploy.dcgm=true \
+               nvidia.com/gpu.deploy.device-plugin=true \
+               nvidia.com/gpu.deploy.gpu-feature-discovery=true
+
+            date >  ${ARTIFACT_DIR}/DRIVER_MANAGER_FAILURE_1
+
+            validate_gpu_operator_deployment
+        fi
+
+        ./run_toolbox.py gpu-operator capture_deployment_state || true
+
+        oc patch clusterpolicy/gpu-cluster-policy --type='json' -p='[{"op": "replace", "path": "/spec/driver/use_ocp_driver_toolkit", "value": true}]'
+                if ! validate_gpu_operator_deployment; then
+            oc label nodes -lnvidia.com/gpu.present=true --overwrite \
+               nvidia.com/gpu.deploy.container-toolkit=true \
+               nvidia.com/gpu.deploy.dcgm-exporter=true \
+               nvidia.com/gpu.deploy.dcgm=true \
+               nvidia.com/gpu.deploy.device-plugin=true \
+               nvidia.com/gpu.deploy.gpu-feature-discovery=true
+
+            date >  ${ARTIFACT_DIR}/DRIVER_MANAGER_FAILURE_2
+
+            validate_gpu_operator_deployment
+        fi
+
+        exit 0
+        ;;
+    "deploy_pre_upgrade")
+        testing/recipes/run_gpu_operator_with_dtk.sh
+        finalizers=()
         exit 0
         ;;
     "publish_master_bundle")
@@ -436,6 +487,7 @@ case ${action} in
         exit 0
         ;;
     "cleanup_cluster")
+        exit 0
         cleanup_cluster
         exit 0
         ;;
