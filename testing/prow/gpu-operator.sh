@@ -121,7 +121,7 @@ test_master_branch() {
     #./run_toolbox.py gpu_operator deploy_from_bundle --bundle=master
 
     # meanwhile:
-    deploy_commit "https://gitlab.com/nvidia/kubernetes/gpu-operator.git" "master"
+    deploy_commit "https://gitlab.com/kpouget_psap/gpu-operator" "csv"
 
     prepare_cluster_for_gpu_operator_with_alerts "$@"
 
