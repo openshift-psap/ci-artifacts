@@ -77,10 +77,8 @@ done
 
 # ---
 
-toolbox/gpu-operator/diagnose.sh \
-    --run-all \
-    1> >(tee $MUST_GATHER_LOGS_DIR/diagnose.log) \
-    2> >(tee $MUST_GATHER_LOGS_DIR/diagnose.stderr.log >&2)
+./run_toolbox.py gpu_operator capture_deployment_state > /dev/null || true
+./run_toolbox.py gpu_operator get_csv_version > /dev/null || true
 
 # ---
 echo
