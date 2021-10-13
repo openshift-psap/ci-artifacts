@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: disconnected-registry
+  namespace: default
+  labels:
+    app: disconnected-registry
+  annotations:
+    service.beta.openshift.io/serving-cert-secret-name: service-serving-cert
+spec:
+  selector:
+    app: disconnected-registry
+  ports:
+  - name: image-registry
+    port: 5000
+    targetPort: 5000
+    protocol: TCP
+# oc create configmap registry-cert
+# oc annotate configmap registry-cert service.beta.openshift.io/inject-cabundle=true

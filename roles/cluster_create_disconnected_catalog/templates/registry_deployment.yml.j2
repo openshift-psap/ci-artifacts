@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: disconnected-registry
+ namespace: default
+ labels:
+   app: disconnected-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: disconnected-registry
+  template:
+    metadata:
+      labels:
+        app: disconnected-registry
+    spec:
+      containers:
+      - name: cnt
+        image: quay.io/openshift-psap/ci-artifacts:latest
+        command:
+        - bash
+        - -c
+        - /mnt/disconnected-entrypoint/registry_entrypoint.sh
+        securityContext:
+          privileged: true # required to run podman
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: storage
+          mountPath: /storage/
+        - name: entrypoint
+          mountPath: /mnt/disconnected-entrypoint
+        - name: certificate
+          mountPath: /mnt/registry-cert
+      volumes:
+      - name: entrypoint
+        configMap:
+          defaultMode: 0700
+          name: disconnected-entrypoint
+      - name: certificate
+        secret:
+          defaultMode: 0700
+          secretName: service-serving-cert
+      - name: storage
+        persistentVolumeClaim:
+          claimName: disconnected-registry-pvc

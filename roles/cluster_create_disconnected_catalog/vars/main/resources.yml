@@ -1,0 +1,9 @@
+---
+disconnected_registry_pvc: 'roles/cluster_create_disconnected_catalog/templates/registry_pvc.yml.j2'
+disconnected_registry_deployment: 'roles/cluster_create_disconnected_catalog/templates/registry_deployment.yml.j2'
+disconnected_registry_service: 'roles/cluster_create_disconnected_catalog/templates/registry_service.yml.j2'
+disconnected_registry_entrypoint: 'roles/cluster_create_disconnected_catalog/files/registry_entrypoint.sh'
+
+disconnected_catalog_pvc: 'roles/cluster_create_disconnected_catalog/templates/catalog_pvc.yml.j2'
+disconnected_catalog_pod: 'roles/cluster_create_disconnected_catalog/templates/catalog_pod.yml.j2'
+disconnected_catalog_entrypoint: 'roles/cluster_create_disconnected_catalog/files/catalog_entrypoint.sh'

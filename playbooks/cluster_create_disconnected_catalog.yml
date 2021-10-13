@@ -1,0 +1,7 @@
+---
+- name: Create custom catalog for a disconnected cluster
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  roles:
+    - role: cluster_create_disconnected_catalog

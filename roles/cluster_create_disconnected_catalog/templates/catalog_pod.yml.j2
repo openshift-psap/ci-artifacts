@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ name: disconnected-{{ disconnected_catalog }}-catalog
+ namespace: default
+spec:
+  containers:
+  - name: cnt
+    image: quay.io/openshift-psap/ci-artifacts:latest
+    command:
+    - bash
+    - -c
+    - /mnt/disconnected-entrypoint/catalog_entrypoint.sh
+    volumeMounts:
+    - name: entrypoint
+      mountPath: /mnt/disconnected-entrypoint
+    - mountPath: /etc/kubeconfig
+      name: kubeconfig-secret
+      readOnly: true
+    - mountPath: /var/lib/kubelet/config.json
+      name: node-pullsecrets
+      readOnly: true
+    - name: storage
+      mountPath: /storage/
+    securityContext:
+      privileged: true # required to access $NODE_PULLSECRET and run podman
+    ports:
+    - containerPort: 5000
+    env:
+    - name: KUBECONFIG
+      value: /etc/kubeconfig/kubeconfig
+    - name: NODE_PULLSECRET
+      value: "/var/lib/kubelet/config.json"
+    - name: CATALOG_NAME
+      value: "{{ disconnected_catalog}}"
+    - name: OPERATORS
+      value: "{{ disconnected_operators }}"
+    readinessProbe:
+      exec:
+        command:
+          - cat
+          - /tmp/healthy
+      initialDelaySeconds: 5
+      periodSeconds: 5
+  restartPolicy: Never
+  volumes:
+
+  - name: entrypoint
+    configMap:
+      defaultMode: 0700
+      name: disconnected-entrypoint
+  - name: kubeconfig-secret
+    secret:
+      secretName: kubeconfig-secret
+  - hostPath:
+      path: /var/lib/kubelet/config.json
+      type: File
+    name: node-pullsecrets
+  - name: storage
+    persistentVolumeClaim:
+      claimName: disconnected-catalog-pvc

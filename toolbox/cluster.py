@@ -85,3 +85,24 @@ class Cluster:
         }
 
         return PlaybookRun("cluster_wait_for_alert", opts)
+
+    @staticmethod
+    def create_disconnected_catalog(catalog, operators):
+        """
+        Create custom catalog for a disconnected cluster.
+
+        Examples:
+         certified-operator gpu-operator-certified
+         redhat-operator nfd,performance-addon-operator
+
+        Args:
+          catalog: The name of the source catalog.
+          operators: The comma-separated list of operators to mirror, from CATALOG catalog.
+        """
+
+        opts = {
+            "disconnected_catalog": catalog,
+            "disconnected_operators": operators,
+        }
+
+        return PlaybookRun("cluster_create_disconnected_catalog", opts)

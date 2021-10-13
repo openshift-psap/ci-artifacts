@@ -1,0 +1,144 @@
+---
+#- name: Disable the OperatorHub catalog
+#  command: |
+#    oc patch OperatorHub/cluster
+#      --type json
+#       -p '[{"op": "add", "path": "/spec/disableAllDefaultSources", "value": true}]'
+
+- name: "Print the parameters"
+  debug: msg="Catalog name is '{{ disconnected_catalog }}', Operators is '{{ disconnected_operators }}'"
+
+- name: Validate the disconnected_catalog value
+  fail: msg="disconnected_catalog cannot be empty"
+  when: disconnected_catalog | default('', true) | length == 0
+
+- name: Validate the disconnected_operators value
+  fail: msg="disconnected_operators cannot be empty"
+  when: disconnected_operators | default('', true) | length == 0
+
+###
+
+- name: Delete the entrypoint ConfigMap, if it exsits
+  command:
+    oc delete cm/disconnected-entrypoint
+       -n default
+       --ignore-not-found=true
+
+- name: Create the entrypoint ConfigMap
+  command:
+    oc create cm disconnected-entrypoint
+       -n default
+       --from-file=catalog_entrypoint.sh="{{ disconnected_catalog_entrypoint }}"
+       --from-file=registry_entrypoint.sh="{{ disconnected_registry_entrypoint }}"
+
+###
+
+- name: Delete the kubeconfig secret, if it exists
+  command: oc delete secret -n default kubeconfig-secret --ignore-not-found=true
+
+- name: Create kubeconfig secret
+  command:
+    oc create secret generic kubeconfig-secret
+       -n default
+       --from-file {{ lookup('env', 'KUBECONFIG') }}
+
+###
+
+- name: Apply the registry PVC template
+  template:
+    src: "{{ disconnected_registry_pvc }}"
+    dest: "{{ artifact_extra_logs_dir }}/registry_pvc.yml"
+    mode: 0400
+
+- name: Check if the registry PVC already exists
+  command: oc get -f "{{ artifact_extra_logs_dir }}/registry_pvc.yml" -oname
+  failed_when: false
+  register: has_registry_pvc
+
+- name: Create a PVC for storing the registry images
+  when: has_registry_pvc.rc != 0
+  command:
+    oc apply -f "{{ artifact_extra_logs_dir }}/registry_pvc.yml"
+
+###
+
+- name: Apply the catalog PVC template
+  template:
+    src: "{{ disconnected_catalog_pvc }}"
+    dest: "{{ artifact_extra_logs_dir }}/catalog_pvc.yml"
+    mode: 0400
+
+- name: Check if the catalog PVC already exists
+  command: oc get -f "{{ artifact_extra_logs_dir }}/catalog_pvc.yml" -oname
+  failed_when: false
+  register: has_catalog_pvc
+
+- name: Create a PVC for storing the catalog files
+  when: has_catalog_pvc.rc != 0
+  command:
+    oc apply -f "{{ artifact_extra_logs_dir }}/catalog_pvc.yml"
+###
+
+- name: Apply the registry Deployment template
+  template:
+    src: "{{ disconnected_registry_deployment }}"
+    dest: "{{ artifact_extra_logs_dir }}/registry_deployment.yml"
+    mode: 0400
+
+
+- name: Create/update the registry Deployment
+  command:
+    oc apply -f "{{ artifact_extra_logs_dir }}/registry_deployment.yml"
+
+###
+
+- name: Apply the registry Service template
+  template:
+    src: "{{ disconnected_registry_service }}"
+    dest: "{{ artifact_extra_logs_dir }}/registry_service.yml"
+    mode: 0400
+
+
+- name: Create/update the registry Service
+  command:
+    oc apply -f "{{ artifact_extra_logs_dir }}/registry_service.yml"
+
+###
+
+- name: Apply the catalog Pod template
+  template:
+    src: "{{ disconnected_catalog_pod }}"
+    dest: "{{ artifact_extra_logs_dir }}/catalog_pod.yml"
+    mode: 0400
+
+- name: Delete the catalog Pod, if it exists
+  command:
+    oc delete -f "{{ artifact_extra_logs_dir }}/catalog_pod.yml" --ignore-not-found=true
+
+- name: Create the catalog Pod
+  command:
+    oc create -f "{{ artifact_extra_logs_dir }}/catalog_pod.yml"
+
+- name: Wait for the catalog Pod to start running
+  command:
+    oc get -f "{{ artifact_extra_logs_dir }}/catalog_pod.yml"
+       --no-headers
+       -ocustom-columns=phase:status.phase
+  register: catalog_wait_pod
+  until: "'Running' in catalog_wait_pod.stdout or 'Succeeded' in catalog_wait_pod.stdout or 'Failed' in catalog_wait_pod.stdout or 'Error' in catalog_wait_pod.stdout"
+  retries: 10
+  delay: 20
+
+- name: Wait for the catalog Pod to report as ready
+  shell:
+    oc get -f "{{ artifact_extra_logs_dir }}/catalog_pod.yml"
+      -ojsonpath={.status.containerStatuses}
+      | jq '.[] | select(.name == "cnt")  | .started, .ready' | uniq -c
+  register: catalog_pod_ready
+  until: "'2 false' in catalog_pod_ready.stdout or '2 true' in catalog_pod_ready.stdout"
+  retries: 100
+  delay: 10
+
+- name: Failed if an error occured
+  fail: msg="Catalog pod not ready"
+  when: "'2 false' in catalog_pod_ready.stdout"
