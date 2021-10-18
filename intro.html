@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                13, Oct 2021
+                18, Oct 2021
               </div>
             
           
@@ -255,15 +255,15 @@ controlled by the configuration files located in these directories:</p>
 <span class="pre">jobs</span></code>. Secondary configuration options can then be modified in the
 <code class="docutils literal notranslate"><span class="pre">jobs</span></code> directory.</p>
 <p>The Prow CI jobs run in an OpenShift Pod. The <a class="reference external" href="build/Dockerfile">ContainerFile</a> is used to build their base-image, and the
-<code class="docutils literal notranslate"><span class="pre">run</span></code> (<code class="docutils literal notranslate"><span class="pre">build/root/usr/local/bin/run</span></code>) file is used as entrypoint.</p>
+<code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">prow</span> <span class="pre">...</span></code> command is used as entrypoint.</p>
 <p>From this entrypoint, we trigger the different high-level tasks of the
 operator end-to-end testing, eg:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">gpu-operator</span> <span class="pre">test-master-branch</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">gpu-operator</span> <span class="pre">test-operatorhub</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">gpu-operator</span> <span class="pre">validate-deployment</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">gpu-operator</span> <span class="pre">undeploy-operatorhub</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">cluster</span> <span class="pre">upgrade</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">prow</span> <span class="pre">gpu-operator</span> <span class="pre">test_master_branch</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">prow</span> <span class="pre">gpu-operator</span> <span class="pre">test_operatorhub</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">prow</span> <span class="pre">gpu-operator</span> <span class="pre">validate_deployment_post_upgrade</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">prow</span> <span class="pre">gpu-operator</span> <span class="pre">cleanup_cluster</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">prow</span> <span class="pre">cluster</span> <span class="pre">upgrade</span></code></p></li>
 </ul>
 <p>These different high-level tasks rely on the toolbox scripts to
 automate the deployment of the required dependencies (eg, the NFD
