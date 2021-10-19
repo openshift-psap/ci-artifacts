@@ -67,8 +67,12 @@ echo "Using '${ANSIBLE_CONFIG}' as ansible configuration file."
 if [ -z "${ANSIBLE_JSON_TO_LOGFILE:-}" ]; then
     export ANSIBLE_JSON_TO_LOGFILE="${ARTIFACT_EXTRA_LOGS_DIR}/_ansible.log.json"
 fi
-
 echo "Using '${ANSIBLE_JSON_TO_LOGFILE}' as ansible json log file."
+
+if [ -z "${JUNIT_OUTPUT_DIR:-}" ]; then
+    export JUNIT_OUTPUT_DIR="${ARTIFACT_EXTRA_LOGS_DIR}/junit"
+fi
+echo "Using '${JUNIT_OUTPUT_DIR}' as ansible junit.xml files folder."
 
 ###
 
