@@ -319,7 +319,7 @@ case ${action} in
         exit 0
         ;;
     "test_operatorhub")
-        test_operatorhub "$@"
+        #test_operatorhub "$@"
         exit 0
         ;;
     "validate_deployment_post_upgrade")
@@ -327,7 +327,7 @@ case ${action} in
         exit 0
         ;;
     "cleanup_cluster")
-        cleanup_cluster
+        #cleanup_cluster
         exit 0
         ;;
     "source")
