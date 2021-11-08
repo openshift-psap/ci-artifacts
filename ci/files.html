@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                06, Nov 2021
+                08, Nov 2021
               </div>
             
           
@@ -202,12 +202,20 @@ information of the last entry:</p></li>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">$ARTIFACT_DIR/FAILURE</span></code>: the presence this file after the CI
 execution indicates that the testing failed.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">$ARTIFACT_DIR/FLAKE</span></code>: the presence of this file after a toolbox
-command fail indicates that a known flake occurred. The file
-contains a brief description of the problem that happened.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">$ARTIFACT_DIR/UNREACHABLE</span></code>: the presence this file after the CI
-execution indicates that the testing failed and the cluster was
-unreachable during our tear-down execution.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$ARTIFACT_DIR/&lt;toolbox</span> <span class="pre">step&gt;/FLAKE</span></code>: the presence of this file
+after a toolbox command fail indicates that a known flake
+occurred. The file contains a brief description of the problem(s)
+that happened, each on a dedicated line.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$ARTIFACT_DIR/&lt;toolbox</span> <span class="pre">step&gt;/EXPECTED_FAIL</span></code>: the presence of this
+file after a test run indicates that this toolbox box step failure
+was expected (i.e., not a failure, only a condition test). The file
+contains a brief description of what was being tested.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$ARTIFACT_DIR/FLAKE</span></code>: the presence of this file after a test run
+indicates that a known flake occurred. The file contains a brief
+description of the problem that happened.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$ARTIFACT_DIR/_WARNINGS</span></code>: the presence of this directory after a
+test run indicates that some warnings were raised. The files contain
+a brief description of the problem that happened.</p></li>
 </ul>
 </div>
 
