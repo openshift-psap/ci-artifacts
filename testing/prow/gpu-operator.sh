@@ -213,7 +213,7 @@ test_master_branch() {
     #./run_toolbox.py gpu_operator deploy_from_bundle --bundle=master
 
     # meanwhile:
-    deploy_commit "https://gitlab.com/nvidia/kubernetes/gpu-operator.git" "master"
+    deploy_commit "https://gitlab.com/mateusz.kowalski/gpu-operator.git" "debug-empty-operator-namespace"
 
     prepare_cluster_for_gpu_operator_with_alerts "$@"
 
@@ -406,7 +406,7 @@ case ${action} in
         exit 0
         ;;
     "test_operatorhub")
-        test_operatorhub "$@"
+        # test_operatorhub "$@"
         exit 0
         ;;
     "validate_deployment_post_upgrade")
@@ -418,7 +418,7 @@ case ${action} in
         exit 0
         ;;
     "cleanup_cluster")
-        cleanup_cluster
+        # cleanup_cluster
         exit 0
         ;;
     "source")
