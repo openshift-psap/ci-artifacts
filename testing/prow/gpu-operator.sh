@@ -408,11 +408,11 @@ case ${action} in
     "test_operatorhub")
         if [[ -z "$*" ]]; then
             # Testing of v1.9.0-beta currently broken, use v1.8 instead
-            test_operatorhub 1.8.2 v1.8
+            #test_operatorhub 1.8.2 v1.8
+            echo skip
         else
             # Test the latest version available (using the PackageManifest default channel)
-            # test_operatorhub "$@"
-            echo skip
+            test_operatorhub "$@"
         fi
         exit 0
         ;;
