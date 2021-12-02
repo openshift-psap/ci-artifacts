@@ -414,7 +414,7 @@ case ${action} in
         exit 0
         ;;
     "test_commit")
-        test_commit "https://gitlab.com/nvidia/kubernetes/gpu-operator.git" master "$@"
+        test_commit "https://gitlab.com/kpouget_psap/gpu-operator" "metrics"
         exit 0
         ;;
     "test_operatorhub")
