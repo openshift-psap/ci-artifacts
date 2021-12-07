@@ -1,3 +1,4 @@
 #! /usr/bin/env bash
 
-exec echo "Hello World"
+echo "Hello World"
+echo "Args: $*"
