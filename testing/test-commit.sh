@@ -26,17 +26,19 @@ commit="HEAD"
 parent=$(git log --pretty=%P -n 1 $commit)
 
 if grep -q " " <<< "$parent"; then
-    commit=$(cut -d" " -f2 <<< "$parent")
-    echo "HEAD is a merge commit. Taking the 2nd parent from $parent"
+    commit=$(sed 's/ /../g' <<< "$parent")
+    echo "HEAD is a merge commit. Taking all the commit in $commit"
+    number=""
 else
     echo "HEAD is a simple commit."
+    number="-n 1"
 fi
 
 git show --quiet "$commit"
 
 echo ""
 
-testpaths=$(git log --format=%B -n 1 $commit | { grep -i "$ANCHOR" || true ;} | cut -b$(echo "$ANCHOR" | wc -c)-)
+testpaths=$(git log --format=%B $number $commit | { grep -i "$ANCHOR" || true ;} | cut -b$(echo "$ANCHOR" | wc -c)-)
 
 if [[ -z "$testpaths" ]]; then
     echo "Nothing to test in $commit."
