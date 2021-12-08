@@ -140,7 +140,7 @@ collect_must_gather() {
                 eval $ENV
 
                 echo "Copying must-gather results to $ARTIFACT_EXTRA_LOGS_DIR ..."
-                cp -r "$TMP_DIR"/* "$ARTIFACT_EXTRA_LOGS_DIR"
+                mv "$TMP_DIR"/* "$ARTIFACT_EXTRA_LOGS_DIR"
 
                 rmdir "$TMP_DIR"
             fi
