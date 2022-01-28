@@ -391,6 +391,11 @@ test_operatorhub() {
 
     if [ "${1:-}" ]; then
         OPERATOR_VERSION="--version=$1"
+        if [[ "$1" == "1.4"* || "$1" == "1.5"* || "$1" == "1.6"* ]]; then
+            # these versions of the GPU Operator require the namespace
+            # to be manually created.
+            oc new-project gpu-operator-resources || true
+        fi
     fi
     shift || true
     if [ "${1:-}" ]; then
