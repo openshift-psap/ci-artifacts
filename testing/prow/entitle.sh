@@ -5,6 +5,18 @@ set -o errexit
 set -o nounset
 set -x
 
+
+ENTITLEMENT_SECRET_PATH=/var/run/psap-entitlement-secret
+ENTITLEMENT_VERSION=${ENTITLEMENT_SECRET_PATH}/version
+
+echo "INFO: info about the entitlement secret:"
+md5sum ${ENTITLEMENT_SECRET_PATH}/* || true
+echo "INFO: Version of the secret vault:"
+cat "$ENTITLEMENT_VERSION"
+
+
+exit 0
+
 if ! [ -f ./toolbox/entitlement.py ]; then
   echo "FATAL: entitlement script not found in $PWD/toolbox/"
   echo "INFO: $0 is intended only for running in the 'OpenShift PSAP CI artifacts' image. (INSIDE_CI_IMAGE=$INSIDE_CI_IMAGE)"
