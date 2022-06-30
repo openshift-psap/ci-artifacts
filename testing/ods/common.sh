@@ -6,6 +6,10 @@ elif [[ ! -d "$PSAP_ODS_SECRET_PATH" ]]; then
     false # can't exit here
 fi
 
+ODS_CI_NB_USERS=300 # number of users to simulate
+ODS_EXCLUDE_TAGS=Notebook # tags to exclude when running the robot test case
+
+
 OCM_ENV=staging # The valid aliases are 'production', 'staging', 'integration'
 
 S3_LDAP_PROPS="${PSAP_ODS_SECRET_PATH}/s3_ldap.passwords"
@@ -77,7 +81,7 @@ ENABLE_AUTOSCALER=
 SUTEST_COMPUTE_MACHINE_TYPE=m5.2xlarge
 DRIVER_COMPUTE_MACHINE_TYPE=m5.2xlarge
 
-SUTEST_FORCE_COMPUTE_NODES_COUNT= # if empty, uses ods/sizing/sizing to determine the right number of machines
+SUTEST_FORCE_COMPUTE_NODES_COUNT=2 # if empty, uses ods/sizing/sizing to determine the right number of machines
 DRIVER_FORCE_COMPUTE_NODES_COUNT= # if empty, uses ods/sizing/sizing to determine the right number of machines
 
 # OSP/OSD cluster naming is handled differently in this job
