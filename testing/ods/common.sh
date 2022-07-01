@@ -26,7 +26,7 @@ ODS_CI_REF="jh-at-scale"
 ODS_CI_IMAGESTREAM="ods-ci"
 ODS_CI_TAG="latest"
 
-ODS_CI_NB_USERS=5
+ODS_CI_NB_USERS=100
 ODS_CI_USER_PREFIX=psapuser
 ODS_NOTEBOOK_SIZE=default # needs to match what the ROBOT test-case requests
 ODS_NOTEBOOK_SIZE_TEST_POD="test_pod" # shouldn't change
@@ -58,12 +58,12 @@ OCP_WORKER_NODES_COUNT=5
 OCP_BASE_DOMAIN=psap.aws.rhperfscale.org
 
 # if not empty, enables auto-scaling in the sutest cluster
-ENABLE_AUTOSCALER=
+ENABLE_AUTOSCALER=1
 
 # Shouldn't be the same than OCP worker nodes.
 
-SUTEST_COMPUTE_MACHINE_TYPE=m5.2xlarge
 DRIVER_COMPUTE_MACHINE_TYPE=m5.2xlarge
+SUTEST_COMPUTE_MACHINE_TYPE=m5.4xlarge
 
 SUTEST_FORCE_COMPUTE_NODES_COUNT= # if empty, uses ods/sizing/sizing to determine the right number of machines
 DRIVER_FORCE_COMPUTE_NODES_COUNT= # if empty, uses ods/sizing/sizing to determine the right number of machines
