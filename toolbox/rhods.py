@@ -66,7 +66,9 @@ class RHODS:
                         artifacts_collected="all",
                         ods_sleep_factor="1.0",
                         ods_ci_exclude_tags="None",
-                        ods_ci_test_case="test-jupyterlab-run-notebook.robot"):
+                        ods_ci_test_case="test-jupyterlab-run-notebook.robot",
+                        notebook_cpu="",
+                        notebook_memory=""):
         """
         Test RHODS JupyterLab notebooks
 
@@ -85,6 +87,8 @@ class RHODS:
           ods_sleep_factor: Optional. Delay to sleep between users. Default 1.0.
           ods_ci_test_case: Optional. ODS-CI test case to execute.
           ods_ci_exclude_tags: Optional. Tags to exclude in the ODS-CI test case.
+          notebook_cpu: Optional. Number of cores to request for the notebook. The default is in odh-jupyterhub-global-profile.
+          notebook_memory: Optional. Amount of memory to request for the notebook. The default is in odh-jupyterhub-global-profile.
         """
 
         opts = {
@@ -98,6 +102,8 @@ class RHODS:
             "rhods_test_jupyterlab_ods_sleep_factor": ods_sleep_factor,
             "rhods_test_jupyterlab_ods_ci_test_case": ods_ci_test_case,
             "rhods_test_jupyterlab_ods_ci_exclude_tags": ods_ci_exclude_tags,
+            "rhods_test_jupyterlab_notebook_cpu": notebook_cpu,
+            "rhods_test_jupyterlab_notebook_memory": notebook_memory
         }
 
         ARTIFACTS_COLLECTED_VALUES = ("all", "none", "no-image", "no-image-except-failed", "no-image-except-failed-and-zero")
@@ -105,6 +111,9 @@ class RHODS:
             print(f"ERROR: invalid value '{artifacts_collected}' for 'artifacts_collected'. Must be one of {', '.join(ARTIFACTS_COLLECTED_VALUES)}")
             sys.exit(1)
 
+        if (notebook_memory and not notebook_cpu) or (notebook_cpu and not notebook_memory):
+            print(f"ERROR: either specify notebook_cpu ({notebook_cpu}) and notebook_memory ({notebook_memory}) or neither of these.")
+            sys.exit(1)
 
         return RunAnsibleRole("rhods_test_jupyterlab", opts)
 

@@ -168,6 +168,53 @@
     oc delete ev -n {{ rhods_test_namespace }} --all > /dev/null
   failed_when: false
 
+- name: Conditionally update the default notebook size
+  environment:
+    KUBECONFIG: '{{ sut_cluster_kubeconfig }}'
+  # AND logic is a design choice: allowing the test user to choose either
+  # RAM or CPU is a source of iterative errors (override CPU, then 2 days
+  # later override RAM thinking CPU is default, etc). 
+  when: (rhods_test_jupyterlab_notebook_cpu | length > 0 and
+            rhods_test_jupyterlab_notebook_memory | length > 0 )
+  block:
+    - name: Retrieve the configmap containing the default notebook size
+      shell:
+        oc get configmap -ojson -n redhat-ods-applications odh-jupyterhub-global-profile 
+          > {{ artifact_extra_logs_dir }}/jh_global_profile.json
+
+    - name: Update default config to ours
+      command:
+        cp {{ artifact_extra_logs_dir }}/jh_global_profile.json
+          {{ artifact_extra_logs_dir }}/jh_global_profile-ours.json
+
+    - name: Update default notebook cpu size in the cm file
+      command:
+        jq -i '.cpu="{{ rhods_test_jupyterlab_notebook_cpu }}"' 
+          {{ artifact_extra_logs_dir }}/jh_global_profile-ours.json
+
+    - name: Update default notebook memory size in the cm file
+      command:
+        jq -i '.memory="{{ rhods_test_jupyterlab_notebook_memory }}Gi"' 
+          {{ artifact_extra_logs_dir }}/jh_global_profile-ours.json
+
+    - name: Check if the cm backup already exists
+      command:
+        oc get cm -n redhat-ods-applications odh-jupyterhub-global-profile-orig
+      failed_when: false
+      register: has_backup_cmd
+  
+    - name: Create a new config map with orig values for backup purposes
+      when: has_backup_cmd.rc != 0
+      shell:
+        cat {{ artifact_extra_logs_dir }}/jh_global_profile.json |
+          jq '.metadata.name="odh-jupyterhub-global-profile-orig"' |
+          oc apply -f-
+      failed_when: false
+
+    - name: Upload the updated cm to change the default notebook size
+      command:
+        oc apply -f {{ artifact_extra_logs_dir }}/jh_global_profile-ours.json
+
 - name: Delete the events, pods and PVC of the notebook namespace
   environment:
     KUBECONFIG: '{{ sut_cluster_kubeconfig }}'
