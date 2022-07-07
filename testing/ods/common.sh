@@ -38,7 +38,7 @@ ODS_CI_ARTIFACTS_EXPORTER_DOCKERFILE="testing/ods/images/Containerfile.s3_artifa
 LDAP_IDP_NAME=RHODS_CI_LDAP
 LDAP_NB_USERS=1000
 
-ODS_CI_NB_USERS=${ODS_CI_NB_USERS:-5} # number of users to simulate
+ODS_CI_NB_USERS=${ODS_CI_NB_USERS:-100} # number of users to simulate
 ODS_CI_USER_PREFIX=psapuser
 ODS_NOTEBOOK_SIZE=default # needs to match what the ROBOT test-case requests
 ODS_NOTEBOOK_SIZE_TEST_POD="test_pod" # shouldn't change
@@ -74,8 +74,8 @@ ENABLE_AUTOSCALER=
 
 # Shouldn't be the same than OCP worker nodes.
 
-SUTEST_COMPUTE_MACHINE_TYPE=m5.2xlarge
 DRIVER_COMPUTE_MACHINE_TYPE=m5.2xlarge
+SUTEST_COMPUTE_MACHINE_TYPE=m5.4xlarge
 
 SUTEST_FORCE_COMPUTE_NODES_COUNT= # if empty, uses ods/sizing/sizing to determine the right number of machines
 DRIVER_FORCE_COMPUTE_NODES_COUNT= # if empty, uses ods/sizing/sizing to determine the right number of machines
