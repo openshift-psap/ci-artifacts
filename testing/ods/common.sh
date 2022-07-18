@@ -30,7 +30,7 @@ ODS_CI_NB_USERS=100
 ODS_CI_USER_PREFIX=psapuser
 ODS_NOTEBOOK_SIZE=default # needs to match what the ROBOT test-case requests
 ODS_NOTEBOOK_SIZE_TEST_POD="test_pod" # shouldn't change
-ODS_SLEEP_FACTOR=1.0 # how long to wait between users.
+ODS_SLEEP_FACTOR=2.0 # how long to wait between users.
 
 NGINX_NOTEBOOK_NAMESPACE=loadtest-notebooks
 ODS_NOTEBOOK_NAME=simple-notebook.ipynb
