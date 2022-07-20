@@ -173,7 +173,7 @@ get_compute_node_count() {
         false
     fi
 
-    echo "$size"
+    echo "$((2 * $size))"
 }
 
 get_compute_node_type() {
