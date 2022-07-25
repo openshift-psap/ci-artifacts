@@ -14,8 +14,8 @@ S3_LDAP_PROPS="${PSAP_ODS_SECRET_PATH}/s3_ldap.passwords"
 # Otherwise, install RHODS from OCM addon.
 OSD_USE_ODS_CATALOG=${OSD_USE_ODS_CATALOG:-0}
 
-ODS_QE_CATALOG_IMAGE="quay.io/modh/qe-catalog-source"
-ODS_QE_CATALOG_IMAGE_TAG="latest"
+ODS_QE_CATALOG_IMAGE="quay.io/modh/rhods-operator-live-catalog"
+ODS_QE_CATALOG_IMAGE_TAG="1.15.0-qe-nbc"
 
 RHODS_NOTEBOOK_IMAGE_NAME=s2i-generic-data-science-notebook
 
