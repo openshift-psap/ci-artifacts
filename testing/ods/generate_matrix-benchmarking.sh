@@ -7,7 +7,7 @@ ARTIFACT_DIR=${ARTIFACT_DIR:-/tmp/ci-artifacts_$(date +%Y%m%d)}
 MATBENCH_RESULTS_DIR="/tmp/matrix_benchmarking_results"
 
 # https://github.com/openshift-psap/matrix-benchmarking
-MATRIX_BENCHMARKING_COMMIT=cab6a32bc45e65586f64e593170dee82716f2f00
+MATRIX_BENCHMARKING_COMMIT=1b760012ece2739d155ab77c6883d644a2f03836
 
 generate_matbench::get_matrix_benchmarking() {
     cd /tmp
