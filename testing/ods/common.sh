@@ -6,7 +6,7 @@ elif [[ ! -d "$PSAP_ODS_SECRET_PATH" ]]; then
     false # can't exit here
 fi
 
-ODS_CI_NB_USERS=300 # number of users to simulate
+ODS_CI_NB_USERS=384 # number of users to simulate
 ODS_EXCLUDE_TAGS=Notebook # tags to exclude when running the robot test case
 
 
@@ -33,6 +33,8 @@ RHODS_NOTEBOOK_IMAGE_NAME=s2i-generic-data-science-notebook
 ODS_CI_TEST_NAMESPACE=loadtest
 ODS_CI_REPO="https://github.com/openshift-psap/ods-ci.git"
 ODS_CI_REF="jh-at-scale.v220822"
+
+TEST_MATBENCH_AUTH=y
 
 ODS_CI_IMAGESTREAM="ods-ci"
 ODS_CI_TAG="latest"

@@ -219,6 +219,9 @@ prepare_ci() {
 
     sutest_osd_cluster_name=$(get_osd_cluster_name "sutest")
     connect_sutest_cluster "$sutest_osd_cluster_name"
+
+    ./testing/ods/generate_matrix-benchmarking.sh prepare_matbench
+    export PATH=/tmp/bin:$PATH
 }
 
 prepare() {
@@ -238,18 +241,35 @@ run_test() {
     NGINX_SERVER="nginx-$NGINX_NOTEBOOK_NAMESPACE"
     nginx_hostname=$(oc whoami --show-server | sed "s/api/$NGINX_SERVER.apps/g" | awk -F ":" '{print $2}' | sed s,//,,g)
 
-    ./run_toolbox.py rhods notebook_ux_e2e_scale_test \
-                     "$LDAP_IDP_NAME" \
-                     "$ODS_CI_USER_PREFIX" "$ODS_CI_NB_USERS" \
-                     "$S3_LDAP_PROPS" \
-                     "http://$nginx_hostname/$ODS_NOTEBOOK_NAME" \
-                     --sut_cluster_kubeconfig="$KUBECONFIG_SUTEST" \
-                     --artifacts-collected="$ODS_CI_ARTIFACTS_COLLECTED" \
-                     --ods_sleep_factor="$ODS_SLEEP_FACTOR" \
-                     --ods_ci_exclude_tags="$ODS_EXCLUDE_TAGS" \
-                     --ods_ci_artifacts_exporter_istag="$ODS_CI_IMAGESTREAM:$ODS_CI_ARTIFACTS_EXPORTER_TAG" \
-                     --ods_ci_notebook_image_name="$RHODS_NOTEBOOK_IMAGE_NAME" \
-                     --state_signal_redis_server="${REDIS_SERVER}"
+    if [[ "$TEST_MATBENCH_AUTH" == "y" ]]; then
+        export MATBENCH_RHODS_CI_CI_ARTIFACTS_BASE_DIR=$PWD
+        export MATBENCH_RHODS_CI_NGINX_SERVER=$nginx_hostname
+        export MATBENCH_RHODS_CI_KUBECONFIG_SUTEST=$KUBECONFIG_SUTEST
+
+        export MATBENCH_RESULTS_DIRNAME=$ARTIFACT_DIR/matbench-auth
+        mkdir -p "$MATBENCH_RESULTS_DIRNAME"
+
+        cd "$PWD/subprojects/matrix-benchmarking-workloads/rhods-ci"
+        matbench benchmark  \
+                 --run \
+                 --benchmark-file ./benchmarks/auth.yaml
+        cd -
+    else
+        ./run_toolbox.py rhods notebook_ux_e2e_scale_test \
+                         "$LDAP_IDP_NAME" \
+                         "$ODS_CI_USER_PREFIX" "$ODS_CI_NB_USERS" \
+                         "$S3_LDAP_PROPS" \
+                         "http://$nginx_server/$ODS_NOTEBOOK_NAME" \
+                         --sut_cluster_kubeconfig="$KUBECONFIG_SUTEST" \
+                         --artifacts-collected="$ODS_CI_ARTIFACTS_COLLECTED" \
+                         --ods_sleep_factor="$ODS_SLEEP_FACTOR" \
+                         --ods_ci_exclude_tags="$ODS_EXCLUDE_TAGS" \
+                         --ods_ci_artifacts_exporter_istag="$ODS_CI_IMAGESTREAM:$ODS_CI_ARTIFACTS_EXPORTER_TAG" \
+                         --ods_ci_notebook_image_name="$RHODS_NOTEBOOK_IMAGE_NAME" \
+                         --state_signal_redis_server="${REDIS_SERVER}"
+    fi
+    # quick access to these files
+    cp "$ARTIFACT_DIR"/*__driver_rhods__user_scale_test_notebooks_e2e/{failed_tests,success_count} "$ARTIFACT_DIR" || true
 }
 
 sutest_cleanup() {

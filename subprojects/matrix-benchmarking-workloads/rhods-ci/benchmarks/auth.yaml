@@ -1,0 +1,16 @@
+--path-tpl: auth_{user_count}users
+
+--remote-mode: false
+--stop-on-error: false
+
+--script-tpl: "exec/run_auth.sh"
+
+--expe-to-run:
+  - auth
+
+common_settings:
+
+expe:
+  auth:
+    user_count: 32, 64, 128, 256, 384
+    startup_delay: 0.5, 1, 1.5
