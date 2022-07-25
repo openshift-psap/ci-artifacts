@@ -44,6 +44,6 @@
        | cut -d/ -f2 | grep "{{ item }}"
   register: has_rhods_image
   until: has_rhods_image.rc == 0
-  retries: 40
+  retries: 90
   delay: 60
   loop: "{{ rhods_wait_ods_images.split(',') }}"
