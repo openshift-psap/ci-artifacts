@@ -159,6 +159,11 @@ prepare_ocp_sutest_cluster() {
 
 wait_rhods_launch() {
     switch_sutest_cluster
+    oc patch odhdashboardconfig odh-dashboard-config --type=merge -p '{"spec":{"notebookController":{"enabled":true}}}' -n redhat-ods-applications
+    oc delete pod -l app.kubernetes.io/part-of=rhods-dashboard,app=rhods-dashboard  -n redhat-ods-applications
+
+    oc adm groups new dedicated-admins
+    oc adm policy add-cluster-role-to-group cluster-admin dedicated-admins
 
     ./run_toolbox.py rhods wait_ods
 
