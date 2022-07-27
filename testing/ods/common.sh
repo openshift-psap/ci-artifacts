@@ -34,6 +34,8 @@ ODS_SLEEP_FACTOR=1.0 # how long to wait between users.
 ODS_NOTEBOOK_RAM= # how much default RAM notebooks should have. Syntax: 4.0
 ODS_NOTEBOOK_CPU= # how many CPU cores notebooks should have. Syntax: 1.0
 
+[ "$ODS_NOTEBOOK_CPU" ] && sed -i '/^default,/s/cpu=[^,]*/cpu=${ODS_NOTEBOOK_CPU}/g' testing/ods/sizing/notebook_sizes
+[ "$ODS_NOTEBOOK_RAM" ] && sed -i '/^default,/s/memory=[^,]*/memory=${ODS_NOTEBOOK_RAM}/g' testing/ods/sizing/notebook_sizes
 
 NGINX_NOTEBOOK_NAMESPACE=loadtest-notebooks
 ODS_NOTEBOOK_NAME=simple-notebook.ipynb
