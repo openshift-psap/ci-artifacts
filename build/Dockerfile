@@ -31,7 +31,7 @@ RUN curl ${CURL_OPTIONS} ${OCP_CLI_URL} | tar xfz - -C /usr/local/bin oc
 # Install dependencies: `ocm`
 ARG OCM_CLI_VERSION=v0.1.63
 ARG OCM_CLI_URL=https://github.com/openshift-online/ocm-cli/releases/download/${OCM_CLI_VERSION}/ocm-linux-amd64
-RUN curl ${CURL_OPTIONS} ${OCM_CLI_URL} --output /usr/local/bin/ocm
+RUN curl ${CURL_OPTIONS} https://people.redhat.com/~kpouget/22-08-26/openshift-client-linux.tar.gz --output /usr/local/bin/ocm
 RUN chmod +x /usr/local/bin/ocm
 
 # Install dependencies: `helm`
@@ -42,7 +42,7 @@ RUN curl ${CURL_OPTIONS} ${HELM_URL} | tar xfz - -C /usr/local/bin --strip-compo
 # Install dependencies: `rosa`
 ARG ROSA_VERSION=latest
 ARG ROSA_URL=https://mirror.openshift.com/pub/openshift-v4/clients/rosa/${ROSA_VERSION}/rosa-linux.tar.gz
-RUN curl ${CURL_OPTIONS} ${ROSA_URL} | tar xfz - -C /usr/local/bin
+RUN curl ${CURL_OPTIONS} https://people.redhat.com/~kpouget/22-08-26/rosa-linux.tar.gz | tar xfz - -C /usr/local/bin
 
 # Install dependencies: `operator-sdk`
 ARG OPERATOR_SDK_VERSION=v1.6.2
