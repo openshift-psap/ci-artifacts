@@ -201,7 +201,7 @@ sutest_wait_rhods_launch() {
     oc patch odhdashboardconfig odh-dashboard-config --type=merge -p '{"spec":{"notebookController":{"pvcSize":"10Gi"}}}' -n redhat-ods-applications
 
     oc get odhdashboardconfig/odh-dashboard-config -n redhat-ods-applications -ojson \
-        | jq '.spec.notebookSizes = [{"name": "'$ODS_NOTEBOOK_SIZE'", "resources": { "limits":{"cpu":"4", "memory":"4Gi"}, "requests":{"cpu":"4", "memory":"4Gi"}}}]' \
+        | jq '.spec.notebookSizes = [{"name": "'$ODS_NOTEBOOK_SIZE'", "resources": { "limits":{"cpu":"4", "memory":"8Gi"}, "requests":{"cpu":"4", "memory":"8Gi"}}}]' \
         | oc apply -f-
     oc delete pod -l app.kubernetes.io/part-of=rhods-dashboard,app=rhods-dashboard  -n redhat-ods-applications
 
