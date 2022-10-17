@@ -1,0 +1,136 @@
+rhods_deploy_ods:
+  rhods_deploy_ods_catalog_image: quay.io/llasmith/rhods-operator-live-catalog
+  rhods_deploy_ods_catalog_image_tag: 1.18.0-7
+
+cluster_deploy_ldap:
+  cluster_deploy_ldap_idp_name: RHODS_CI_LDAP
+  cluster_deploy_ldap_secret_properties: /var/run/psap-ods-secret-1/s3_ldap.passwords
+  cluster_deploy_ldap_use_ocm: ''
+  cluster_deploy_ldap_use_rosa: ''
+  cluster_deploy_ldap_username_count: 1000
+  cluster_deploy_ldap_username_prefix: psapuser
+  cluster_deploy_ldap_wait: true
+
+cluster_set_scale:
+  cluster_ensure_machineset_base_machineset: ''
+  force_scale: false
+  machineset_instance_type: m6i.2xlarge
+  machineset_name: rhods-compute-pods
+  machineset_taint: only-rhods-compute-pods=yes:NoSchedule
+  scale: 34
+
+cluster_set_scale:
+  cluster_ensure_machineset_base_machineset: ''
+  force_scale: false
+  machineset_instance_type: m5a.2xlarge
+  machineset_name: test-pods
+  machineset_taint: only-test-pods=yes:NoSchedule
+  scale: 7
+
+utils_build_push_image:
+  utils_build_push_image_context_dir: /
+  utils_build_push_image_dockerfile_path: testing/ods/images/Containerfile.api_scale_test
+  utils_build_push_image_git_ref: ''
+  utils_build_push_image_git_repo: ''
+  utils_build_push_image_local_name: ods-ci
+  utils_build_push_image_memory: ''
+  utils_build_push_image_namespace: loadtest
+  utils_build_push_image_remote_auth_file: ''
+  utils_build_push_image_remote_repo: ''
+  utils_build_push_image_tag: api-scale-test
+
+utils_build_push_image:
+  utils_build_push_image_context_dir: /
+  utils_build_push_image_dockerfile_path: testing/ods/images/Containerfile.s3_artifacts_exporter
+  utils_build_push_image_git_ref: ''
+  utils_build_push_image_git_repo: ''
+  utils_build_push_image_local_name: ods-ci
+  utils_build_push_image_memory: ''
+  utils_build_push_image_namespace: loadtest
+  utils_build_push_image_remote_auth_file: ''
+  utils_build_push_image_remote_repo: ''
+  utils_build_push_image_tag: artifacts-exporter
+
+utils_build_push_image:
+  utils_build_push_image_context_dir: /
+  utils_build_push_image_dockerfile_path: build/Dockerfile
+  utils_build_push_image_git_ref: jh-at-scale.v220923
+  utils_build_push_image_git_repo: https://github.com/openshift-psap/ods-ci.git
+  utils_build_push_image_local_name: ods-ci
+  utils_build_push_image_memory: ''
+  utils_build_push_image_namespace: loadtest
+  utils_build_push_image_remote_auth_file: ''
+  utils_build_push_image_remote_repo: ''
+  utils_build_push_image_tag: latest
+
+cluster_deploy_redis_server:
+  cluster_deploy_redis_server_namespace: loadtest-redis
+
+cluster_deploy_nginx_server:
+  cluster_deploy_nginx_server_directory: /opt/ci-artifacts/src/testing/ods/notebooks
+  cluster_deploy_nginx_server_namespace: loadtest-notebooks
+
+cluster_deploy_minio_s3_server:
+  cluster_deploy_minio_s3_server_secret_properties: /var/run/psap-ods-secret-1/s3_ldap.passwords
+
+cluster_preload_image:
+  cluster_preload_image_ds_image: image-registry.openshift-image-registry.svc:5000/loadtest/ods-ci:artifacts-exporter
+  cluster_preload_image_ds_name: artifacts-exporter
+  cluster_preload_image_ds_namespace: loadtest
+  cluster_preload_image_node_selector_key: only-test-pods
+  cluster_preload_image_node_selector_value: 'yes'
+  cluster_preload_image_pod_toleration_effect: NoSchedule
+  cluster_preload_image_pod_toleration_key: only-test-pods
+
+cluster_preload_image:
+  cluster_preload_image_ds_image: image-registry.openshift-image-registry.svc:5000/loadtest/ods-ci:artifacts-exporter
+  cluster_preload_image_ds_name: api-scale-test-image
+  cluster_preload_image_ds_namespace: loadtest
+  cluster_preload_image_node_selector_key: ''
+  cluster_preload_image_node_selector_value: ''
+  cluster_preload_image_pod_toleration_effect: ''
+  cluster_preload_image_pod_toleration_key: ''
+
+cluster_preload_image:
+  cluster_preload_image_ds_image: image-registry.openshift-image-registry.svc:5000/loadtest/ods-ci:latest
+  cluster_preload_image_ds_name: preload-ods-ci
+  cluster_preload_image_ds_namespace: loadtest
+  cluster_preload_image_node_selector_key: only-test-pods
+  cluster_preload_image_node_selector_value: 'yes'
+  cluster_preload_image_pod_toleration_effect: NoSchedule
+  cluster_preload_image_pod_toleration_key: only-test-pods
+
+rhods_wait_ods: {}
+
+rhods_wait_ods: {}
+
+cluster_preload_image:
+  cluster_preload_image_ds_image: image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/s2i-generic-data-science-notebook:py3.8-1
+  cluster_preload_image_ds_name: notebook
+  cluster_preload_image_ds_namespace: redhat-ods-applications
+  cluster_preload_image_node_selector_key: only-rhods-compute-pods
+  cluster_preload_image_node_selector_value: 'yes'
+  cluster_preload_image_pod_toleration_effect: NoSchedule
+  cluster_preload_image_pod_toleration_key: only-rhods-compute-pods
+
+rhods_notebook_ux_e2e_scale_test:
+  rhods_notebook_ux_e2e_scale_test_artifacts_collected: no-image-except-failed-and-zero
+  rhods_notebook_ux_e2e_scale_test_idp_name: RHODS_CI_LDAP
+  rhods_notebook_ux_e2e_scale_test_notebook_url: http://nginx-loadtest-notebooks.apps.odsci-pr542-driver-1580988632871735296.psap.aws.rhperfscale.org/simple-notebook.ipynb
+  rhods_notebook_ux_e2e_scale_test_ods_ci_artifacts_exporter_istag: ods-ci:artifacts-exporter
+  rhods_notebook_ux_e2e_scale_test_ods_ci_exclude_tags: null
+  rhods_notebook_ux_e2e_scale_test_ods_ci_notebook_benchmark_name: pyperf_bm_go.py
+  rhods_notebook_ux_e2e_scale_test_ods_ci_notebook_benchmark_number: 20
+  rhods_notebook_ux_e2e_scale_test_ods_ci_notebook_benchmark_repeat: 3
+  rhods_notebook_ux_e2e_scale_test_ods_ci_notebook_image_name: s2i-generic-data-science-notebook
+  rhods_notebook_ux_e2e_scale_test_ods_ci_notebook_size_name: Tiny
+  rhods_notebook_ux_e2e_scale_test_ods_ci_scale_test_case: notebook_ux_e2e_test.robot
+  rhods_notebook_ux_e2e_scale_test_ods_sleep_factor: 5
+  rhods_notebook_ux_e2e_scale_test_secret_properties: /var/run/psap-ods-secret-1/s3_ldap.passwords
+  rhods_notebook_ux_e2e_scale_test_state_signal_redis_server: redis.loadtest-redis.svc
+  rhods_notebook_ux_e2e_scale_test_sut_cluster_kubeconfig: /tmp/secret/sutest_kubeconfig
+  rhods_notebook_ux_e2e_scale_test_toleration_key: only-test-pods
+  rhods_notebook_ux_e2e_scale_test_user_count: 200
+  rhods_notebook_ux_e2e_scale_test_user_index_offset: 0
+  rhods_notebook_ux_e2e_scale_test_username_prefix: psapuser
+
