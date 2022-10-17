@@ -7,7 +7,8 @@ set -o errexit
 set -o nounset
 
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
+sleep 500
+exit 1
 ci_banner() {
     echo "===> Running PSAP CI Test suite <==="
 
