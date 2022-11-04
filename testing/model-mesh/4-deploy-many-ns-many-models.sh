@@ -53,11 +53,12 @@ do
     if [[ "$API_ENDPOINT_CHECK" -eq 0 ]]
     then
 	NS=${NS_BASENAME}-${i}
+	auth_token=$(oc -n ${NS} sa new-token user-one)
         route=$(oc -n ${NS} get routes example-onnx-mnist-$i --template={{.spec.host}}{{.spec.path}})
         for i in $(seq 1 ${MODEL_COUNT})
         do
             echo "NS:${NS}: Smoke-testing endpoint example-onnx-mnist-$i"
-            until curl $CURL_OPTIONS https://${route}/infer -d @${THIS_DIR}/input-onnx.json | jq '.outputs[] | select(.data != null)' &>/dev/null
+            until curl $CURL_OPTIONS https://${route}/infer -d @${THIS_DIR}/input-onnx.json -H "Authorization: Bearer ${auth_token}" | jq '.outputs[] | select(.data != null)' &>/dev/null
             do
                 echo "S:${NS}: Waiting for inference endpoint example-onnx-mnist-$i"
                 sleep 1
