@@ -16,6 +16,8 @@ do
     NS=${NS_BASENAME}-${i}
     oc create ns ${NS}
     oc apply -f ${THIS_DIR}/minio-secret.yaml -n ${NS}
+    oc apply -f ${THIS_DIR}/openvino-serving-runtime.yaml -n ${NS}
+    oc apply -f ${THIS_DIR}/service_account.yaml -n ${NS}
 done
 unset NS
 
@@ -26,7 +28,7 @@ do
     for i in $(seq 1 ${NS_COUNT})
     do
         NS=${NS_BASENAME}-${i}
-        sed s/example-onnx-mnist/example-onnx-mnist-${j}/g ${THIS_DIR}/triton.yaml | oc apply -n ${NS} -f -
+        sed s/example-onnx-mnist/example-onnx-mnist-${j}/g ${THIS_DIR}/openvino-inference-service.yaml | oc apply -n ${NS} -f -
     done
 done
 unset NS
