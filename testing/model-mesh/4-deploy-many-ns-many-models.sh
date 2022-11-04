@@ -54,6 +54,7 @@ INDEX=0
 for i in $(seq 1 ${NS_COUNT})
 do
     NS=${NS_BASENAME}-${i}
+    auth_token=$(oc -n ${NS} sa new-token user-one)
     for j in $(seq 1 ${MODEL_COUNT})
     do
         let "INDEX=INDEX+1"
@@ -62,7 +63,7 @@ do
         if [[ "$API_ENDPOINT_CHECK" -eq 0 ]]
         then
             echo "NS:${NS}: Smoke-testing endpoint example-onnx-mnist-$j"
-            until curl $CURL_OPTIONS $ENDPOINT -d @${THIS_DIR}/input-onnx.json | jq '.outputs[] | select(.data != null)' &>/dev/null
+            until curl $CURL_OPTIONS $ENDPOINT -d @${THIS_DIR}/input-onnx.json -H "Authorization: Bearer ${auth_token}" | jq '.outputs[] | select(.data != null)' &>/dev/null
             do
                 echo "S:${NS}: Waiting for inference endpoint example-onnx-mnist-$j"
                 sleep 1
