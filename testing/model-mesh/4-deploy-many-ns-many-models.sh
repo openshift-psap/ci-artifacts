@@ -45,23 +45,28 @@ do
     unset NS
 done
 
+echo "id,ns,endpoint" > endpoints.txt
+
 # test inference endpoints
+INDEX=0
 for i in $(seq 1 ${NS_COUNT})
 do
-    if [[ "$API_ENDPOINT_CHECK" -eq 0 ]]
-    then
-	NS=${NS_BASENAME}-${i}
-        route=$(oc -n ${NS} get routes example-onnx-mnist-$i --template={{.spec.host}}{{.spec.path}})
-        for i in $(seq 1 ${MODEL_COUNT})
-        do
-            echo "NS:${NS}: Smoke-testing endpoint example-onnx-mnist-$i"
-            until curl $CURL_OPTIONS https://${route}/infer -d @${THIS_DIR}/input-onnx.json | jq '.outputs[] | select(.data != null)' &>/dev/null
+    NS=${NS_BASENAME}-${i}
+    for j in $(seq 1 ${MODEL_COUNT})
+    do
+        let "INDEX=INDEX+1"
+	route=$(oc -n ${NS} get routes example-onnx-mnist-$j --template={{.spec.host}}{{.spec.path}})
+        ENDPOINT=https://${route}/infer
+        if [[ "$API_ENDPOINT_CHECK" -eq 0 ]]
+        then
+            echo "NS:${NS}: Smoke-testing endpoint example-onnx-mnist-$j"
+            until curl $CURL_OPTIONS $ENDPOINT -d @${THIS_DIR}/input-onnx.json | jq '.outputs[] | select(.data != null)' &>/dev/null
             do
-                echo "S:${NS}: Waiting for inference endpoint example-onnx-mnist-$i"
+                echo "S:${NS}: Waiting for inference endpoint example-onnx-mnist-$j"
                 sleep 1
             done
-        done
-
-	unset NS
-    fi
+	fi
+	echo "${INDEX},${NS},${ENDPOINT}" >> endpoints.txt
+    done
+    unset NS
 done
