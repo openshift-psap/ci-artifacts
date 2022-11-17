@@ -24,7 +24,7 @@
     tester_job_name: api-scale-test
     tester_namespace: "{{ rhods_notebook_api_scale_test_namespace }}"
     test_artifacts_collected: all
-    capture_prom_db: yes
+    capture_prom_db: no
 
 - name: Fetch RHODS endpoints from the SUT cluster
   environment:
