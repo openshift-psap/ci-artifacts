@@ -6,7 +6,11 @@ set -o nounset
 set -o errtrace
 set -x
 
-TESTING_ODS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+TESTING_MM_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/../model-mesh"
+
+exec "$TESTING_MM_DIR/locust.sh" "$@"
+
+# not executed
 
 if [ -z "${ARTIFACT_DIR:-}" ]; then
     if [[ "${INSIDE_CI_IMAGE:-}" == "y" ]]; then
