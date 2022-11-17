@@ -83,7 +83,7 @@ cluster_helpers::connect_sutest_cluster() {
     switch_sutest_cluster
 
     if ! test_config clusters.sutest.is_managed; then
-        oc get clusterversion
+        #oc get clusterversion -n default
 
         return
     fi
