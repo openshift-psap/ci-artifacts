@@ -36,6 +36,8 @@ def main():
 
     print(f"Storing artifacts in {artifacts_directory}")
     artifacts_directory.mkdir(parents=True, exist_ok=True)
+    os.system(f"echo hello > {artifacts_directory}/hello")
+    return 0
 
     print(LOCUST_TEST_CMD)
     test_retcode = os.system(LOCUST_TEST_CMD) != 0
