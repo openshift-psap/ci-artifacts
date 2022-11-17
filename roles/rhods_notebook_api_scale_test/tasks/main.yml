@@ -30,17 +30,11 @@
   environment:
     KUBECONFIG: '{{ sut_cluster_kubeconfig }}'
   block:
-  - name: Test the connectivity of the SUT cluster
-    command: oc whoami --show-console
 
   - name: Get RHODS dashboard address (SUT cluster)
-    command: oc get route/rhods-dashboard -n redhat-ods-applications -ojsonpath={.spec.host}
+    command: oc whoami --show-console
     register: rhods_dashboard_hostname_cmd
 
-  - name: Get the RHODS version
-    shell:
-      oc get csv -n redhat-ods-operator -ojsonpath={.items[0].spec.version}
-    register: rhods_version_cmd
 
 - name: Create the src artifacts directory
   file:
