@@ -9,6 +9,7 @@ import csv
 import json
 import os
 import types
+import sys
 from deepdiff import DeepDiff
 from locust import HttpUser, task
 
@@ -35,7 +36,12 @@ class InferenceServiceUser(HttpUser):
         """ Determine which IF to hit
         """
 
+        mm_infer_post_input_file = 'input-onnx.json'
+        mm_infer_expected_output_file = 'expected-output-onnx.json'
+
         HttpUser.__init__(self, locust_env)
+        # self-signed certs are allowed
+        self.client.verify = False
 
         self.locust_env = locust_env
 
@@ -44,8 +50,6 @@ class InferenceServiceUser(HttpUser):
         self.user_name = f"testuser{self.user_id}"
         self.__class__.user_next_id += 1
 
-        mm_infer_post_input_file = 'input-onnx.json'
-        mm_infer_expected_output_file = 'expected-output-onnx.json'
         self.input_output = {}
         with open(
             mm_infer_post_input_file, 'r',
@@ -65,6 +69,14 @@ class InferenceServiceUser(HttpUser):
             for row in reader:
                 endpoints.append(row)
 
+        if int(env.LOCUST_USERS) < len(endpoints):
+            # no way we can reach all the endpoints
+            print(
+                f"Cannot test {len(endpoints)} endpoints "
+                f"with {env.LOCUST_USERS} users, exiting."
+            )
+            sys.exit(1)
+
         # don't hate me
         self.host = endpoints[
             self.user_id % len(endpoints)
@@ -75,8 +87,9 @@ class InferenceServiceUser(HttpUser):
             )
 
     def on_start(self):
-        """Allows to run against unknown https certs"""
-        self.client.verify = False
+        """ No-op for now
+        """
+        pass
 
     @task
     def get_infer(self):
