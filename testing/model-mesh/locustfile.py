@@ -24,21 +24,6 @@ env.LOCUST_USERS = os.getenv("LOCUST_USERS")
 env.USER_INDEX_OFFSET = int(os.getenv("USER_INDEX_OFFSET", "0"))
 
 
-mm_infer_post_input_file = 'input-onnx.json'
-mm_infer_expected_output_file = 'expected-output-onnx.json'
-with open(mm_infer_post_input_file, 'r', encoding="utf-8") as json_file:
-    mm_input = json.load(json_file)
-with open(mm_infer_expected_output_file, 'r', encoding="utf-8") as json_file:
-    mm_output = json.load(json_file)
-
-endpoints = []
-endpoints_file = "endpoints.txt"
-with open(endpoints_file, 'r', encoding="utf-8") as csv_file:
-    reader = csv.DictReader(csv_file)
-    for row in reader:
-        endpoints.append(row)
-
-
 class InferenceServiceUser(HttpUser):
     """ Inference Service User...
     """
@@ -57,6 +42,27 @@ class InferenceServiceUser(HttpUser):
         self.user_id = self.__class__.user_next_id
         self.user_name = f"testuser{self.user_id}"
         self.__class__.user_next_id += 1
+
+        mm_infer_post_input_file = 'input-onnx.json'
+        mm_infer_expected_output_file = 'expected-output-onnx.json'
+        self.input_output = {}
+        with open(
+            mm_infer_post_input_file, 'r',
+            encoding="utf-8"
+        ) as json_file:
+            self.input_output["input"] = json.load(json_file)
+        with open(
+            mm_infer_expected_output_file, 'r',
+            encoding="utf-8"
+        ) as json_file:
+            self.input_output["output"] = json.load(json_file)
+
+        endpoints = []
+        endpoints_file = "endpoints.txt"
+        with open(endpoints_file, 'r', encoding="utf-8") as csv_file:
+            reader = csv.DictReader(csv_file)
+            for row in reader:
+                endpoints.append(row)
 
         # don't hate me
         self.endpoint = endpoints[
@@ -80,13 +86,13 @@ class InferenceServiceUser(HttpUser):
         with self.client.post(
             f"{self.endpoint}/infer",
             name="inference/endpoints",
-            json=mm_input,
+            json=self.input_output["input"],
             catch_response=True
         ) as response:
             try:
                 json_response = response.json()
                 # ignore everything but the output itself
-                expected_output = mm_output.get("outputs")
+                expected_output = self.input_output["output"].get("outputs")
                 our_output = json_response.get("outputs")
                 result_diff = DeepDiff(our_output, expected_output)
                 if result_diff:
