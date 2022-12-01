@@ -22,6 +22,7 @@ env.MODEL_COUNT = os.getenv("MODEL_COUNT")
 env.NS_BASENAME = os.getenv("NS_BASENAME")
 env.LOCUST_USERS = os.getenv("LOCUST_USERS")
 env.USER_INDEX_OFFSET = int(os.getenv("USER_INDEX_OFFSET", "0"))
+env.DIFF_IS_RESULTS = (int(os.getenv("DIFF_IS_RESULTS", "1")) == 0)
 
 
 class InferenceServiceUser(HttpUser):
@@ -65,7 +66,7 @@ class InferenceServiceUser(HttpUser):
                 endpoints.append(row)
 
         # don't hate me
-        self.endpoint = endpoints[
+        self.host = endpoints[
             self.user_id % len(endpoints)
             ].get(
                 'endpoint'
@@ -76,7 +77,6 @@ class InferenceServiceUser(HttpUser):
     def on_start(self):
         """Allows to run against unknown https certs"""
         self.client.verify = False
-        self.host = self.endpoint
 
     @task
     def get_infer(self):
@@ -84,22 +84,26 @@ class InferenceServiceUser(HttpUser):
         """
 
         with self.client.post(
-            f"{self.endpoint}/infer",
+            f"{self.host}/infer",
             name="inference/endpoints",
             json=self.input_output["input"],
             catch_response=True
         ) as response:
             try:
                 json_response = response.json()
-                # ignore everything but the output itself
-                expected_output = self.input_output["output"].get("outputs")
-                our_output = json_response.get("outputs")
-                result_diff = DeepDiff(our_output, expected_output)
-                if result_diff:
-                    response.failure(
-                        f"Did not get expected output, diff: {result_diff}, "
-                        "complete output: {json_response}"
+                if env.DIFF_IS_RESULTS:
+                    # ignore everything but the output itself
+                    expected_output = self.input_output["output"].get(
+                        "outputs"
                     )
+                    our_output = json_response.get("outputs")
+                    result_diff = DeepDiff(our_output, expected_output)
+                    if result_diff:
+                        response.failure(
+                            "Did not get expected output, "
+                            f"diff: {result_diff}, "
+                            f"complete output: {json_response}"
+                        )
             except json.JSONDecodeError:
                 response.failure(
                     f"Response could not be decoded as JSON: {response.text}"

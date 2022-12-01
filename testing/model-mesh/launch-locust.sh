@@ -7,8 +7,9 @@ DESTINATION=Results
 RUN_TIME=60
 STOP_TIMEOUT=10
 LOCUSTFILE=locustfile.py
-
 ROUTE=example.com
+
+export DIFF_IS_RESULTS=0
 
 rm -f Results_* 
 
