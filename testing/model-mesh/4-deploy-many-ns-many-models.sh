@@ -54,6 +54,7 @@ INDEX=0
 for i in $(seq 1 ${NS_COUNT})
 do
     NS=${NS_BASENAME}-${i}
+    # not ideal
     auth_token=$(oc -n ${NS} sa new-token user-one)
     for j in $(seq 1 ${MODEL_COUNT})
     do
