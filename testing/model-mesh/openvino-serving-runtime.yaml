@@ -15,8 +15,8 @@ apiVersion: serving.kserve.io/v1alpha1
 kind: ServingRuntime
 metadata:
   annotations:
-    create-route: "True"
-    enable-auth: "True"
+    enable-route: "true"
+    enable-auth: "true"
   name: ovms-1.x
   labels:
     name: modelmesh-serving-ovms-1.x-SR
@@ -38,7 +38,7 @@ spec:
 
   containers:
     - name: ovms
-      image: openvino/model_server:2022.2
+      image: quay.io/modh/odh-openvino-servingruntime-container:v1.19.0-18
       args:
         - --port=8001
         - --rest_port=8888
