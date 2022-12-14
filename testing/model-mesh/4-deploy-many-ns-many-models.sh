@@ -14,7 +14,8 @@ source "$THIS_DIR/config.sh"
 for i in $(seq 1 ${NS_COUNT})
 do
     NS=${NS_BASENAME}-${i}
-    oc create ns ${NS}
+    # oc create ns ${NS}
+    oc new-project ${NS} --skip-config-write
     oc apply -f ${THIS_DIR}/minio-secret.yaml -n ${NS}
     oc apply -f ${THIS_DIR}/openvino-serving-runtime.yaml -n ${NS}
     oc apply -f ${THIS_DIR}/service_account.yaml -n ${NS}
@@ -28,6 +29,8 @@ do
     for i in $(seq 1 ${NS_COUNT})
     do
         NS=${NS_BASENAME}-${i}
+	oc label namespace ${NS} modelmesh-enabled=true --overwrite=true
+        # oc label namespace ${NS} opendatahub.io/generated-namespace=true --overwrite=true
         sed s/example-onnx-mnist/example-onnx-mnist-${j}/g ${THIS_DIR}/openvino-inference-service.yaml | oc apply -n ${NS} -f -
     done
 done
@@ -38,7 +41,7 @@ for i in $(seq 1 ${NS_COUNT})
 do
     NS=${NS_BASENAME}-${i}
 
-    until [[ "$(oc get pods -n ${NS} | grep '4/4' |grep Running |wc -l)" == ${MM_POD_COUNT} ]]
+    until [[ "$(oc get pods -n ${NS} | grep '5/5' |grep Running |wc -l)" == ${MM_POD_COUNT} ]]
     do
         echo "NS:${NS}: Waiting for the model mesh pods"
         sleep 1
