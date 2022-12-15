@@ -1,1 +1,1 @@
-{"model_name":"example-onnx-mnist-1__isvc-82e2bf7ea4","model_version":"1","outputs":[{"name":"Plus214_Output_0","datatype":"FP32","shape":[1,10],"data":[-8.233055,-7.749702,-3.4236822,12.363026,-12.079105,17.266592,-10.570975,0.71307755,3.3217146,1.3621217]}]}
+{"model_name":"example-onnx-mnist-19__isvc-b29c3d91f3","model_version":"1","outputs":[{"name":"Plus214_Output_0","datatype":"FP32","shape":[1,10],"data":[-8.233052,-7.7497034,-3.42368,12.363029,-12.079105,17.266596,-10.570976,0.71307594,3.321714,1.362123]}]}
