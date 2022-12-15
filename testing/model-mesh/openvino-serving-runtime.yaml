@@ -16,7 +16,7 @@ kind: ServingRuntime
 metadata:
   annotations:
     enable-route: "true"
-    enable-auth: "true"
+    enable-auth: "false"
   name: ovms-1.x
   labels:
     name: modelmesh-serving-ovms-1.x-SR
