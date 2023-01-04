@@ -253,6 +253,9 @@ sutest_customize_rhods_before_wait() {
         # Delete the RHODS builds
         oc delete builds --all  -n redhat-ods-applications
     fi
+
+    # IngressController tuning for RHODS-5912 -> OCPBUGS-5073
+    oc -n openshift-ingress-operator patch ingresscontroller/default --type=merge --patch='{"spec":{"tuningOptions": {"healthCheckInterval":"30s"}}}'
 }
 
 sutest_customize_rhods_after_wait() {
