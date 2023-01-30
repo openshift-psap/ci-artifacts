@@ -50,7 +50,7 @@ create_cluster() {
 
     local cluster_name="$(get_config clusters.create.name_prefix)"
     if test_config clusters.create.keep; then
-        local author=$(echo "$JOB_SPEC" | jq -r .refs.pulls[0].author)
+        local author=kpouget
         cluster_name="${author}-${cluster_role}-$(date +%Y%m%d-%Hh%M)"
 
         export AWS_DEFAULT_PROFILE="${author}_ci-artifact"
