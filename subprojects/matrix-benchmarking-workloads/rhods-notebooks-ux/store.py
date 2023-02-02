@@ -10,6 +10,7 @@ import os
 import json
 import fnmatch
 import pickle
+import statistics as stats
 
 import pandas as pd
 
@@ -750,3 +751,45 @@ def parse_data():
     store_simple.register_custom_parse_results(_parse_directory)
 
     return store_simple.parse_data()
+
+def build_lts_payloads() -> dict:
+    entry: common.MatrixEntry = None
+    for (_, entry) in common.Matrix.processed_map.items():
+               
+        data = []
+        for user_idx, ods_ci in entry.results.ods_ci.items() if entry.results.ods_ci else []:
+            accumulated_timelength = 0
+            if not ods_ci.output: continue
+
+            for step_name, test_times in ods_ci.output.items():
+                if test_times.status != "PASS":
+                    continue
+
+                timelength = (test_times.finish - test_times.start).total_seconds()
+
+                accumulated_timelength += timelength
+                if step_name != "Go to JupyterLab Page":
+                   continue
+                step_name = f"Time to reach {step_name}"
+
+                data.append(accumulated_timelength)
+
+        q1, med, q3 = stats.quantiles(data)
+        q90 = stats.quantiles(data, n=10)[8] # 90th percentile
+        q100 = max(data)
+        
+        payload = {
+            "$schema": "urn:rhods-summary:1.0",
+            'version': entry.results.rhods_info.version,
+            'user_count': int(entry.results.tester_job.env['USER_COUNT']),
+            'sleep_factor': float(entry.results.tester_job.env['SLEEP_FACTOR']),
+            'results_url': entry.results.from_local_env.source_url,
+            'exec_time': {
+                '100%': q100,
+                '90%': q90,
+                '75%': q3,
+                '50%': med,
+                '25%': q1
+            }
+        }
+        yield payload, entry.results.tester_job.creation_time, entry.results.tester_job.completion_time

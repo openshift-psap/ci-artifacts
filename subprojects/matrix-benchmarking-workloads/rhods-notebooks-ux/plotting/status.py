@@ -6,6 +6,7 @@ import plotly.graph_objs as go
 import pandas as pd
 import plotly.express as px
 from dash import html
+import logging
 
 import matrix_benchmarking.plotting.table_stats as table_stats
 import matrix_benchmarking.common as common
@@ -35,6 +36,7 @@ class ExecutionDistribution():
 
         cfg__show_only_step = cfg.get("step", False)
         cfg__time_to_reach_step = cfg.get("time_to_reach_step", False)
+        logging.debug(f"[DEBUG] {cfg__time_to_reach_step}")
 
         data = []
 
