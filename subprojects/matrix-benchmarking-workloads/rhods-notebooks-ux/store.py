@@ -25,6 +25,7 @@ import matrix_benchmarking.cli_args as cli_args
 from . import k8s_quantity
 from . import store_theoretical
 from . import store_thresholds
+from . import store_horreum
 from .plotting import prom as rhods_plotting_prom
 
 K8S_EVT_TIME_FMT = "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -639,6 +640,9 @@ def _parse_locust_pods_directory(dirname, output_dir, user_idx):
     return locust
 
 def _parse_directory(fn_add_to_matrix, dirname, import_settings):
+
+    if import_settings.get("source") == "horreum_fake":
+        return store_horreum.parse_directory_fake(fn_add_to_matrix, dirname, import_settings)
 
     try:
         results = load_cache(dirname)
