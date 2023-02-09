@@ -1,0 +1,21 @@
+# matbench benchmark --workload rhods-notebooks-ux --results_dirname results --benchmark_file ./horreum-benchmark.yaml --run
+
+--path_tpl: "rhods_{version}_{user_count}users_repeat{repeat}/{test_case}/"
+
+--script_tpl: "exec/generate_horreum_fake_data.py"
+--remote_mode: false
+--stop_on_error: true
+
+--expe_to_run:
+  - fake
+
+common_settings:
+  source: "horreum_fake"
+
+expe:
+  fake:
+    version: 1.16, 1.17, 1.18, 1.19, 1.20, 1.21
+    repeat: 1, 2
+    test_case: notebook_dsg_test.robot, notebook_jupyter_test.robot
+    user_count: 300
+    sleep_factor: 3
