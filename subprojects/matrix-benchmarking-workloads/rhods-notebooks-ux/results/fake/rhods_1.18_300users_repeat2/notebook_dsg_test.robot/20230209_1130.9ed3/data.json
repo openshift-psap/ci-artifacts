@@ -1,0 +1,18 @@
+{
+    "payload": {
+        "$schema": "urn:rhods-summary:1.0",
+        "version": "1.18",
+        "user_count": 300,
+        "sleep_factor": 3.0,
+        "results_url": null,
+        "exec_time": {
+            "100%": 99,
+            "90%": 93.0,
+            "75%": 79.5,
+            "50%": 52.0,
+            "25%": 30.25
+        }
+    },
+    "start": "2023-01-18 12:00:00",
+    "stop": "2023-01-18 13:00:00"
+}

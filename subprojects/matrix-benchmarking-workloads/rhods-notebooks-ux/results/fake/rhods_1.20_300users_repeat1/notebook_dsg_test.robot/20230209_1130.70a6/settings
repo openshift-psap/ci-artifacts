@@ -1,0 +1,7 @@
+source=horreum_fake
+version=1.20
+repeat=1
+test_case=notebook_dsg_test.robot
+user_count=300
+sleep_factor=3
+

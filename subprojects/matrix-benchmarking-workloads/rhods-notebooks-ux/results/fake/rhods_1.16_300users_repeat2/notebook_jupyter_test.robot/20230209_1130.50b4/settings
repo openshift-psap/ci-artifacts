@@ -1,0 +1,7 @@
+source=horreum_fake
+version=1.16
+repeat=2
+test_case=notebook_jupyter_test.robot
+user_count=300
+sleep_factor=3
+
