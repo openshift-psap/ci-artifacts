@@ -759,7 +759,7 @@ def parse_data():
 def build_lts_payloads() -> dict:
     entry: common.MatrixEntry = None
     for (_, entry) in common.Matrix.processed_map.items():
-               
+
         data = []
         for user_idx, ods_ci in entry.results.ods_ci.items() if entry.results.ods_ci else []:
             accumulated_timelength = 0
@@ -781,7 +781,7 @@ def build_lts_payloads() -> dict:
         q1, med, q3 = stats.quantiles(data)
         q90 = stats.quantiles(data, n=10)[8] # 90th percentile
         q100 = max(data)
-        
+
         payload = {
             "$schema": "urn:rhods-summary:1.0",
             'version': entry.results.rhods_info.version,
