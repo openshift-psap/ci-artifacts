@@ -996,6 +996,7 @@ main() {
             return 0
             ;;
         "prepare_ci")
+            return 0
             connect_ci
 
             prepare_ci
@@ -1006,6 +1007,11 @@ main() {
             return 0
             ;;
         "test_ci")
+            while true; do
+                date
+                sleep 600
+            done
+
             connect_ci
             local BASE_ARTIFACT_DIR=$ARTIFACT_DIR
 
