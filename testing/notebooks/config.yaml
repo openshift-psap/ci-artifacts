@@ -247,6 +247,14 @@ ci_presets:
     clusters.driver.compute.dedicated: false
     clusters.sutest.compute.dedicated: false
     tests.notebooks.users.count: 15
+  
+  icelake_notebook_scale_test_jenkins:
+    extends: [notebook_scale_test, icelake]
+    'ci_presets.notebook_scale_test["tests.notebooks.users.count"]': 200
+  
+  icelake_notebook_gating_test:
+    extends: [gating_test, icelake]
+    'ci_presets.notebook_scale_test["tests.notebooks.users.count"]': 200
 
 secrets:
   dir:
