@@ -252,13 +252,13 @@ ci_presets:
     extends: [notebook_scale_test, metal]
     clusters.driver.compute.dedicated: false
     clusters.sutest.compute.dedicated: false
-    tests.notebooks.users.count: 200
+    'ci_presets.notebook_scale_test["tests.notebooks.users.count"]': 200
   
   icelake_notebook_gating_test:
     extends: [gating_test, metal]
     clusters.driver.compute.dedicated: false
     clusters.sutest.compute.dedicated: false
-    tests.notebooks.users.count: 200
+    'ci_presets.notebook_scale_test["tests.notebooks.users.count"]': 200
 
 secrets:
   dir:
