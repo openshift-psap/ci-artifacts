@@ -374,11 +374,10 @@ def test_ci():
             pipelines_run_many()
         finally:
             next_count = env.next_artifact_index()
+            results_artifacts_dir = env.ARTIFACT_DIR
             with env.TempArtifactDir(env.ARTIFACT_DIR / f"{next_count:03d}__plots"):
-                # visualize.prepare_matbench()
-                # generate_plots(env.ARTIFACT_DIR)
-
-                (env.ARTIFACT_DIR / "not_implemented").touch()
+                visualize.prepare_matbench()
+                generate_plots(results_artifacts_dir)
     finally:
         if config.ci_artifacts.get_config("clusters.cleanup_on_exit"):
             pipelines_cleanup_cluster()
