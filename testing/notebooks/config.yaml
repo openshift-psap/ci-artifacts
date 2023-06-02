@@ -255,7 +255,7 @@ ci_presets:
     tests.notebooks.users.count: 200
   
   icelake_notebook_gating_test:
-    extends: [gating_test, metal]
+    extends: [notebook_gating_scale_test, metal]
     clusters.driver.compute.dedicated: false
     clusters.sutest.compute.dedicated: false
     tests.notebooks.users.count: 200
