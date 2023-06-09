@@ -83,6 +83,7 @@ def load_test_prepare():
 
     return None
 
+
 @entrypoint()
 def load_test_run():
     """
@@ -106,15 +107,14 @@ def load_test_run():
     run.run(f"./run_toolbox.py cluster set_scale g5.2xlarge {max_replicas}")
 
     test_cases = config.ci_artifacts.get_config("tests.ansible_llm.test_cases")
-
-    #TODO: These test cases should be in a config.yaml, not hardcoded
+    
+    #TODO Also run multiplexed load tests for each replica count and some varying concurrency
     for replicas, concurrency in test_cases:
 
         total_requests = 32 * concurrency
 
         logging.info(f"Configure ServingRuntime and InferenceService for replicas: {replicas}")
 
-        #TODO: USE TEST IMAGE BUILT IN PREPARE STEP
         run.run(f"./run_toolbox.py wisdom deploy_model {replicas} \
             {s3_creds_model_secret_path} \
             {quay_secret_path} \
