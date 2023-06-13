@@ -1,0 +1,11 @@
+- name: Delete Trimaran namespace
+  shell:
+    oc delete ns trimaran
+  
+- name: Delete user monitoring namespace
+  shell:
+    oc delete ns openshift-user-workload-monitoring 
+
+- name: Delete scheduler ClusterRoleBinding
+  shell:
+    oc delete clusterrolebinding trimaran
