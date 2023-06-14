@@ -1,14 +1,20 @@
+- name: Ensure Trimaran is deployed
+  command: oc get ns trimaran --ignore-not-found -oname
+  register: has_trimaran
+
 - name: Delete Trimaran resources
-  shell: |
-    oc delete -f {{ trimaran_setup_config }} 2>&1
-  register: delete_trimaran
-  failed_when: delete_trimaran.rc != 0 and 'namespaces "trimaran" not found' not in delete_trimaran.stdout
+  command: 
+    oc delete -f {{ trimaran_setup_config }} --ignore-not-found
+  when: has_trimaran.stdout | length > 0
+
+- name: Ensure user applications monitor config is deployed
+  command: oc get configmap cluster-monitoring-config --ignore-not-found -oname -n openshift-monitoring
+  register: has_user_monitoring
 
 - name: Delete user monitoring configmap
-  shell: |
-    oc delete -f {{ user_applications_monitor_config }} 2>&1
-  register: delete_monitoring
-  failed_when: delete_monitoring.rc != 0 and 'configmaps "cluster-monitoring-config" not found' not in delete_monitoring.stdout
+  command:
+    oc delete -f {{ user_applications_monitor_config }} --ignore-not-found
+  when: has_user_monitoring | length > 0
 
 - name: Wait for trimaran ns to disappear
   shell: |
@@ -19,3 +25,11 @@
   delay: 5
   retries: 30
 
+- name: Wait for monitoring configmap to disappear
+  shell: |
+    oc get configmap cluster-monitoring-config --no-headers 2> /dev/null
+  register: has_user_monitoring_deleted
+  until: has_user_monitoring_deleted.rc != 0
+  failed_when: has_user_monitoring_deleted.rc == 0
+  delay: 5
+  retries: 30
