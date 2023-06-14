@@ -1,11 +1,21 @@
-- name: Delete Trimaran namespace
-  shell:
-    oc delete ns trimaran
-  
-- name: Delete user monitoring namespace
-  shell:
-    oc delete ns openshift-user-workload-monitoring 
+- name: Delete Trimaran resources
+  shell: |
+    oc delete -f {{ trimaran_setup_config }} 2>&1
+  register: delete_trimaran
+  failed_when: delete_trimaran.rc != 0 and 'namespaces "trimaran" not found' not in delete_trimaran.stdout
 
-- name: Delete scheduler ClusterRoleBinding
-  shell:
-    oc delete clusterrolebinding trimaran
+- name: Delete user monitoring configmap
+  shell: |
+    oc delete -f {{ user_applications_monitor_config }} 2>&1
+  register: delete_monitoring
+  failed_when: delete_monitoring.rc != 0 and 'configmaps "cluster-monitoring-config" not found' not in delete_monitoring.stdout
+
+- name: Wait for trimaran ns to disappear
+  shell: |
+    oc get ns trimaran --no-headers 2> /dev/null
+  register: has_trimaran_namespace
+  until: has_trimaran_namespace.rc != 0
+  failed_when: has_trimaran_namespace.rc == 0
+  delay: 5
+  retries: 30
+
