@@ -161,8 +161,7 @@ def build_lts_payloads() -> dict:
 
         start_time: datetime.datetime = results.start_time
         end_time: datetime.datetime = results.end_time
-
-        output = {
+        payload = {
             "$schema": "urn:rhods-matbench-upload:3.0.0",
             "data": {
                 "users": _decode_users(results),
@@ -170,18 +169,19 @@ def build_lts_payloads() -> dict:
                 'ocp_version': results.sutest_ocp_version,
                 'metrics': _gather_prom_metrics(entry),
                 'thresholds': results.thresholds,
-                'config': results.test_config.yaml_file
+                'config': results.test_config.yaml_file,
+                "cluster_info": _parse_entry(entry.results.rhods_cluster_info),
             },
             "metadata": {
-                "test": "rhods-notebooks",
+                "test": results.test_config.yaml_file['tests']['identifier'],  
                 "start": start_time.isoformat(),
                 "end": end_time.isoformat(),
                 "settings": {'version': results.rhods_info.version, **_parse_entry(entry.settings)},
-                "cluster_info": _parse_entry(entry.results.rhods_cluster_info),
             }
         }
+        output: models.NotebookScalePayload = models.NotebookScalePayload.parse_obj(payload)
 
-        yield output, start_time, end_time
+        yield dict(output), start_time, end_time
 
 
 def _decode_users(results):
@@ -233,7 +233,7 @@ def _gather_prom_metrics(entry) -> dict:
         for metric_name in metric_names:
             logging.info(f"Gathering {metric_name[0]}")
             output[metric_name[0]] = {
-                'data': [promvalue.dict() for promvalue in prom.get_metrics('sutest')(entry, metric_name[0])],
+                'data': [dict(promvalue) for promvalue in prom.get_metrics('sutest')(entry, metric_name[0])],
                 'query': metric_name[1]
             }
 

@@ -20,4 +20,5 @@ class StepStatus(matbench_models.PSAPEnum):
     FAIL = auto()
 
 class TestName(matbench_models.PSAPEnum):
-    rhods_notebooks_ux = 'rhods-notebooks'
+    gating_test = "gating"
+    scale_test = "scale"
