@@ -8,6 +8,7 @@ from pydantic import BaseModel, constr
 
 class NotebookScaleMetadata(matbench_models.Metadata):
     test: enums.TestName
+    settings: dict
 
 
 class NotebookScaleData(matbench_models.ExclusiveModel):
