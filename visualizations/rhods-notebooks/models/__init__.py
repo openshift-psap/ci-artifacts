@@ -6,6 +6,8 @@ import matrix_benchmarking.models as matbench_models
 
 from pydantic import BaseModel, constr
 
+
+
 class NotebookScaleMetadata(matbench_models.Metadata):
     test: enums.TestName
     settings: dict
@@ -21,6 +23,12 @@ class NotebookScaleData(matbench_models.ExclusiveModel):
     cluster_info: metadata.ClusterInfo
 
 
-class NotebookScalePayload(matbench_models.create_PSAPPayload('rhods-matbench-upload')):
+class NotebookScalePayload(matbench_models.ExclusiveModel):
+    schema_name: str
     data: NotebookScaleData
     metadata: NotebookScaleMetadata
+
+    class Config:
+        fields = {'schema_name': '$schema'}
+
+NotebookScalePayload.update_forward_refs()

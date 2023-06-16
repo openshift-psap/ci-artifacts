@@ -22,3 +22,4 @@ class StepStatus(matbench_models.PSAPEnum):
 class TestName(matbench_models.PSAPEnum):
     gating_test = "gating"
     scale_test = "scale"
+    unknown = "unknown"
