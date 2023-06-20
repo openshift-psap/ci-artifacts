@@ -9,7 +9,7 @@ from pydantic import BaseModel, constr
 
 
 class NotebookScaleMetadata(matbench_models.Metadata):
-    test: enums.TestName
+    presets: List[str]
     settings: dict
 
 
@@ -24,7 +24,7 @@ class NotebookScaleData(matbench_models.ExclusiveModel):
 
 
 class NotebookScalePayload(matbench_models.ExclusiveModel):
-    schema_name: str
+    schema_name: matbench_models.create_schema_field("rhods-notebooks")
     data: NotebookScaleData
     metadata: NotebookScaleMetadata
 

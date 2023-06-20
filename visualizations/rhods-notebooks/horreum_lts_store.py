@@ -173,7 +173,7 @@ def build_lts_payloads() -> dict:
                 "cluster_info": _parse_entry(entry.results.rhods_cluster_info),
             },
             "metadata": {
-                "test": results.test_config.get("tests.identifier", "unknown"),
+                "presets": results.test_config["get"]("ci_presets.names") or ["no_preset_defined"],
                 "start": start_time.isoformat(),
                 "end": end_time.isoformat(),
                 "settings": {'version': results.rhods_info.version, **_parse_entry(entry.settings)},
