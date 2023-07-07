@@ -43,24 +43,28 @@
 - name: Run test workload with default scheduler and load timeline
   shell:
     cat "{{ artifact_extra_logs_dir }}/load_aware_load_timeline.log"
-      | python3 {{ pod_start_scheduler }} default {{ load_aware_scale_test_namespace }} > "{{ artifact_extra_logs_dir }}/default_workload_scheduler.log"
+      | python3 {{ pod_start_scheduler }} {{ load_aware_scale_test_scheduler }}  {{ load_aware_scale_test_namespace }} > "{{ artifact_extra_logs_dir }}/workload_scheduler.yaml"
 
 - name: Wait for default workloads to finish
-  shell:
-    oc get pods -n {{ load_aware_scale_test_namespace }} | awk 'NR > 1 { print $3 }'
-  register: load_aware_workload
-  delay: 60
-  retries: 120
-  until:
-    "'Running' not in load_aware_workload.stdout
-      and 'Pending' not in load_aware_workload.stdout
-      and 'Failed' not in load_aware_workload.stdout
-      and 'ContainerCreating' not in load_aware_workload.stdout"
-
-- name: Dump info about default scheduler resources
-  shell: |
-    oc get pods -n {{ load_aware_scale_test_namespace }} > "{{ artifact_extra_logs_dir }}/all_default_pods.status" 
-    oc get pods -n {{ load_aware_scale_test_namespace }} -ojson > "{{ artifact_extra_logs_dir }}/all_default_pods.json"
+  block:
+  - name: Wait for default workloads to finish
+    shell:
+      oc get pods -n {{ load_aware_scale_test_namespace }} | awk 'NR > 1 { print $3 }'
+    register: load_aware_workload
+    delay: 60
+    retries: 120
+    until:
+      "'Running' not in load_aware_workload.stdout
+        and 'Pending' not in load_aware_workload.stdout
+        and 'Failed' not in load_aware_workload.stdout
+        and 'ContainerCreating' not in load_aware_workload.stdout"
+  #except:
+  #- name: recover ...
+  always:
+  - name: Dump info about scheduler resources
+    shell: |
+      oc get pods -n {{ load_aware_scale_test_namespace }} > "{{ artifact_extra_logs_dir }}/all_default_pods.status"
+      oc get pods -n {{ load_aware_scale_test_namespace }} -ojson > "{{ artifact_extra_logs_dir }}/all_default_pods.json"
 
 - name: Cleanup pods from default test
   command:
@@ -86,7 +90,7 @@
 
 - name: Dump info about trimaran resources
   shell: |
-    oc get pods -n {{ load_aware_scale_test_namespace }} > "{{ artifact_extra_logs_dir }}/all_trimaran_pods.status" 
+    oc get pods -n {{ load_aware_scale_test_namespace }} > "{{ artifact_extra_logs_dir }}/all_trimaran_pods.status"
     oc get pods -n {{ load_aware_scale_test_namespace }} -ojson > "{{ artifact_extra_logs_dir }}/all_trimaran_pods.json"
 
 - name: Cleanup test namespace

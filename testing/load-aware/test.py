@@ -68,27 +68,32 @@ def prepare_ci():
     run.run("./run_toolbox.py from_config load_aware deploy_trimaran")
 
 
-def _run_test(test_artifact_dir_p):
+def _run_test(test_artifact_dir_p, sched):
     """
     Runs the Load-Aware scale test from the CI
     """
 
     next_count = env.next_artifact_index()
-    with env.TempArtifactDir(env.ARTIFACT_DIR / f"{next_count:03d}__load_aware_scale_test"):
+    with env.TempArtifactDir(env.ARTIFACT_DIR / f"{next_count:03d}__load_aware_scale_test_{sched}"):
         test_artifact_dir_p[0] = env.ARTIFACT_DIR
 
         with open(env.ARTIFACT_DIR / "settings", "w") as f:
             print(f"load_aware_scale_test=true", file=f)
+            print(f"scheduler={sched}", file=f)
 
         with open(env.ARTIFACT_DIR / "config.yaml", "w") as f:
             yaml.dump(config.ci_artifacts.config, f, indent=4)
 
         run.run("./run_toolbox.py cluster reset_prometheus_db")
 
+        extra = {}
+
+        extra["scheduler"] = sched
+
         failed = True
         try:
 
-            run.run("./run_toolbox.py from_config load_aware scale_test")
+            run.run(f"./run_toolbox.py from_config load_aware scale_test --extra \"{extra}\"")
 
             failed = False
         finally:
@@ -103,21 +108,25 @@ def test_ci():
     """
     Runs the Load-Aware scale test from the CI
     """
+    for sched in get_config(load_aware.tests):
+        try:
+            test_artifact_dir_p = [None]
+            _run_test(test_artifact_dir_p, sched)
+        finally:
+            if test_artifact_dir_p[0] is not None:
+                next_count = env.next_artifact_index()
+                with env.TempArtifactDir(env.ARTIFACT_DIR / f"{next_count:03d}__plots"):
+                    visualize.prepare_matbench()
+                    generate_plots(test_artifact_dir_p[0])
+            else:
+                logging.warning("Not generating the visualization as the test artifact directory hasn't been created.")
 
-    try:
-        test_artifact_dir_p = [None]
-        _run_test(test_artifact_dir_p)
-    finally:
-        if test_artifact_dir_p[0] is not None:
-            next_count = env.next_artifact_index()
-            with env.TempArtifactDir(env.ARTIFACT_DIR / f"{next_count:03d}__plots"):
-                visualize.prepare_matbench()
-                generate_plots(test_artifact_dir_p[0])
-        else:
-            logging.warning("Not generating the visualization as the test artifact directory hasn't been created.")
+    # future work:
+    #generate_plots(test_artifact_dir_p[0])
 
-        if config.ci_artifacts.get_config("clusters.cleanup_on_exit"):
-            cleanup_cluster()
+
+    if config.ci_artifacts.get_config("clusters.cleanup_on_exit"):
+        cleanup_cluster()
 
 @entrypoint(ignore_secret_path=True, apply_preset_from_pr_args=False)
 def generate_plots_from_pr_args():

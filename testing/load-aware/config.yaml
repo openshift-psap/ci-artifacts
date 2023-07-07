@@ -113,6 +113,9 @@ load_aware:
     duration: 60.0
     instances: 10
     namespace: "load-aware"
+  tests:
+  - default
+  - trimaran
 matbench:
   preset: null
   workload: load-aware
