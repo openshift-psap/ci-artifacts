@@ -55,10 +55,10 @@ ci_presets:
     load_aware.plugin: TargetLoadPacking
     load_aware.default_requests_cpu: 100m
     load_aware.default_target_requests_multiplier: "1.5"
-    load_aware.target_utilization: 40
+    load_aware.target_utilization: 50
     load_aware.scale_test.distribution: "poisson"
     load_aware.scale_test.duration: 600.0 # 10 minutes
-    load_aware.scale_test.instances: 1000 # 500 build pods, 500 sleep pods
+    load_aware.scale_test.instances: 1600 # 800 build pods, 800 sleep pods
     load_aware.scale_test.sleep_duration: 60
     cluster.sutest.compute.machineset.count: 16
 
