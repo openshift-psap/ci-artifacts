@@ -50,6 +50,18 @@ ci_presets:
     load_aware.scale_test.duration: 600.0
     load_aware.scale_test.instances: 90
 
+  scale_test:
+    load_aware.log_level: 6
+    load_aware.plugin: TargetLoadPacking
+    load_aware.default_requests_cpu: 100m
+    load_aware.default_target_requests_multiplier: "1.5"
+    load_aware.target_utilization: 40
+    load_aware.scale_test.distribution: "poisson"
+    load_aware.scale_test.duration: 600.0 # 10 minutes
+    load_aware.scale_test.instances: 1000 # 500 build pods, 500 sleep pods
+    load_aware.scale_test.sleep_duration: 60
+    cluster.sutest.compute.machineset.count: 16
+
 secrets:
   dir:
     name: psap-ods-secret
@@ -89,7 +101,7 @@ clusters:
       dedicated: true
       machineset:
         name: workload-pods
-        count: 3
+        count: 1
         taint:
           key: only-workload-pods
           value: "yes"
@@ -112,8 +124,8 @@ load_aware:
     scheduler: default
     sleep_duration: 180
   schedulers:
-  - default
   - trimaran
+  - default
   matbench_comparison_file: load-aware_multi.yaml
 matbench:
   preset: null

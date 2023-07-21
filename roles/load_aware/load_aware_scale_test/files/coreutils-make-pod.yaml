@@ -13,4 +13,7 @@ spec:
     image: load-aware/coreutils:deps
     imagePullPolicy: IfNotPresent
     command: ["make"]
+    resources:
+      requests:
+        cpu: "100m"
   restartPolicy: Never
