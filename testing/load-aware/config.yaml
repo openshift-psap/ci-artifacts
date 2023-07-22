@@ -60,7 +60,7 @@ ci_presets:
     load_aware.scale_test.duration: 600.0 # 10 minutes
     load_aware.scale_test.instances: 1600 # 800 build pods, 800 sleep pods
     load_aware.scale_test.sleep_duration: 60
-    cluster.sutest.compute.machineset.count: 16
+    clusters.sutest.compute.machineset.count: 16
 
 secrets:
   dir:
