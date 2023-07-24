@@ -13,7 +13,7 @@
       oc get pods -n {{ load_aware_scale_test_namespace }} | awk 'NR > 1 { print $3 }'
     register: load_aware_workload
     delay: 60
-    retries: 120
+    retries: 240
     until:
       "'Running' not in load_aware_workload.stdout
         and 'Pending' not in load_aware_workload.stdout
