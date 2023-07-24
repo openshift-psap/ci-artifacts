@@ -24,6 +24,7 @@ stringData:
           - name: NodeResourcesLeastAllocated
           enabled:
           - name: {{ load_aware_deploy_trimaran_plugin }}
+            weight: 10
       pluginConfig:
       - name: {{ load_aware_deploy_trimaran_plugin }}
         args:
@@ -87,7 +88,7 @@ spec:
           env:
           - name: ENABLE_OPENSHIFT_AUTH
             value: "true"
-          image: quay.io/chenw615/kube-scheduler:ocp
+          image: quay.io/rkrawitz/kube-scheduler:ocp
           imagePullPolicy: Always
           args:
           - /bin/kube-scheduler
