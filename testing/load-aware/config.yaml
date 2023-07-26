@@ -58,9 +58,9 @@ ci_presets:
     load_aware.target_utilization: 1
     load_aware.scale_test.distribution: "poisson"
     load_aware.scale_test.duration: 1200.0 # 20 minutes
-    load_aware.scale_test.instances: 400 # 200 build pods, 200 sleep pods
-    load_aware.scale_test.sleep_duration: 60
-    clusters.sutest.compute.machineset.count: 8
+    load_aware.scale_test.instances: 100 # 50 build pods, 50 sleep pods
+    load_aware.scale_test.sleep_duration: 680
+    clusters.sutest.compute.machineset.count: 16
 
 secrets:
   dir:

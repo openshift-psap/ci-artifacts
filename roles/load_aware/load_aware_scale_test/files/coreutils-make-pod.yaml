@@ -12,7 +12,8 @@ spec:
   - name: make-container
     image: load-aware/coreutils:deps
     imagePullPolicy: IfNotPresent
-    command: ["make"]
+    command: ["/bin/sh"]
+    args: ["-c", "for i in {1..8}; do echo 'making' && make clean && make -j 1; done"]
     resources:
       requests:
         cpu: "100m"
