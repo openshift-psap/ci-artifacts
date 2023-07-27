@@ -13,6 +13,7 @@ ci_presets:
     clusters.create.ocp.tags.TicketId: "115"
     load_aware.scale_test.duration: 1.0
     load_aware.scale_test.instances: 1
+    clusters.sutest.compute.machineset.count: 1
 
   light_cluster:
     clusters.create.ocp.deploy_cluster.target: cluster_light
