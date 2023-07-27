@@ -24,7 +24,7 @@ with open("roles/load_aware/load_aware_scale_test/files/sleep-pod.yaml", "r") as
 
 def run_pod(n, scheduler_name, workload_name):
     # Note: the the sleep_duration argument is only present in the sleep pod
-    pod = pod_configs[workload_name].format(n, scheduler_name, sleep_duration)
+    pod = pod_configs[workload_name].format(pod_index=n, scheduler_name=scheduler_name, sleep_duration=sleep_duration)
     start_command = ["oc", "apply", "-n", namespace, "-f", "-"]
     execution_times[n] = time.time()
     launch_make_pod_process = sp.run(start_command, input=pod.encode(), stdout=sp.PIPE)

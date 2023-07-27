@@ -1,19 +1,19 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: coreutils-make-pod-n{}
+  name: coreutils-make-pod-n{pod_index}
   labels:
     workload: make
   annotations:
     alpha.image.policy.openshift.io/resolve-names: '*'
 spec:
-  schedulerName: "{}"
+  schedulerName: "{scheduler_name}"
   containers:
   - name: make-container
     image: load-aware/coreutils:deps
     imagePullPolicy: IfNotPresent
     command: ["/bin/sh"]
-    args: ["-c", "for i in {1..8}; do echo 'making' && make clean && make -j 1; done"]
+    args: ["-c", "for i in 1 2 3 4 5 6 7 8; do echo 'making' && make clean && make -j 1; done"]
     resources:
       requests:
         cpu: "100m"
