@@ -3,7 +3,7 @@
   
 - name: Wait for background load history to build up
   pause:
-    minutes: 1
+    minutes: 15
 
 - name: Generate load timeline
   shell:
