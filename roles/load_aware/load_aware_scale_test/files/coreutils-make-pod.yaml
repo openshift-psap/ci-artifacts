@@ -4,6 +4,7 @@ metadata:
   name: coreutils-make-pod-n{pod_index}
   labels:
     workload: make
+    testContext: foreground
   annotations:
     alpha.image.policy.openshift.io/resolve-names: '*'
 spec:

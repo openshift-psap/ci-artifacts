@@ -3,7 +3,7 @@
 start_load (){
     export POD_INDEX=$1
     export NODE_NAME=$2
-    oc apply -f - <<-END
+    oc apply --dry-run=client -oyaml -f - <<-END
         apiVersion: v1
         kind: Pod
         metadata:
@@ -11,6 +11,7 @@ start_load (){
           namespace: load-aware
           labels:
             workload: make
+            testContext: background
           annotations:
             alpha.image.policy.openshift.io/resolve-names: '*'
         spec:
@@ -25,7 +26,7 @@ start_load (){
                 cpu: "100m"
           restartPolicy: Never
           nodeName: ${NODE_NAME}
-END
+END | oc apply -f -
 }
 
 i=1

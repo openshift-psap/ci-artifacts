@@ -4,6 +4,7 @@ metadata:
   name: sleep-pod-n{pod_index}
   labels:
     workload: sleep
+    testContext: foreground
   annotations:
     alpha.image.policy.openshift.io/resolve-names: '*'
 spec:

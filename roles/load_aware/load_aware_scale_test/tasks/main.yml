@@ -17,7 +17,7 @@
 
   - name: Wait for workloads to finish
     shell:
-      oc get pods -n {{ load_aware_scale_test_namespace }} --no-headers | awk '{ print $3 }'
+      oc get pods -n {{ load_aware_scale_test_namespace }} -ltestContext=foreground --no-headers | awk '{ print $3 }'
     register: load_aware_workload
     delay: 60
     retries: 240
