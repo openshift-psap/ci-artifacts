@@ -3,7 +3,7 @@
 start_load (){
     export POD_INDEX=$1
     export NODE_NAME=$2
-    oc apply --dry-run=client -oyaml -f - <<-END
+    oc apply -f - <<-END
         apiVersion: v1
         kind: Pod
         metadata:
@@ -26,7 +26,7 @@ start_load (){
                 cpu: "100m"
           restartPolicy: Never
           nodeName: ${NODE_NAME}
-END | oc apply -f -
+END
 }
 
 i=1
