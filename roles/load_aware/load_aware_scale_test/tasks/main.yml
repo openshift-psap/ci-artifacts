@@ -1,3 +1,10 @@
+- name: Start background load for each sutest node
+  script: {{ start_background_load }}
+  
+- name: Wait for background load history to build up
+  pause:
+    minutes: 15
+
 - name: Generate load timeline
   shell:
     python3 {{ load_timeline_generator }} {{ load_aware_scale_test_distribution }} {{ load_aware_scale_test_duration}} {{ load_aware_scale_test_instances }} "{{ artifact_extra_logs_dir }}/schedule_plan.yaml"
