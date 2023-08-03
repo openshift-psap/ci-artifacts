@@ -1,9 +1,9 @@
 - name: Start background load for each sutest node
-  script: {{ start_background_load }}
+  script: "{{ start_background_load }}"
   
 - name: Wait for background load history to build up
   pause:
-    minutes: 15
+    minutes: 1
 
 - name: Generate load timeline
   shell:
