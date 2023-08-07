@@ -125,7 +125,6 @@ load_aware:
     sleep_duration: 180
   schedulers:
   - trimaran
-  - default
   matbench_comparison_file: load-aware_multi.yaml
 matbench:
   preset: null
