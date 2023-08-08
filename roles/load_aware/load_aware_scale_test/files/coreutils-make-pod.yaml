@@ -14,8 +14,5 @@ spec:
     image: load-aware/coreutils:deps
     imagePullPolicy: IfNotPresent
     command: ["/bin/sh"]
-    args: ["-c", "for i in 1 2 3 4 5 6 7 8 9 10 11 12; do echo 'making' && make clean && make -j 4; done"]
-    resources:
-      requests:
-        cpu: "100m"
+    args: ["-c", "for i in $(seq 1 12); do echo 'making' && make clean && make -j 4; done"]
   restartPolicy: Never

@@ -53,7 +53,7 @@ ci_presets:
   scale_test:
     load_aware.log_level: 6
     load_aware.plugin: TargetLoadPacking
-    load_aware.default_requests_cpu: 100m
+    load_aware.default_requests_cpu: 2000m
     load_aware.default_target_requests_multiplier: "1.5"
     load_aware.target_utilization: 1
     load_aware.scale_test.distribution: "poisson"
