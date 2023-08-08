@@ -14,7 +14,4 @@ spec:
     image: registry.access.redhat.com/ubi8/ubi
     imagePullPolicy: IfNotPresent
     command: ["sleep", "{sleep_duration}"]
-    resources:
-      requests:
-        cpu: "100m"
   restartPolicy: Never

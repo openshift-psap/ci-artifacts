@@ -15,7 +15,4 @@ spec:
     imagePullPolicy: IfNotPresent
     command: ["/bin/sh"]
     args: ["-c", "for i in $(seq 1 75); do echo 'making' && make clean && make -j 4; done"]
-    resources:
-      requests:
-        cpu: "100m"
   restartPolicy: Never
