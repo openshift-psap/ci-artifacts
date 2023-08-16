@@ -1,3 +1,11 @@
+
+⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠
+
+This repository has been deprecated in favor of `openshift-psap/topsail <https://github.com/openshift-psap/topsail/>`_ . All the ``ci-artifacts`` work is continuing there.
+
+⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠
+
+
 This repository contains `Ansible <https://www.ansible.com/>`_ roles and
 playbooks for `OpenShift <https://www.openshift.com/>`_ for automating
 the interactions with the OpenShift operators under the responsibility
